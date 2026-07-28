@@ -1,0 +1,4 @@
+transaction_id,sale_date,product_id,product_name,category,subcategory,customer_id,customer_name,region,segment,quantity,unit_price,discount,total_amount
+TXN-TEST-001,2025-01-15,PRD-001,Enterprise Laptop X1,Electronics,Computers,CUST-001,Customer_1,North,Corporate,2,1200.0,0.1,2160.0
+TXN-TEST-002,2025-01-16,PRD-002,Pro Wireless Headset,Electronics,Audio,CUST-002,Customer_2,East,Consumer,3,150.0,0.0,450.0
+TXN-TEST-003,2025-01-17,PRD-003,Smart Monitor 27-inch,Electronics,Monitors,CUST-003,Customer_3,South,Small Business,1,350.0,0.05,332.5
