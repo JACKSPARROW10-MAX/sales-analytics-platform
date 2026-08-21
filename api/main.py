@@ -1,37 +1,43 @@
 """
-FastAPI Upload Endpoint for Sales Data
-Minimal API for uploading CSV sales data through the ETL pipeline
+FastAPI Backend Services for Sales Analytics Platform
+Serves ingestion, ETL triggers, ML forecasts, anomalies, recommendations, and PDF report downloads.
 """
+import json
 import logging
+import os
 import sys
 from pathlib import Path
-from typing import Dict
+from typing import Dict, List, Optional, Any
 
-from fastapi import FastAPI, UploadFile, File, HTTPException
+from fastapi import FastAPI, UploadFile, File, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse
 from pydantic import BaseModel
 
 # Add project root to path for imports
-sys.path.insert(0, str(Path(__file__).parent.parent))
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(PROJECT_ROOT))
 
 from ingestion.extract_csv import parse_sales_csv
 from ingestion.validate import validate_sales_data
 from etl.load_staging import load_all_staging, get_db_connection
 from etl.transform import run_transform
+from ml.train import run_ml_pipeline
+from reports.generate_pdf_report import generate_sales_report_pdf
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 app = FastAPI(
-    title="Sales Analytics Platform - Ingestion API",
-    description="Upload sales data CSV files to be processed through the ETL pipeline",
+    title="Sales Analytics Platform API",
+    description="Enterprise FastAPI Backend for Sales Analytics, Forecasting, Anomaly Detection & Reports",
     version="1.0.0"
 )
 
-# Enable CORS for localhost
+# Enable CORS for React frontend (ports 3000, 5173, 8000)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000", "http://localhost:5173", "http://127.0.0.1:3000", "http://127.0.0.1:5173"],
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -43,107 +49,163 @@ class UploadResponse(BaseModel):
     rows_received: int
     rows_accepted: int
     rows_rejected: int
-    rejection_reasons: list[str]
+    rejection_reasons: List[str]
     success: bool
     message: str
 
 
+def get_cached_ml_data() -> Dict[str, Any]:
+    """Helper to read from cached ml_results.json or generate on-the-fly."""
+    json_path = PROJECT_ROOT / "data" / "ml_results.json"
+    if json_path.exists():
+        try:
+            with open(json_path, "r", encoding="utf-8") as f:
+                return json.load(f)
+        except Exception as e:
+            logger.error(f"Error reading ml_results.json: {e}")
+
+    # Fallback to running ML pipeline
+    logger.info("Executing ML pipeline to populate cache...")
+    return run_ml_pipeline()
+
+
 @app.get("/")
 def root():
-    """Root endpoint with API information."""
     return {
-        "message": "Sales Analytics Platform Ingestion API",
+        "message": "Sales Analytics Platform API",
         "version": "1.0.0",
         "endpoints": {
-            "upload": "/ingest/upload",
+            "kpis": "/api/v1/kpis",
+            "forecast": "/api/v1/forecast",
+            "anomalies": "/api/v1/anomalies",
+            "recommendations": "/api/v1/recommendations",
+            "products": "/api/v1/products",
+            "upload": "/api/v1/ingest/upload",
+            "run_pipeline": "/api/v1/pipeline/run",
+            "download_report": "/api/v1/reports/download",
             "docs": "/docs"
         }
     }
 
 
 @app.get("/health")
+@app.get("/api/v1/health")
 def health_check():
-    """Health check endpoint."""
-    return {"status": "healthy"}
+    return {"status": "healthy", "service": "Sales Analytics API", "version": "1.0.0"}
 
 
+@app.get("/api/v1/kpis")
+def get_kpis():
+    """Fetch top-level KPI metrics."""
+    data = get_cached_ml_data()
+    return data.get("kpis", {})
+
+
+@app.get("/api/v1/forecast")
+def get_forecast(product_id: Optional[str] = Query('all')):
+    """Fetch historical sales & forecasted data for a product or overall."""
+    data = get_cached_ml_data()
+    
+    if product_id and product_id != 'all':
+        prod_forecasts = data.get("product_forecasts", {})
+        if product_id in prod_forecasts:
+            return prod_forecasts[product_id]
+        
+    return data.get("forecast", {}).get("data", [])
+
+
+@app.get("/api/v1/anomalies")
+def get_anomalies(severity: Optional[str] = Query('all')):
+    """Fetch detected sales anomalies with root cause breakdown."""
+    data = get_cached_ml_data()
+    anomalies = data.get("anomalies", [])
+    
+    if severity and severity != 'all':
+        anomalies = [a for a in anomalies if a.get('severity', '').lower() == severity.lower()]
+        
+    return anomalies
+
+
+@app.get("/api/v1/recommendations")
+def get_recommendations():
+    """Fetch prescriptive recommendations."""
+    data = get_cached_ml_data()
+    return data.get("recommendations", [])
+
+
+@app.get("/api/v1/products")
+def get_products():
+    """Fetch list of products for dropdown filtering."""
+    data = get_cached_ml_data()
+    return data.get("products", ["all"])
+
+
+@app.post("/api/v1/ingest/upload", response_model=UploadResponse)
 @app.post("/ingest/upload", response_model=UploadResponse)
 async def upload_sales_csv(file: UploadFile = File(...)):
-    """
-    Upload a CSV file with sales data to be processed through the ETL pipeline.
-    
-    The file will be:
-    1. Parsed and validated
-    2. Loaded to staging tables
-    3. Transformed to curated star schema
-    
-    Args:
-        file: CSV file upload
-    
-    Returns:
-        UploadResponse with validation summary
-    """
-    # Validate file type
+    """Upload CSV sales file, validate, load to staging, transform, and refresh ML cache."""
     if not file.filename.endswith('.csv'):
         raise HTTPException(status_code=400, detail="Only CSV files are allowed")
     
-    # Validate file size (max 10MB)
-    MAX_FILE_SIZE = 10 * 1024 * 1024  # 10MB
     content = await file.read()
-    if len(content) > MAX_FILE_SIZE:
+    if len(content) > 10 * 1024 * 1024:
         raise HTTPException(status_code=400, detail="File size exceeds 10MB limit")
     
-    logger.info(f"Received file upload: {file.filename} ({len(content)} bytes)")
-    
     try:
-        # Step 1: Parse CSV using the reusable function
-        logger.info("Parsing CSV file")
-        # Reset file pointer to beginning for reading
         await file.seek(0)
         df = parse_sales_csv(file.file)
         rows_received = len(df)
-        logger.info(f"Parsed {rows_received} rows from CSV")
         
-        # Step 2: Validate data
-        logger.info("Validating sales data")
         validation_result = validate_sales_data(df, source='upload')
-        logger.info(f"Validation: {validation_result.rows_accepted} accepted, {validation_result.rows_rejected} rejected")
         
-        # Step 3: Load to staging
         if validation_result.rows_accepted > 0:
-            logger.info("Loading to staging tables")
             engine = get_db_connection()
-            load_result = load_all_staging(
-                sales_df=validation_result.accepted_df,
-                erp_df=None,
-                engine=engine
-            )
-            logger.info(f"Staging load complete: {load_result}")
-            
-            # Step 4: Transform to curated
-            logger.info("Running transformation")
-            transform_result = run_transform(engine)
-            logger.info(f"Transformation complete: {transform_result}")
-        else:
-            logger.warning("No valid rows to load")
-            transform_result = {}
-        
-        # Build response
-        response = UploadResponse(
+            load_all_staging(sales_df=validation_result.accepted_df, erp_df=None, engine=engine)
+            run_transform(engine)
+            run_ml_pipeline()
+
+        return UploadResponse(
             rows_received=rows_received,
             rows_accepted=validation_result.rows_accepted,
             rows_rejected=validation_result.rows_rejected,
             rejection_reasons=validation_result.rejection_reasons[:5],
             success=True,
-            message=f"Successfully processed {validation_result.rows_accepted} rows"
+            message=f"Successfully processed {validation_result.rows_accepted} sales records"
         )
-        
-        logger.info(f"Upload complete: {response}")
-        return response
-    
     except Exception as e:
         logger.error(f"Error processing upload: {e}", exc_info=True)
         raise HTTPException(status_code=500, detail=f"Error processing file: {str(e)}")
+
+
+@app.post("/api/v1/pipeline/run")
+def trigger_pipeline():
+    """Trigger full ETL + ML pipeline refresh on demand."""
+    try:
+        engine = get_db_connection()
+        transform_res = run_transform(engine)
+        ml_res = run_ml_pipeline()
+        return {
+            "status": "success",
+            "message": "ETL and ML pipelines successfully executed",
+            "records_transformed": transform_res,
+            "anomalies_detected": len(ml_res.get("anomalies", []))
+        }
+    except Exception as e:
+        logger.error(f"Pipeline run error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/api/v1/reports/download")
+def download_pdf_report():
+    """Download PDF executive summary report."""
+    pdf_path = generate_sales_report_pdf()
+    if os.path.exists(pdf_path):
+        return FileResponse(
+            path=pdf_path,
+            filename="Sales_Executive_Analytics_Report.pdf",
+            media_type="application/pdf"
+        )
+    raise HTTPException(status_code=444, detail="Could not generate PDF report")
 
 
 if __name__ == "__main__":

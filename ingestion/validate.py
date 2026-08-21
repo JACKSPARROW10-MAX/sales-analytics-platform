@@ -66,16 +66,18 @@ def validate_sales_data(df: pd.DataFrame, source: str = 'unknown') -> Validation
     }
     df_valid = df_valid.rename(columns={k: v for k, v in column_map.items() if k in df_valid.columns})
     
-    # Check 1: Null values in key columns
-    key_columns = ['sale_date', 'product_id', 'customer_id', 'quantity', 'total_amount']
-    for col in key_columns:
+    # Required core columns: Date and Revenue/Total Amount
+    required_columns = ['sale_date', 'total_amount']
+    for col in required_columns:
         if col in df_valid.columns:
             null_mask = df_valid[col].isna()
             if null_mask.any():
                 df_valid.loc[null_mask, 'validation_error'] = (
                     df_valid.loc[null_mask, 'validation_error']
-                    .fillna(f"Null value in {col}")
+                    .fillna(f"Null value in required column '{col}'")
                 )
+        else:
+            df_valid['validation_error'] = f"Missing required column '{col}'"
     
     # Check 2: Quantity must be non-negative
     if 'quantity' in df_valid.columns:
