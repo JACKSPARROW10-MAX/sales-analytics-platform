@@ -9,6 +9,7 @@ DROP TABLE IF EXISTS staging_sales CASCADE;
 DROP TABLE IF EXISTS staging_products CASCADE;
 DROP TABLE IF EXISTS staging_customers CASCADE;
 DROP TABLE IF EXISTS staging_erp CASCADE;
+CREATE EXTENSION IF NOT EXISTS "pgcrypto";
 
 -- ============================================================================
 -- STAGING TABLES (Raw, minimally typed)

@@ -33,7 +33,7 @@ const ForecastChart = ({
   // Format currency tooltip
   const formatCurrency = (val) => {
     if (val === null || val === undefined) return 'N/A';
-    return `$${Number(val).toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`;
+    return `₹${Number(val).toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`;
   };
 
   return (
@@ -45,21 +45,21 @@ const ForecastChart = ({
           <div className="flex items-center gap-2">
             <h3 className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
               <TrendingUp className="w-4 h-4 text-blue-600 dark:text-blue-400" />
-              Sales Revenue & ML Forecast Projection
+              Sales Revenue & 30-Day Growth Forecast
             </h3>
             <span className="text-[11px] font-semibold px-2 py-0.5 rounded bg-blue-50 text-blue-700 dark:bg-blue-950 dark:text-blue-300 border border-blue-200 dark:border-blue-800">
-              Prophet / Ridge Model
+              AI Prediction Model
             </span>
           </div>
           <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-            Historical daily transactions compared against 30-day predicted revenue bounds (95% CI).
+            Historical sales transactions compared against the AI model's 30-day sales forecast and expected range.
           </p>
         </div>
 
         {/* Product Filter Dropdown */}
         <div className="flex items-center gap-2 self-start sm:self-auto">
           <Filter className="w-3.5 h-3.5 text-slate-400" />
-          <span className="text-xs font-semibold text-slate-600 dark:text-slate-400">Product:</span>
+          <span className="text-xs font-semibold text-slate-600 dark:text-slate-400">Filter Product:</span>
           <select
             value={selectedProduct}
             onChange={(e) => onSelectProduct(e.target.value)}
@@ -81,16 +81,16 @@ const ForecastChart = ({
       {/* Summary KPI Badges */}
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 bg-slate-50 dark:bg-slate-800/40 p-3 rounded-lg border border-slate-200/80 dark:border-slate-800 text-xs">
         <div>
-          <span className="text-slate-500 dark:text-slate-400 font-medium block text-[11px]">30-Day Predicted Sales:</span>
-          <span className="text-slate-900 dark:text-white font-bold font-mono text-sm tabular-nums">$142,800</span>
+          <span className="text-slate-500 dark:text-slate-400 font-medium block text-[11px]">30-Day Forecasted Revenue:</span>
+          <span className="text-slate-900 dark:text-white font-bold font-mono text-sm tabular-nums">₹1,42,800</span>
         </div>
         <div>
-          <span className="text-slate-500 dark:text-slate-400 font-medium block text-[11px]">Model Accuracy:</span>
-          <span className="text-emerald-600 dark:text-emerald-400 font-bold font-mono text-sm tabular-nums">96.4%</span>
+          <span className="text-slate-500 dark:text-slate-400 font-medium block text-[11px]">Forecast Reliability:</span>
+          <span className="text-emerald-600 dark:text-emerald-400 font-bold font-mono text-sm tabular-nums">91.5% High Accuracy</span>
         </div>
         <div className="col-span-2 sm:col-span-1">
-          <span className="text-slate-500 dark:text-slate-400 font-medium block text-[11px]">Confidence Interval:</span>
-          <span className="text-blue-600 dark:text-blue-400 font-bold font-mono text-sm tabular-nums">95% Bounds (±$12.4K)</span>
+          <span className="text-slate-500 dark:text-slate-400 font-medium block text-[11px]">Expected Range:</span>
+          <span className="text-blue-600 dark:text-blue-400 font-bold font-mono text-sm tabular-nums">95% Range (±₹12.4K)</span>
         </div>
       </div>
 
@@ -110,7 +110,7 @@ const ForecastChart = ({
             />
             <YAxis 
               tick={{ fontSize: 11, fill: '#64748b' }}
-              tickFormatter={(val) => `$${val >= 1000 ? `${(val / 1000).toFixed(0)}k` : val}`}
+              tickFormatter={(val) => `₹${val >= 1000 ? `${(val / 1000).toFixed(0)}k` : val}`}
             />
             <Tooltip 
               formatter={(value, name) => [formatCurrency(value), name]}
@@ -129,7 +129,7 @@ const ForecastChart = ({
             <Area 
               type="monotone" 
               dataKey="upper" 
-              name="Upper Bound (95% CI)" 
+              name="Expected Upper Range" 
               stroke="none" 
               fill="#3b82f6" 
               fillOpacity={0.15} 
@@ -139,7 +139,7 @@ const ForecastChart = ({
             <Line 
               type="monotone" 
               dataKey="actual" 
-              name="Actual Historical Revenue" 
+              name="Actual Sales Revenue" 
               stroke="#2563eb" 
               strokeWidth={2.5} 
               dot={{ r: 2 }}
@@ -150,7 +150,7 @@ const ForecastChart = ({
             <Line 
               type="monotone" 
               dataKey="forecast" 
-              name="ML Forecasted Revenue" 
+              name="AI Predicted Sales" 
               stroke="#059669" 
               strokeWidth={2} 
               strokeDasharray="4 4"

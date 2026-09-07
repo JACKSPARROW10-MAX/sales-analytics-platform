@@ -13,6 +13,7 @@ from fastapi import FastAPI, UploadFile, File, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 from pydantic import BaseModel
+from api.routers import variance, trend, anomaly_explain, recommendations_enhanced, data_quality, pipeline_health
 
 # Add project root to path for imports
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
@@ -42,6 +43,12 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+app.include_router(variance.router, prefix="/api/v1")
+app.include_router(trend.router, prefix="/api/v1")
+app.include_router(anomaly_explain.router, prefix="/api/v1")
+app.include_router(data_quality.router, prefix="/api/v1")
+app.include_router(pipeline_health.router, prefix="/api/v1")
 
 
 class UploadResponse(BaseModel):
@@ -198,14 +205,20 @@ def trigger_pipeline():
 @app.get("/api/v1/reports/download")
 def download_pdf_report():
     """Download PDF executive summary report."""
+    # Generate fresh PDF each request
     pdf_path = generate_sales_report_pdf()
     if os.path.exists(pdf_path):
         return FileResponse(
             path=pdf_path,
             filename="Sales_Executive_Analytics_Report.pdf",
-            media_type="application/pdf"
+            media_type="application/pdf",
+            headers={
+                "Cache-Control": "no-store, no-cache, must-revalidate",
+                "Pragma": "no-cache",
+                "Expires": "0",
+            },
         )
-    raise HTTPException(status_code=444, detail="Could not generate PDF report")
+    raise HTTPException(status_code=500, detail="Could not generate PDF report")
 
 
 if __name__ == "__main__":

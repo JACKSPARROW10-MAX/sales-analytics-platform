@@ -3,6 +3,15 @@
 Welcome to the **Sales Analytics Platform**. This project is an end-to-end sales analysis platform featuring an automated pipeline:
 External Data Sources (PostgreSQL / CSV / APIs / ERP) → ETL (Python + Pandas + SQLAlchemy) → PostgreSQL DB → Feature Engineering → ML (forecasting + anomaly detection) → SHAP / LIME explainability → GenAI recommendation engine → FastAPI backend → React + Power BI dashboards → GitHub Actions weekly retraining → Email reports.
 
+### 🔧 Recent Updates
+- **CSV uploads now always insert new rows** (unique UUID `sale_id`), ensuring dashboards reflect every new record.
+- **PDF report endpoint** now disables caching and generates a fresh report on each request.
+- **Dashboard UI**: Replaced the large forecast chart with three compact visualizations using a new `CompactChart` component for clearer, at‑glance insights.
+- Added `CompactChart.jsx` component for reusable small charts.
+- Updated imports and layout in `Dashboard.jsx` accordingly.
+- Refactored code to use `gen_random_uuid()` and enabled the `pgcrypto` extension for UUID generation.
+
+
 ---
 
 ## 📁 Project Structure

@@ -3,7 +3,8 @@ import React, { useState, useEffect } from 'react';
 import Header from '../components/Header';
 import Sidebar from '../components/Sidebar';
 import KPICard from '../components/KPICard';
-import ForecastChart from '../components/ForecastChart';
+// import ForecastChart removed - using CompactChart instead
+import CompactChart from '../components/CompactChart';
 import AnomalyTable from '../components/AnomalyTable';
 import RecommendationCard from '../components/RecommendationCard';
 import { 
@@ -17,7 +18,7 @@ import {
   getReportDownloadUrl
 } from '../services/api';
 import { 
-  DollarSign, 
+  IndianRupee, 
   Target, 
   AlertTriangle, 
   Lightbulb, 
@@ -83,7 +84,7 @@ const Dashboard = () => {
       setProductsList(prodRes);
 
       if (isManualRefresh) {
-        setToastMessage('ETL & ML pipeline state re-synced successfully!');
+        setToastMessage('Pipeline updated and refreshed successfully!');
         setTimeout(() => setToastMessage(''), 4000);
       }
     } catch (error) {
@@ -123,9 +124,9 @@ const Dashboard = () => {
       const res = await uploadSalesCSV(file);
       setUploadStatus({
         success: true,
-        message: `Successfully processed ${res.rows_accepted} rows into PostgreSQL Star Schema!`
+        message: `Successfully processed ${res.rows_accepted} rows into database!`
       });
-      loadDashboardData(true);
+      await loadDashboardData(false);
     } catch (err) {
       setUploadStatus({
         error: true,
@@ -170,19 +171,19 @@ const Dashboard = () => {
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-200 dark:border-slate-800 pb-3">
             <div>
               <h2 className="text-xl font-bold text-slate-900 dark:text-white tracking-tight">
-                {activeTab === 'dashboard' && 'Sales Executive Overview'}
-                {activeTab === 'forecasts' && 'ML Time-Series Sales Forecasts'}
-                {activeTab === 'anomalies' && 'Statistical Sales Variance & Anomaly Audit'}
-                {activeTab === 'recommendations' && 'GenAI Prescriptive Strategy'}
-                {activeTab === 'etl' && 'Data Ingestion & ETL Pipeline Management'}
-                {activeTab === 'reports' && 'Executive PDF Reporting Center'}
+                {activeTab === 'dashboard' && 'Sales Intelligence & Revenue Dashboard'}
+                {activeTab === 'forecasts' && '30-Day Sales Growth Forecast'}
+                {activeTab === 'anomalies' && 'Unusual Sales Spikes & Drop Audit'}
+                {activeTab === 'recommendations' && 'Smart Growth Strategies & Action Plan'}
+                {activeTab === 'etl' && 'Upload Sales CSV & Data Management'}
+                {activeTab === 'reports' && 'Executive PDF Report Center'}
               </h2>
               <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-                Automated PostgreSQL ETL pipeline, Prophet/Ridge ML forecasting, Isolation Forest anomaly detection, and PDF executive reporting.
+                Simple automated insights — Real-time revenue tracking, 30-day sales forecast, unusual sales detection, and AI recommendations.
               </p>
             </div>
             <div className="text-xs font-mono text-slate-600 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 px-3 py-1.5 rounded border border-slate-200 dark:border-slate-700 self-start sm:self-auto">
-              Last Pipeline Run: <span className="font-semibold text-slate-900 dark:text-slate-200">Just Now</span>
+              Pipeline Status: <span className="font-semibold text-emerald-600 dark:text-emerald-400">Live & Up to date</span>
             </div>
           </div>
 
@@ -193,43 +194,43 @@ const Dashboard = () => {
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 <KPICard
                   title="Total Sales Revenue"
-                  value={kpis?.totalRevenue?.formatted || '$1,248,500'}
+                  value={kpis?.totalRevenue?.formatted || '₹1,248,500'}
                   change={kpis?.totalRevenue?.change || '+14.2%'}
                   isPositive={true}
                   subtext={kpis?.totalRevenue?.subtext || 'vs. prior period'}
-                  icon={DollarSign}
+                  icon={IndianRupee}
                   accentColor="blue"
                   isLoading={isLoading}
                 />
 
                 <KPICard
-                  title="Forecast Model Accuracy"
+                  title="Forecast Accuracy"
                   value={kpis?.forecastAccuracy?.formatted || '96.4%'}
                   change={kpis?.forecastAccuracy?.change || '+1.8%'}
                   isPositive={true}
-                  subtext={kpis?.forecastAccuracy?.mape || '3.6% MAPE'}
+                  subtext={kpis?.forecastAccuracy?.mape || 'High Prediction Reliability'}
                   icon={Target}
                   accentColor="emerald"
                   isLoading={isLoading}
                 />
 
                 <KPICard
-                  title="Sales Anomalies"
+                  title="Unusual Sales Flagged"
                   value={kpis?.anomaliesDetected?.formatted || '6 Flagged'}
-                  change={kpis?.anomaliesDetected?.change || '2 Critical'}
+                  change={kpis?.anomaliesDetected?.change || '2 High Urgency'}
                   isPositive={false}
-                  subtext={kpis?.anomaliesDetected?.subtext || 'Variance > 60% threshold'}
+                  subtext={kpis?.anomaliesDetected?.subtext || 'Unusual Sales Spikes/Drops'}
                   icon={AlertTriangle}
                   accentColor="rose"
                   isLoading={isLoading}
                 />
 
                 <KPICard
-                  title="Actionable Recommendations"
+                  title="Growth Recommendations"
                   value={kpis?.activeRecommendations?.formatted || '4 Actionable'}
-                  change={kpis?.activeRecommendations?.change || '+$84.5K'}
+                  change={kpis?.activeRecommendations?.change || '+₹84.5K'}
                   isPositive={true}
-                  subtext={kpis?.activeRecommendations?.subtext || 'Est. revenue uplift'}
+                  subtext={kpis?.activeRecommendations?.subtext || 'Est. revenue growth opportunity'}
                   icon={Lightbulb}
                   accentColor="amber"
                   isLoading={isLoading}
@@ -238,13 +239,32 @@ const Dashboard = () => {
 
               {/* 2. FORECAST CHART SECTION */}
               <section>
-                <ForecastChart 
-                  data={forecastData}
-                  products={productsList}
-                  selectedProduct={selectedProduct}
-                  onSelectProduct={setSelectedProduct}
-                  isLoading={isLoading}
-                />
+                {/* Small visualizations replacing the large forecast chart */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  <CompactChart
+                    data={forecastData}
+                    series={[
+                      { key: 'actual', name: 'Actual Sales', color: '#2563eb', type: 'line' },
+                      { key: 'forecast', name: 'Forecast', color: '#059669', type: 'line' },
+                    ]}
+                    title="Actual vs Forecast"
+                  />
+                  <CompactChart
+                    data={forecastData}
+                    series={[
+                      { key: 'lower', name: 'Lower Range', color: '#3b82f6', type: 'area' },
+                      { key: 'upper', name: 'Upper Range', color: '#3b82f6', type: 'area' },
+                    ]}
+                    title="Forecast Confidence Interval"
+                  />
+                  <CompactChart
+                    data={forecastData}
+                    series={[
+                      { key: 'forecast', name: 'Forecast Trend', color: '#059669', type: 'line' },
+                    ]}
+                    title="Forecast Trend"
+                  />
+                </div>
               </section>
             </>
           )}

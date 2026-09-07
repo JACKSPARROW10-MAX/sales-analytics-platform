@@ -37,14 +37,14 @@ const AnomalyTable = ({ anomalies = [], isLoading = false }) => {
           <div className="flex items-center gap-2">
             <h3 className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
               <AlertTriangle className="w-4 h-4 text-rose-600 dark:text-rose-400" />
-              Statistical Sales Variance & Anomaly Audit
+              Unusual Sales Spikes & Drop Audit
             </h3>
             <span className="text-[11px] font-bold px-2 py-0.5 rounded bg-rose-100 text-rose-800 dark:bg-rose-950 dark:text-rose-300 border border-rose-200 dark:border-rose-800">
               {filteredAnomalies.length} Flagged
             </span>
           </div>
           <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-            Isolation Forest & Z-score models detecting anomalous sales values, unapproved discounts, and volume spikes.
+            Transactions that stand out significantly from normal sales patterns, such as unapproved discounts or volume spikes.
           </p>
         </div>
 
@@ -68,10 +68,10 @@ const AnomalyTable = ({ anomalies = [], isLoading = false }) => {
             onChange={(e) => setSeverityFilter(e.target.value)}
             className="bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-md px-2.5 py-1.5 text-xs font-semibold text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-1 focus:ring-blue-500 cursor-pointer"
           >
-            <option value="all">All Severities</option>
-            <option value="critical">Critical Only</option>
-            <option value="warning">Warning Only</option>
-            <option value="info">Info Only</option>
+            <option value="all">All Urgency Levels</option>
+            <option value="critical">High Urgency Only</option>
+            <option value="warning">Medium Urgency Only</option>
+            <option value="info">Low Urgency Only</option>
           </select>
         </div>
       </div>
@@ -84,10 +84,10 @@ const AnomalyTable = ({ anomalies = [], isLoading = false }) => {
               <th>Transaction ID</th>
               <th>Date</th>
               <th>Product / Customer</th>
-              <th>Actual Amount</th>
-              <th>Baseline Expected</th>
-              <th>Variance %</th>
-              <th>Severity</th>
+              <th>Actual Sales</th>
+              <th>Expected Sales</th>
+              <th>Difference</th>
+              <th>Urgency Level</th>
               <th>Action</th>
             </tr>
           </thead>
@@ -95,7 +95,7 @@ const AnomalyTable = ({ anomalies = [], isLoading = false }) => {
             {filteredAnomalies.length === 0 ? (
               <tr>
                 <td colSpan={8} className="text-center py-8 text-slate-400 text-xs font-medium">
-                  No transaction anomalies matching current filters.
+                  No unusual sales transactions matching current filters.
                 </td>
               </tr>
             ) : (
@@ -120,10 +120,10 @@ const AnomalyTable = ({ anomalies = [], isLoading = false }) => {
                       </div>
                     </td>
                     <td className="font-mono font-bold text-slate-900 dark:text-white text-xs tabular-nums">
-                      ${Number(item.actual_value || 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                      ₹{Number(item.actual_value || 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}
                     </td>
                     <td className="font-mono text-slate-500 dark:text-slate-400 text-xs tabular-nums">
-                      ${Number(item.expected_value || 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                      ₹{Number(item.expected_value || 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}
                     </td>
                     <td>
                       <span className={`inline-flex items-center text-xs font-bold px-2 py-0.5 rounded ${
@@ -149,7 +149,7 @@ const AnomalyTable = ({ anomalies = [], isLoading = false }) => {
                         onClick={() => setSelectedAnomaly(item)}
                         className="text-xs font-semibold text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 flex items-center gap-0.5 cursor-pointer"
                       >
-                        Inspect <ChevronRight className="w-3.5 h-3.5" />
+                        View Details <ChevronRight className="w-3.5 h-3.5" />
                       </button>
                     </td>
                   </tr>
@@ -167,7 +167,7 @@ const AnomalyTable = ({ anomalies = [], isLoading = false }) => {
             <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
               <h4 className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
                 <AlertTriangle className="w-4 h-4 text-rose-600" />
-                Anomaly SHAP Driver Inspection
+                Unusual Sale Breakdown & Details
               </h4>
               <button 
                 onClick={() => setSelectedAnomaly(null)}
@@ -184,13 +184,13 @@ const AnomalyTable = ({ anomalies = [], isLoading = false }) => {
                   <span className="font-bold text-slate-900 dark:text-white">{selectedAnomaly.transaction_id}</span>
                 </div>
                 <div>
-                  <span className="text-slate-500 block text-[10px]">Actual Value:</span>
-                  <span className="font-bold text-slate-900 dark:text-white">${selectedAnomaly.actual_value}</span>
+                  <span className="text-slate-500 block text-[10px]">Actual Sales Value:</span>
+                  <span className="font-bold text-slate-900 dark:text-white">₹{selectedAnomaly.actual_value}</span>
                 </div>
               </div>
 
               <div>
-                <span className="font-semibold text-slate-700 dark:text-slate-300 block mb-1">Root Cause Factor:</span>
+                <span className="font-semibold text-slate-700 dark:text-slate-300 block mb-1">Key Cause Factor:</span>
                 <p className="text-slate-600 dark:text-slate-400 bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-900/60 p-2.5 rounded text-xs">
                   {typeof selectedAnomaly.root_cause === 'object' 
                     ? `${selectedAnomaly.root_cause.primary_factor}: ${selectedAnomaly.root_cause.details}`
@@ -199,7 +199,7 @@ const AnomalyTable = ({ anomalies = [], isLoading = false }) => {
               </div>
 
               <div>
-                <span className="font-semibold text-slate-700 dark:text-slate-300 block mb-1">Attribution Summary:</span>
+                <span className="font-semibold text-slate-700 dark:text-slate-300 block mb-1">Explanation:</span>
                 <p className="text-slate-600 dark:text-slate-400 leading-relaxed">
                   {selectedAnomaly.shap_explanation || `Variance of ${selectedAnomaly.variance} driven by unapproved discount parameters.`}
                 </p>
@@ -211,7 +211,7 @@ const AnomalyTable = ({ anomalies = [], isLoading = false }) => {
                 onClick={() => setSelectedAnomaly(null)}
                 className="px-4 py-2 bg-slate-900 dark:bg-slate-800 text-white rounded-lg text-xs font-semibold hover:bg-slate-800 cursor-pointer"
               >
-                Close Audit
+                Close Window
               </button>
             </div>
           </div>

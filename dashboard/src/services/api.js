@@ -12,7 +12,7 @@ const apiClient = axios.create({
   headers: {
     'Content-Type': 'application/json'
   },
-  timeout: 5000
+  timeout: 90000
 });
 
 /**
@@ -113,7 +113,8 @@ export const uploadSalesCSV = async (file) => {
   const formData = new FormData();
   formData.append('file', file);
   const response = await axios.post(`${BASE_URL}/ingest/upload`, formData, {
-    headers: { 'Content-Type': 'multipart/form-data' }
+    headers: { 'Content-Type': 'multipart/form-data' },
+    timeout: 90000
   });
   return response.data;
 };

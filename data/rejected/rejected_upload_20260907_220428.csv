@@ -1,0 +1,6 @@
+transaction_id,sale_date,product_id,product_name,category,subcategory,customer_id,customer_name,region,segment,quantity,unit_price,discount,total_amount,is_anomaly,validation_error
+TXN-20250480,2025-07-19,PRD-002,Mechanical Keyboard RGB,Electronics,Storage,CUST-037,Customer_38,East,Small Business,-142,350.0,0.15,418.0,False,Negative quantity
+TXN-20250244,2025-03-23,PRD-002,Smart Monitor 27-inch,Electronics,Office Chairs,CUST-046,Customer_24,East,Corporate,-142,150.0,0.1,352.0,False,Negative quantity
+TXN-20250976,2025-12-08,PRD-001,Ultra HD Webcam 4K,Electronics,Desks,CUST-015,Customer_25,South,Small Business,-142,110.0,0.2,504.0,True,Negative quantity
+TXN-20250700,2025-11-07,PRD-010,Filing Cabinet 3-Drawer,Furniture,Storage,CUST-025,Customer_13,North,Consumer,3,160.0,0.0,-42366.031371412086,False,Negative revenue
+TXN-20250294,2025-04-28,PRD-008,Standing Desk Converter,Electronics,Lighting,CUST-047,Customer_22,South,Home Office,-142,130.0,0.15,120.0,False,Negative quantity

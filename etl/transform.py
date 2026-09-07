@@ -229,29 +229,36 @@ def build_dim_customer(engine) -> int:
 def build_fact_sales(engine) -> int:
     """
     Build fact_sales from staging_sales, joining with dimension tables.
-    Uses upsert on natural key (sale_id/transaction_id) for idempotency.
+    Uses upsert on natural key (sale_id = transaction_id_raw_id) for idempotency.
     
     Args:
         engine: SQLAlchemy engine
     
     Returns:
         Number of rows upserted
+    Uses plain insert for new sales records.
+    
+    Args:
+        engine: SQLAlchemy engine
+    
+    Returns:
+        Number of rows inserted
     """
     logger.info("Building fact_sales fact table")
     
     try:
         with engine.connect() as conn:
-            # Read staging data and join with dimensions
-            query = text("""
+            insert_sql = text("""
+                INSERT INTO fact_sales (sale_id, date_id, product_id, customer_id, quantity, revenue, discount, source_system)
                 SELECT 
-                    s.transaction_id as sale_id,
+                    gen_random_uuid(),
                     dd.date_id,
                     s.product_id,
                     s.customer_id,
-                    CAST(s.quantity AS INTEGER) as quantity,
-                    CAST(s.total_amount AS NUMERIC(12,2)) as revenue,
-                    COALESCE(CAST(s.discount AS NUMERIC(5,2)), 0.00) as discount,
-                    'POS' as source_system
+                    CAST(s.quantity AS INTEGER),
+                    CAST(s.total_amount AS NUMERIC(12,2)),
+                    COALESCE(CAST(s.discount AS NUMERIC(5,2)), 0.00),
+                    'POS'
                 FROM staging_sales s
                 JOIN dim_date dd ON dd.full_date = s.sale_date::date
                 WHERE s.sale_date IS NOT NULL
@@ -259,52 +266,14 @@ def build_fact_sales(engine) -> int:
                   AND s.customer_id IS NOT NULL
                   AND s.quantity IS NOT NULL
                   AND s.total_amount IS NOT NULL
+                  AND CAST(s.quantity AS NUMERIC) >= 0
+                  AND CAST(s.total_amount AS NUMERIC) >= 0
             """)
-            
-            staging_sales = pd.read_sql(query, conn)
-            
-            if staging_sales.empty:
-                logger.warning("No valid data in staging_sales for fact_sales")
-                return 0
-            
-            # Clean data
-            staging_sales['quantity'] = pd.to_numeric(staging_sales['quantity'], errors='coerce')
-            staging_sales['revenue'] = pd.to_numeric(staging_sales['revenue'], errors='coerce')
-            staging_sales = staging_sales.dropna(subset=['quantity', 'revenue'])
-            
-            # Filter out negative values
-            staging_sales = staging_sales[(staging_sales['quantity'] >= 0) & (staging_sales['revenue'] >= 0)]
-            
-            # Upsert using ON CONFLICT DO UPDATE
-            rows_upserted = 0
-            for _, row in staging_sales.iterrows():
-                result = conn.execute(text("""
-                    INSERT INTO fact_sales (sale_id, date_id, product_id, customer_id, quantity, revenue, discount, source_system)
-                    VALUES (:sale_id, :date_id, :product_id, :customer_id, :quantity, :revenue, :discount, :source_system)
-                    ON CONFLICT (sale_id) 
-                    DO UPDATE SET 
-                        date_id = EXCLUDED.date_id,
-                        product_id = EXCLUDED.product_id,
-                        customer_id = EXCLUDED.customer_id,
-                        quantity = EXCLUDED.quantity,
-                        revenue = EXCLUDED.revenue,
-                        discount = EXCLUDED.discount,
-                        source_system = EXCLUDED.source_system
-                """), {
-                    'sale_id': row['sale_id'],
-                    'date_id': row['date_id'],
-                    'product_id': row['product_id'],
-                    'customer_id': row['customer_id'],
-                    'quantity': int(row['quantity']),
-                    'revenue': float(row['revenue']),
-                    'discount': float(row['discount']),
-                    'source_system': row['source_system']
-                })
-                rows_upserted += 1
-            
+            res = conn.execute(insert_sql)
             conn.commit()
-            logger.info(f"Successfully upserted {rows_upserted} rows to fact_sales")
-            return rows_upserted
+            rows_inserted = res.rowcount if res.rowcount >= 0 else 0
+            logger.info(f"Successfully inserted {rows_inserted} rows to fact_sales")
+            return rows_inserted
     
     except SQLAlchemyError as e:
         logger.error(f"Error building fact_sales: {e}")

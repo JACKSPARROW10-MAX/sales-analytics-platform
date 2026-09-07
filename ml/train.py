@@ -100,31 +100,31 @@ def run_ml_pipeline():
     kpis = {
         "totalRevenue": {
             "value": total_rev,
-            "formatted": f"${total_rev:,.0f}",
+            "formatted": f"₹{total_rev:,.0f}",
             "change": "+14.2%",
-            "subtext": "vs. previous 30-day period",
+            "subtext": f"Across {len(df):,} sales records",
             "isPositive": True
         },
         "forecastAccuracy": {
             "value": forecast_results.get('accuracy', 96.4),
             "formatted": f"{forecast_results.get('accuracy', 96.4)}%",
             "change": "+1.8%",
-            "mape": f"{forecast_results.get('mape', 3.6)}% MAPE",
-            "subtext": "Prophet / Ridge ML Model",
+            "mape": f"{forecast_results.get('mape', 3.6)}% Margin Error",
+            "subtext": "High Prediction Reliability",
             "isPositive": True
         },
         "anomaliesDetected": {
             "value": len(anomalies),
-            "formatted": f"{len(anomalies)} Detected",
-            "change": f"{len([a for a in anomalies if a['severity'] == 'Critical'])} Critical",
-            "subtext": "Variance > 60% threshold",
+            "formatted": f"{len(anomalies)} Flagged",
+            "change": f"{len([a for a in anomalies if a['severity'] == 'Critical'])} High Urgency",
+            "subtext": "Unusual Sales Spikes/Drops",
             "isPositive": False
         },
         "activeRecommendations": {
             "value": len(recommendations),
             "formatted": f"{len(recommendations)} Actionable",
-            "change": f"+${sum(r.get('impact_value', 15000) for r in recommendations):,.0f}",
-            "subtext": "Est. revenue uplift",
+            "change": f"+₹{sum(r.get('impact_value', 15000) for r in recommendations):,.0f}",
+            "subtext": "Est. revenue growth opportunity",
             "isPositive": True
         }
     }

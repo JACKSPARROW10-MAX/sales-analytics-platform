@@ -119,17 +119,17 @@ def _generate_with_reportlab(output_path: str, kpis: dict, forecast: dict, anoma
     # Section 1: Executive KPI Metrics
     story.append(Paragraph("1. Key Performance Metrics", h2_style))
     
-    rev_val = kpis.get("totalRevenue", {}).get("formatted", "$1,248,500")
+    rev_val = kpis.get("totalRevenue", {}).get("formatted", "₹1,248,500")
     acc_val = kpis.get("forecastAccuracy", {}).get("formatted", "96.4%")
-    anom_val = kpis.get("anomaliesDetected", {}).get("formatted", "6 Detected")
+    anom_val = kpis.get("anomaliesDetected", {}).get("formatted", "6 Flagged")
     rec_val = kpis.get("activeRecommendations", {}).get("formatted", "5 Actionable")
 
     kpi_table_data = [
         [Paragraph("<b>Metric</b>", body_style), Paragraph("<b>Current Value</b>", body_style), Paragraph("<b>Status / Change</b>", body_style)],
         [Paragraph("Total Revenue", body_style), Paragraph(f"<b>{rev_val}</b>", body_style), Paragraph("+14.2% vs. prior period", body_style)],
-        [Paragraph("Forecast Accuracy", body_style), Paragraph(f"<b>{acc_val}</b>", body_style), Paragraph("3.6% MAPE (Prophet/Ridge)", body_style)],
-        [Paragraph("Detected Anomalies", body_style), Paragraph(f"<b>{anom_val}</b>", body_style), Paragraph("Variance > 60% threshold", body_style)],
-        [Paragraph("Actionable Recommendations", body_style), Paragraph(f"<b>{rec_val}</b>", body_style), Paragraph("+$84.5K revenue uplift", body_style)]
+        [Paragraph("Forecast Accuracy", body_style), Paragraph(f"<b>{acc_val}</b>", body_style), Paragraph("High Reliability (Prophet)", body_style)],
+        [Paragraph("Detected Anomalies", body_style), Paragraph(f"<b>{anom_val}</b>", body_style), Paragraph("Unusual Sales Spikes/Drops", body_style)],
+        [Paragraph("Actionable Recommendations", body_style), Paragraph(f"<b>{rec_val}</b>", body_style), Paragraph("+₹1,23,000 revenue growth", body_style)]
     ]
     t = Table(kpi_table_data, colWidths=[180, 150, 200])
     t.setStyle(TableStyle([
@@ -157,7 +157,7 @@ def _generate_with_reportlab(output_path: str, kpis: dict, forecast: dict, anoma
             Paragraph(str(a.get('transaction_id', 'TX-100')), body_style),
             Paragraph(str(a.get('date', '2025-08-15')), body_style),
             Paragraph(str(a.get('product', 'Variant')), body_style),
-            Paragraph(f"${a.get('actual_value', 0):,.2f}", body_style),
+            Paragraph(f"₹{a.get('actual_value', 0):,.2f}", body_style),
             Paragraph(str(a.get('variance', '+0%')), body_style),
             Paragraph(str(a.get('severity', 'Warning')), body_style)
         ])
@@ -174,7 +174,7 @@ def _generate_with_reportlab(output_path: str, kpis: dict, forecast: dict, anoma
     # Section 3: Prescriptive Recommendations
     story.append(Paragraph("3. Prescriptive Strategy & Action Plan", h2_style))
     for r in recommendations:
-        rec_title = f"<b>{r.get('title', 'Recommendation')}</b> ({r.get('urgency', 'Medium')} Urgency | Impact: {r.get('impact', '$0')})"
+        rec_title = f"<b>{r.get('title', 'Recommendation')}</b> ({r.get('urgency', 'Medium')} Urgency | Impact: {r.get('impact', '₹0')})"
         rec_summary = r.get('summary', '')
         story.append(Paragraph(rec_title, body_style))
         story.append(Paragraph(f"• {rec_summary}", body_style))

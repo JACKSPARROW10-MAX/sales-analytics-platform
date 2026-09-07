@@ -16,10 +16,10 @@ const Sidebar = ({ activeTab, setActiveTab, anomalyCount = 6, recommendationCoun
 
   const navItems = [
     { id: 'dashboard', label: 'Overview', icon: TrendingUp },
-    { id: 'forecasts', label: 'ML Forecasts', icon: BrainCircuit, badge: 'Prophet' },
-    { id: 'anomalies', label: 'Anomalies', icon: AlertTriangle, badge: anomalyCount, badgeColor: 'bg-rose-100 text-rose-700 dark:bg-rose-950/80 dark:text-rose-300' },
-    { id: 'recommendations', label: 'GenAI Insights', icon: Lightbulb, badge: recommendationCount, badgeColor: 'bg-amber-100 text-amber-800 dark:bg-amber-950/80 dark:text-amber-300' },
-    { id: 'etl', label: 'ETL & Ingestion', icon: Database, badge: 'FastAPI' },
+    { id: 'forecasts', label: 'Sales Forecast', icon: BrainCircuit, badge: 'AI' },
+    { id: 'anomalies', label: 'Unusual Sales', icon: AlertTriangle, badge: anomalyCount, badgeColor: 'bg-rose-100 text-rose-700 dark:bg-rose-950/80 dark:text-rose-300' },
+    { id: 'recommendations', label: 'Smart Strategy', icon: Lightbulb, badge: recommendationCount, badgeColor: 'bg-amber-100 text-amber-800 dark:bg-amber-950/80 dark:text-amber-300' },
+    { id: 'etl', label: 'Upload CSV', icon: Database },
     { id: 'reports', label: 'Executive Reports', icon: FileSpreadsheet }
   ];
 
