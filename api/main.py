@@ -9,15 +9,21 @@ import sys
 from pathlib import Path
 from typing import Dict, List, Optional, Any
 
+# Add project root to path for imports
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
+
 from fastapi import FastAPI, UploadFile, File, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 from pydantic import BaseModel
-from api.routers import variance, trend, anomaly_explain, recommendations_enhanced, data_quality, pipeline_health
-
-# Add project root to path for imports
-PROJECT_ROOT = Path(__file__).resolve().parent.parent
-sys.path.insert(0, str(PROJECT_ROOT))
+from api.routers import (
+    variance, trend, anomaly_explain, recommendations_enhanced,
+    data_quality, pipeline_health,
+    analytics, products_analytics, customers_analytics,
+    categories, regions, pricing
+)
 
 from ingestion.extract_csv import parse_sales_csv
 from ingestion.validate import validate_sales_data
@@ -49,6 +55,12 @@ app.include_router(trend.router, prefix="/api/v1")
 app.include_router(anomaly_explain.router, prefix="/api/v1")
 app.include_router(data_quality.router, prefix="/api/v1")
 app.include_router(pipeline_health.router, prefix="/api/v1")
+app.include_router(analytics.router, prefix="/api/v1")
+app.include_router(products_analytics.router, prefix="/api/v1")
+app.include_router(customers_analytics.router, prefix="/api/v1")
+app.include_router(categories.router, prefix="/api/v1")
+app.include_router(regions.router, prefix="/api/v1")
+app.include_router(pricing.router, prefix="/api/v1")
 
 
 class UploadResponse(BaseModel):

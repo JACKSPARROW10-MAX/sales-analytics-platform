@@ -1,6 +1,6 @@
 // src/services/api.js
 // API Layer for Sales Analytics Platform
-// Connects directly to FastAPI backend (http://localhost:8000/api/v1) with smooth fallback.
+// Connects to FastAPI backend (http://localhost:5000/api/v1) with mock fallback.
 
 import axios from 'axios';
 import { KPI_DATA, TIME_SERIES_DATA, ANOMALIES_DATA, RECOMMENDATIONS_DATA, PRODUCTS } from '../data/mockData';
@@ -9,130 +9,176 @@ const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api
 
 const apiClient = axios.create({
   baseURL: BASE_URL,
-  headers: {
-    'Content-Type': 'application/json'
-  },
-  timeout: 90000
+  headers: { 'Content-Type': 'application/json' },
+  timeout: 90000,
 });
 
-/**
- * Fetch top-level platform KPIs
- */
+// ─── Core Endpoints (existing) ────────────────────────────────────────────────
+
 export const getKPIData = async () => {
   try {
-    const response = await apiClient.get('/kpis');
-    if (response.data && response.data.totalRevenue) {
-      return response.data;
-    }
-  } catch (error) {
-    console.warn('FastAPI backend fallback to mock KPI data:', error.message);
-  }
+    const res = await apiClient.get('/kpis');
+    if (res.data && res.data.totalRevenue) return res.data;
+  } catch (e) { console.warn('KPI fallback:', e.message); }
   return KPI_DATA;
 };
 
-/**
- * Fetch historical sales and forecasted data for a given product
- */
 export const getForecast = async (productId = 'all') => {
   try {
-    const response = await apiClient.get('/forecast', { params: { product_id: productId } });
-    if (Array.isArray(response.data) && response.data.length > 0) {
-      return response.data;
-    }
-  } catch (error) {
-    console.warn('FastAPI backend fallback to mock forecast data:', error.message);
-  }
+    const res = await apiClient.get('/forecast', { params: { product_id: productId } });
+    if (Array.isArray(res.data) && res.data.length > 0) return res.data;
+  } catch (e) { console.warn('Forecast fallback:', e.message); }
   return TIME_SERIES_DATA[productId] || TIME_SERIES_DATA['all'] || [];
 };
 
-/**
- * Fetch detected anomalies with ML root cause analysis
- */
 export const getAnomalies = async (severityFilter = 'all') => {
   try {
-    const response = await apiClient.get('/anomalies', { params: { severity: severityFilter } });
-    if (Array.isArray(response.data)) {
-      return response.data;
-    }
-  } catch (error) {
-    console.warn('FastAPI backend fallback to mock anomalies data:', error.message);
-  }
-  if (severityFilter && severityFilter !== 'all') {
+    const res = await apiClient.get('/anomalies', { params: { severity: severityFilter } });
+    if (Array.isArray(res.data)) return res.data;
+  } catch (e) { console.warn('Anomalies fallback:', e.message); }
+  if (severityFilter && severityFilter !== 'all')
     return ANOMALIES_DATA.filter(a => a.severity.toLowerCase() === severityFilter.toLowerCase());
-  }
   return ANOMALIES_DATA;
 };
 
-/**
- * Fetch GenAI prescriptive recommendations
- */
 export const getRecommendations = async () => {
   try {
-    const response = await apiClient.get('/recommendations');
-    if (Array.isArray(response.data) && response.data.length > 0) {
-      return response.data;
-    }
-  } catch (error) {
-    console.warn('FastAPI backend fallback to mock recommendations data:', error.message);
-  }
+    const res = await apiClient.get('/recommendations');
+    if (Array.isArray(res.data) && res.data.length > 0) return res.data;
+  } catch (e) { console.warn('Recommendations fallback:', e.message); }
   return RECOMMENDATIONS_DATA;
 };
 
-/**
- * Fetch product catalog list
- */
 export const getProducts = async () => {
   try {
-    const response = await apiClient.get('/products');
-    if (Array.isArray(response.data) && response.data.length > 0) {
-      return response.data;
-    }
-  } catch (error) {
-    console.warn('FastAPI backend fallback to mock products data:', error.message);
-  }
+    const res = await apiClient.get('/products');
+    if (Array.isArray(res.data) && res.data.length > 0) return res.data;
+  } catch (e) { console.warn('Products fallback:', e.message); }
   return PRODUCTS;
 };
 
-/**
- * Trigger full ETL + ML pipeline refresh
- */
 export const triggerPipelineRun = async () => {
-  try {
-    const response = await apiClient.post('/pipeline/run');
-    return response.data;
-  } catch (error) {
-    console.error('Error triggering pipeline run:', error);
-    throw error;
-  }
+  const res = await apiClient.post('/pipeline/run');
+  return res.data;
 };
 
-/**
- * Upload sales CSV file
- */
 export const uploadSalesCSV = async (file) => {
   const formData = new FormData();
   formData.append('file', file);
-  const response = await axios.post(`${BASE_URL}/ingest/upload`, formData, {
+  const res = await axios.post(`${BASE_URL}/ingest/upload`, formData, {
     headers: { 'Content-Type': 'multipart/form-data' },
-    timeout: 90000
+    timeout: 90000,
   });
-  return response.data;
+  return res.data;
 };
 
-/**
- * Get PDF report download URL
- */
-export const getReportDownloadUrl = () => {
-  return `${BASE_URL}/reports/download`;
+export const getReportDownloadUrl = () => `${BASE_URL}/reports/download`;
+
+// ─── New Analytics Endpoints ──────────────────────────────────────────────────
+
+export const getAnalyticsSummary = async (metric = 'revenue', period = 'monthly', movingAverage = 0) => {
+  try {
+    const res = await apiClient.get('/analytics/summary', {
+      params: { metric, period, moving_average: movingAverage },
+    });
+    if (Array.isArray(res.data)) return res.data;
+  } catch (e) { console.warn('Analytics summary error:', e.message); }
+  return [];
+};
+
+export const getProductAnalytics = async () => {
+  try {
+    const res = await apiClient.get('/products/analytics');
+    if (Array.isArray(res.data)) return res.data;
+  } catch (e) { console.warn('Product analytics error:', e.message); }
+  return [];
+};
+
+export const getCustomerAnalytics = async () => {
+  try {
+    const res = await apiClient.get('/customers/analytics');
+    if (Array.isArray(res.data)) return res.data;
+  } catch (e) { console.warn('Customer analytics error:', e.message); }
+  return [];
+};
+
+export const getCategoryAnalytics = async () => {
+  try {
+    const res = await apiClient.get('/categories/analytics');
+    if (Array.isArray(res.data)) return res.data;
+  } catch (e) { console.warn('Category analytics error:', e.message); }
+  return [];
+};
+
+export const getSubcategoryAnalytics = async () => {
+  try {
+    const res = await apiClient.get('/categories/subcategory');
+    if (Array.isArray(res.data)) return res.data;
+  } catch (e) { console.warn('Subcategory analytics error:', e.message); }
+  return [];
+};
+
+export const getRegionAnalytics = async () => {
+  try {
+    const res = await apiClient.get('/regions/analytics');
+    if (Array.isArray(res.data)) return res.data;
+  } catch (e) { console.warn('Region analytics error:', e.message); }
+  return [];
+};
+
+export const getSegmentAnalytics = async () => {
+  try {
+    const res = await apiClient.get('/regions/segment');
+    if (Array.isArray(res.data)) return res.data;
+  } catch (e) { console.warn('Segment analytics error:', e.message); }
+  return [];
+};
+
+export const getPricingAnalytics = async () => {
+  try {
+    const res = await apiClient.get('/pricing/analytics');
+    if (res.data && res.data.summary) return res.data;
+  } catch (e) { console.warn('Pricing analytics error:', e.message); }
+  return { summary: {}, by_product: [], by_category: [], discount_vs_quantity: [] };
+};
+
+export const getVarianceData = async (limit = 30) => {
+  try {
+    const res = await apiClient.get('/variance', { params: { limit } });
+    if (Array.isArray(res.data)) return res.data;
+  } catch (e) { console.warn('Variance error:', e.message); }
+  return [];
+};
+
+export const getDataQuality = async () => {
+  try {
+    const res = await apiClient.get('/data_quality');
+    if (res.data && typeof res.data === 'object') return res.data;
+  } catch (e) { console.warn('Data quality error:', e.message); }
+  return {};
+};
+
+export const getPipelineHealth = async () => {
+  try {
+    const res = await apiClient.get('/pipeline_health');
+    if (res.data && typeof res.data === 'object') return res.data;
+  } catch (e) { console.warn('Pipeline health error:', e.message); }
+  return {};
+};
+
+export const getExplainability = async () => {
+  try {
+    const res = await apiClient.get('/explainability');
+    if (Array.isArray(res.data)) return res.data;
+  } catch (e) { console.warn('Explainability error:', e.message); }
+  return [];
 };
 
 export default {
-  getKPIData,
-  getForecast,
-  getAnomalies,
-  getRecommendations,
-  getProducts,
-  triggerPipelineRun,
-  uploadSalesCSV,
-  getReportDownloadUrl
+  getKPIData, getForecast, getAnomalies, getRecommendations, getProducts,
+  triggerPipelineRun, uploadSalesCSV, getReportDownloadUrl,
+  getAnalyticsSummary, getProductAnalytics, getCustomerAnalytics,
+  getCategoryAnalytics, getSubcategoryAnalytics, getRegionAnalytics,
+  getSegmentAnalytics, getPricingAnalytics, getVarianceData,
+  getDataQuality, getPipelineHealth, getExplainability,
 };

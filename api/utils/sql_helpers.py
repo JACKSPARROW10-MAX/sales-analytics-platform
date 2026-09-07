@@ -20,11 +20,11 @@ def get_variance_records(limit: int = 20, window_days: int = 7) -> List[Dict[str
     WITH rev AS (
         SELECT
             f.product_id,
-            d.date,
+            d.full_date AS date,
             SUM(f.quantity * f.unit_price * (1 - f.discount)) AS revenue
         FROM fact_sales f
         JOIN dim_date d ON f.date_id = d.date_id
-        GROUP BY f.product_id, d.date
+        GROUP BY f.product_id, d.full_date
     ), mov_avg AS (
         SELECT
             product_id,
