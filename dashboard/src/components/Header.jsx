@@ -77,7 +77,10 @@ const Header = ({
 
           {/* Sync Data Button */}
           <button
-            onClick={onRefresh}
+            onClick={() => {
+              if (onRefresh) onRefresh();
+              window.dispatchEvent(new Event('dashboard-refresh'));
+            }}
             disabled={isRefreshing}
             className="flex items-center gap-1.5 bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white px-3.5 py-1.5 rounded-lg text-xs font-semibold shadow-sm transition-colors disabled:opacity-50 cursor-pointer"
             title="Trigger ETL & ML Pipeline Sync"

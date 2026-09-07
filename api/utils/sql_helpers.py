@@ -21,7 +21,7 @@ def get_variance_records(limit: int = 20, window_days: int = 7) -> List[Dict[str
         SELECT
             f.product_id,
             d.full_date AS date,
-            SUM(f.quantity * f.unit_price * (1 - f.discount)) AS revenue
+            SUM(f.revenue) AS revenue
         FROM fact_sales f
         JOIN dim_date d ON f.date_id = d.date_id
         GROUP BY f.product_id, d.full_date
@@ -53,7 +53,7 @@ def get_variance_records(limit: int = 20, window_days: int = 7) -> List[Dict[str
     try:
         with engine.begin() as conn:
             result = conn.execute(text(query), {"limit": limit})
-            rows = [dict(r) for r in result]
+            rows = [dict(r._mapping) for r in result]
         return rows
     except Exception as e:
         logger.error(f"Error computing variance records: {e}")
@@ -71,7 +71,7 @@ def get_kpi_metrics() -> Dict[str, Any]:
     engine = get_db_connection()
     # Basic aggregates
     revenue_query = """
-        SELECT SUM(f.quantity * f.unit_price * (1 - f.discount)) AS total_revenue,
+        SELECT SUM(f.revenue) AS total_revenue,
                COUNT(*) AS total_orders,
                SUM(f.quantity) AS total_quantity,
                AVG(f.discount) AS average_discount
@@ -119,10 +119,10 @@ def get_trend_data(metric: str = "revenue", period: str = "daily", moving_averag
     engine = get_db_connection()
     # Map metric to SQL expression
     metric_expr = {
-        "revenue": "SUM(f.quantity * f.unit_price * (1 - f.discount))",
+        "revenue": "SUM(f.revenue)",
         "quantity": "SUM(f.quantity)",
         "transactions": "COUNT(*)",
-    }.get(metric, "SUM(f.quantity * f.unit_price * (1 - f.discount))")
+    }.get(metric, "SUM(f.revenue)")
 
     # Determine date truncation based on period
     date_trunc = {
@@ -132,7 +132,7 @@ def get_trend_data(metric: str = "revenue", period: str = "daily", moving_averag
     }.get(period, "day")
 
     base_query = f"""
-        SELECT date_trunc('{date_trunc}', d.date) AS period_start,
+        SELECT date_trunc('{date_trunc}', d.full_date) AS period_start,
                {metric_expr} AS value
         FROM fact_sales f
         JOIN dim_date d ON f.date_id = d.date_id
@@ -141,7 +141,7 @@ def get_trend_data(metric: str = "revenue", period: str = "daily", moving_averag
     """
     try:
         with engine.begin() as conn:
-            rows = [dict(r) for r in conn.execute(text(base_query))]
+            rows = [dict(r._mapping) for r in conn.execute(text(base_query))]
         if moving_average > 0:
             values = [row["value"] for row in rows]
             ma_vals = []

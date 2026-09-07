@@ -81,10 +81,11 @@ def get_pricing_analytics():
 
     try:
         with engine.begin() as conn:
-            summary_row = dict(conn.execute(text(summary_query)).first() or {})
-            product_rows = [dict(r) for r in conn.execute(text(by_product_query))]
-            category_rows = [dict(r) for r in conn.execute(text(by_category_query))]
-            discount_qty_rows = [dict(r) for r in conn.execute(text(discount_vs_qty_query))]
+            summary_first = conn.execute(text(summary_query)).first()
+            summary_row = dict(summary_first._mapping) if summary_first else {}
+            product_rows = [dict(r._mapping) for r in conn.execute(text(by_product_query))]
+            category_rows = [dict(r._mapping) for r in conn.execute(text(by_category_query))]
+            discount_qty_rows = [dict(r._mapping) for r in conn.execute(text(discount_vs_qty_query))]
 
         # Serialise
         for k, v in summary_row.items():

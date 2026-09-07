@@ -33,7 +33,12 @@ const SalesAnalyticsPage = () => {
     setLoading(false);
   };
 
-  useEffect(() => { load(); }, [metric, period, ma]);
+  useEffect(() => {
+    load();
+    const handleRefresh = () => load();
+    window.addEventListener('dashboard-refresh', handleRefresh);
+    return () => window.removeEventListener('dashboard-refresh', handleRefresh);
+  }, [metric, period, ma]);
 
   const totalRevenue = data.reduce((s, r) => s + (r.value || 0), 0);
   const avgValue = data.length ? totalRevenue / data.length : 0;

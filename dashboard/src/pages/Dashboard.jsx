@@ -102,7 +102,12 @@ const Dashboard = () => {
     }
   };
 
-  useEffect(() => { loadDashboardData(); }, []);
+  useEffect(() => {
+    loadDashboardData();
+    const handleRefresh = () => loadDashboardData(false);
+    window.addEventListener('dashboard-refresh', handleRefresh);
+    return () => window.removeEventListener('dashboard-refresh', handleRefresh);
+  }, []);
 
   useEffect(() => {
     let mounted = true;
@@ -113,10 +118,21 @@ const Dashboard = () => {
   const handleFileUpload = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
-    setUploadStatus({ loading: true, message: 'Processing sales CSV through ETL pipeline…' });
+    setUploadStatus({
+      loading: true,
+      stage: 'Uploading & Validating',
+      message: 'Processing CSV through validation, staging, star schema transform & ML retraining…'
+    });
     try {
       const res = await uploadSalesCSV(file);
-      setUploadStatus({ success: true, message: `Processed ${res.rows_accepted} rows into the database!` });
+      setUploadStatus({
+        success: true,
+        data: res,
+        message: `Upload Successful! Processed ${res.rows_received} rows (${res.rows_accepted} inserted, ${res.rows_rejected} rejected).`
+      });
+      setToastMessage(`CSV upload complete! ${res.rows_accepted} rows added to fact_sales.`);
+      setTimeout(() => setToastMessage(''), 5000);
+      window.dispatchEvent(new Event('dashboard-refresh'));
       await loadDashboardData(false);
     } catch (err) {
       setUploadStatus({ error: true, message: err.response?.data?.detail || 'Upload failed.' });
@@ -315,10 +331,53 @@ const Dashboard = () => {
                     <input id="csv-upload" type="file" accept=".csv" onChange={handleFileUpload} className="hidden" />
                   </div>
                   {uploadStatus && (
-                    <div className={`p-3 rounded-lg text-xs font-semibold flex items-center gap-2 ${uploadStatus.loading ? 'bg-blue-50 text-blue-700 dark:bg-blue-950 dark:text-blue-300' : uploadStatus.success ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300' : 'bg-rose-50 text-rose-700 dark:bg-rose-950 dark:text-rose-300'}`}>
-                      {uploadStatus.loading && <RefreshCw className="w-4 h-4 animate-spin" />}
-                      {uploadStatus.success && <CheckCircle className="w-4 h-4" />}
-                      <span>{uploadStatus.message}</span>
+                    <div className="space-y-4 pt-2">
+                      <div className={`p-4 rounded-xl text-xs font-semibold space-y-2 border ${uploadStatus.loading ? 'bg-blue-50/70 border-blue-200 text-blue-800 dark:bg-blue-950/40 dark:border-blue-900 dark:text-blue-300' : uploadStatus.success ? 'bg-emerald-50/70 border-emerald-200 text-emerald-900 dark:bg-emerald-950/40 dark:border-emerald-900 dark:text-emerald-300' : 'bg-rose-50/70 border-rose-200 text-rose-800 dark:bg-rose-950/40 dark:border-rose-900 dark:text-rose-300'}`}>
+                        <div className="flex items-center gap-2 text-sm font-bold">
+                          {uploadStatus.loading && <RefreshCw className="w-4 h-4 animate-spin text-blue-600" />}
+                          {uploadStatus.success && <CheckCircle className="w-4 h-4 text-emerald-600" />}
+                          <span>{uploadStatus.success ? 'CSV Upload & Data Pipeline Completed' : uploadStatus.loading ? 'Executing Data Pipeline…' : 'Upload Error'}</span>
+                        </div>
+                        <p>{uploadStatus.message}</p>
+                      </div>
+
+                      {/* Stage Progress Stepper */}
+                      <div className="grid grid-cols-2 sm:grid-cols-6 gap-2 text-center text-[11px] font-medium">
+                        {[
+                          ['Upload', uploadStatus.success || uploadStatus.loading],
+                          ['Validation', uploadStatus.success || uploadStatus.loading],
+                          ['Staging', uploadStatus.success || uploadStatus.loading],
+                          ['Transform', uploadStatus.success],
+                          ['Fact Star Schema', uploadStatus.success],
+                          ['Dashboard Sync', uploadStatus.success],
+                        ].map(([stageName, isDone], idx) => (
+                          <div key={stageName} className={`p-2 rounded-lg border transition-all ${isDone ? 'bg-emerald-50 dark:bg-emerald-900/30 border-emerald-300 text-emerald-700 dark:text-emerald-300 font-bold' : 'bg-slate-100 dark:bg-slate-800 border-slate-200 text-slate-400'}`}>
+                            <span>{isDone ? '✓' : `${idx + 1}.`} {stageName}</span>
+                          </div>
+                        ))}
+                      </div>
+
+                      {/* Database Count Breakdown */}
+                      {uploadStatus.data && (
+                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 bg-slate-50 dark:bg-slate-800/60 p-4 rounded-xl border border-slate-200 dark:border-slate-700 text-xs">
+                          <div>
+                            <span className="text-slate-500 block">Rows Received</span>
+                            <span className="text-sm font-bold text-slate-900 dark:text-white">{uploadStatus.data.rows_received?.toLocaleString()}</span>
+                          </div>
+                          <div>
+                            <span className="text-slate-500 block">Rows Inserted</span>
+                            <span className="text-sm font-bold text-emerald-600">{uploadStatus.data.rows_accepted?.toLocaleString()}</span>
+                          </div>
+                          <div>
+                            <span className="text-slate-500 block">Database Before</span>
+                            <span className="text-sm font-bold text-slate-900 dark:text-white">{uploadStatus.data.database_total_before?.toLocaleString()} sales</span>
+                          </div>
+                          <div>
+                            <span className="text-slate-500 block">Database Total</span>
+                            <span className="text-sm font-bold text-blue-600">{uploadStatus.data.database_total_after?.toLocaleString()} sales</span>
+                          </div>
+                        </div>
+                      )}
                     </div>
                   )}
                 </div>

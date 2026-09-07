@@ -37,7 +37,7 @@ def get_region_analytics():
     """
     try:
         with engine.begin() as conn:
-            rows = [dict(r) for r in conn.execute(text(query))]
+            rows = [dict(r._mapping) for r in conn.execute(text(query))]
         for row in rows:
             for k, v in row.items():
                 if hasattr(v, "__float__"):
@@ -73,7 +73,7 @@ def get_segment_analytics():
     """
     try:
         with engine.begin() as conn:
-            rows = [dict(r) for r in conn.execute(text(query))]
+            rows = [dict(r._mapping) for r in conn.execute(text(query))]
         for row in rows:
             for k, v in row.items():
                 if hasattr(v, "__float__"):

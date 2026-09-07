@@ -71,6 +71,8 @@ class UploadResponse(BaseModel):
     rejection_reasons: List[str]
     success: bool
     message: str
+    database_total_before: Optional[int] = 0
+    database_total_after: Optional[int] = 0
 
 
 def get_cached_ml_data() -> Dict[str, Any]:
@@ -177,11 +179,31 @@ async def upload_sales_csv(file: UploadFile = File(...)):
         
         validation_result = validate_sales_data(df, source='upload')
         
+        engine = get_db_connection()
+        db_before = 0
+        db_after = 0
+
+        # Query before count
+        from sqlalchemy import text
+        try:
+            with engine.connect() as conn:
+                res = conn.execute(text("SELECT COUNT(*) FROM fact_sales")).first()
+                db_before = int(res[0]) if res else 0
+        except Exception as ex:
+            logger.warning(f"Could not fetch initial count from fact_sales: {ex}")
+
         if validation_result.rows_accepted > 0:
-            engine = get_db_connection()
             load_all_staging(sales_df=validation_result.accepted_df, erp_df=None, engine=engine)
             run_transform(engine)
             run_ml_pipeline()
+
+        # Query after count
+        try:
+            with engine.connect() as conn:
+                res = conn.execute(text("SELECT COUNT(*) FROM fact_sales")).first()
+                db_after = int(res[0]) if res else 0
+        except Exception as ex:
+            logger.warning(f"Could not fetch updated count from fact_sales: {ex}")
 
         return UploadResponse(
             rows_received=rows_received,
@@ -189,7 +211,9 @@ async def upload_sales_csv(file: UploadFile = File(...)):
             rows_rejected=validation_result.rows_rejected,
             rejection_reasons=validation_result.rejection_reasons[:5],
             success=True,
-            message=f"Successfully processed {validation_result.rows_accepted} sales records"
+            message=f"Successfully processed {validation_result.rows_accepted} sales records",
+            database_total_before=db_before,
+            database_total_after=db_after
         )
     except Exception as e:
         logger.error(f"Error processing upload: {e}", exc_info=True)

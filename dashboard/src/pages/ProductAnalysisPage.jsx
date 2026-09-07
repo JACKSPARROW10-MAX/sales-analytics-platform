@@ -19,11 +19,18 @@ const ProductAnalysisPage = () => {
   const [selected, setSelected] = useState(null);
   const [sort, setSort] = useState('total_revenue');
 
-  useEffect(() => {
+  const loadData = () => {
+    setLoading(true);
     getProductAnalytics().then(data => {
       setProducts(data);
       setLoading(false);
     });
+  };
+
+  useEffect(() => {
+    loadData();
+    window.addEventListener('dashboard-refresh', loadData);
+    return () => window.removeEventListener('dashboard-refresh', loadData);
   }, []);
 
   const sorted = [...products].sort((a, b) => (b[sort] || 0) - (a[sort] || 0));

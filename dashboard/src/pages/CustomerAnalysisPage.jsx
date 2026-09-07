@@ -19,8 +19,15 @@ const CustomerAnalysisPage = () => {
   const [sort, setSort] = useState('total_revenue');
   const [search, setSearch] = useState('');
 
-  useEffect(() => {
+  const loadData = () => {
+    setLoading(true);
     getCustomerAnalytics().then(d => { setCustomers(d); setLoading(false); });
+  };
+
+  useEffect(() => {
+    loadData();
+    window.addEventListener('dashboard-refresh', loadData);
+    return () => window.removeEventListener('dashboard-refresh', loadData);
   }, []);
 
   const sorted = [...customers]

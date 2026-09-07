@@ -231,6 +231,14 @@ def load_all_staging(sales_df: pd.DataFrame, erp_df: pd.DataFrame = None, engine
     
     # Load sales data
     if sales_df is not None and not sales_df.empty:
+        try:
+            with engine.connect() as conn:
+                conn.execute(text("TRUNCATE TABLE staging_sales, staging_products, staging_customers;"))
+                conn.commit()
+                logger.info("Truncated staging tables prior to new batch load")
+        except Exception as e:
+            logger.warning(f"Could not truncate staging tables: {e}")
+
         results['staging_sales'] = load_to_staging_sales(sales_df, engine)
         results['staging_products'] = load_to_staging_products(sales_df, engine)
         results['staging_customers'] = load_to_staging_customers(sales_df, engine)

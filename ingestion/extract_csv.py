@@ -114,22 +114,45 @@ def parse_sales_csv(file_or_path: Union[str, Path, object]) -> pd.DataFrame:
         # Rename columns based on mapping
         df = df.rename(columns={col: column_mapping.get(col, col) for col in df.columns})
         
+        # Parse and format sale_date to standard YYYY-MM-DD ISO format
+        if 'sale_date' in df.columns:
+            try:
+                parsed_dates = pd.to_datetime(df['sale_date'], errors='coerce', format='mixed')
+                df['sale_date'] = parsed_dates.dt.strftime('%Y-%m-%d')
+            except Exception as e:
+                logger.warning(f"Fallback date parsing for sale_date: {e}")
+                df['sale_date'] = pd.to_datetime(df['sale_date'], errors='coerce').dt.strftime('%Y-%m-%d')
+
         # Calculate total_amount if missing but quantity and unit_price are available
         if 'total_amount' not in df.columns and 'quantity' in df.columns and 'unit_price' in df.columns:
-            df['total_amount'] = df['quantity'] * df['unit_price']
+            df['total_amount'] = pd.to_numeric(df['quantity'], errors='coerce') * pd.to_numeric(df['unit_price'], errors='coerce')
             logger.info("Computed 'total_amount' from quantity * unit_price")
 
         # Auto-fill transaction_id if missing
         if 'transaction_id' not in df.columns:
             df['transaction_id'] = [f"TXN-{idx+10001}" for idx in range(len(df))]
 
-        # Auto-fill default product_id if missing
+        # Auto-fill product fields if missing
         if 'product_id' not in df.columns:
-            df['product_id'] = df.get('product_name', 'PROD-GENERAL')
+            df['product_id'] = df.get('product_name', 'PRD-GENERAL')
+        if 'product_name' not in df.columns:
+            df['product_name'] = df['product_id'].apply(lambda x: f"Product {x}")
+        if 'category' not in df.columns:
+            df['category'] = 'General'
+        if 'subcategory' not in df.columns:
+            df['subcategory'] = 'General Subcategory'
+        if 'unit_price' not in df.columns and 'total_amount' in df.columns:
+            df['unit_price'] = df['total_amount']
 
-        # Auto-fill default customer_id if missing
+        # Auto-fill customer fields if missing
         if 'customer_id' not in df.columns:
             df['customer_id'] = df.get('customer_name', 'CUST-GENERAL')
+        if 'customer_name' not in df.columns:
+            df['customer_name'] = df['customer_id'].apply(lambda x: f"Customer {x}")
+        if 'region' not in df.columns:
+            df['region'] = 'North'
+        if 'segment' not in df.columns:
+            df['segment'] = 'Corporate'
 
         # Auto-fill default quantity if missing
         if 'quantity' not in df.columns:

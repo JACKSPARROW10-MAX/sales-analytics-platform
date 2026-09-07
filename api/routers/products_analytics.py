@@ -43,7 +43,7 @@ def get_product_analytics():
     """
     try:
         with engine.begin() as conn:
-            rows = [dict(r) for r in conn.execute(text(query))]
+            rows = [dict(r._mapping) for r in conn.execute(text(query))]
         # Serialise Decimal to float
         for row in rows:
             for k, v in row.items():
