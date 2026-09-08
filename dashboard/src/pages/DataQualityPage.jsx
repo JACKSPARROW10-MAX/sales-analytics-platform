@@ -18,12 +18,12 @@ const DataQualityPage = () => {
     return () => window.removeEventListener('dashboard-refresh', load);
   }, []);
 
-  if (loading) return <div className="flex items-center justify-center h-64 text-[#8EB69B] text-sm">Checking data quality…</div>;
-  if (!data || !Object.keys(data).length) return <div className="flex items-center justify-center h-64 text-[#8EB69B] text-sm">Could not fetch data quality metrics.</div>;
+  if (loading) return <div className="flex items-center justify-center h-64 text-[#64748B] text-sm">Checking data quality…</div>;
+  if (!data || !Object.keys(data).length) return <div className="flex items-center justify-center h-64 text-[#64748B] text-sm">Could not fetch data quality metrics.</div>;
 
   const score = data.data_quality_score || 0;
-  const scoreColor = score >= 95 ? 'text-[#8EB69B]' : score >= 80 ? 'text-amber-600' : 'text-rose-600';
-  const scoreBg = score >= 95 ? 'bg-[#DAF1DE] dark:bg-[#163832] border-[#8EB69B] dark:border-[#235347]' : score >= 80 ? 'bg-amber-50 dark:bg-amber-950/20 border-amber-300' : 'bg-rose-50 dark:bg-rose-950/20 border-rose-300';
+  const scoreColor = score >= 95 ? 'text-[#64748B]' : score >= 80 ? 'text-amber-600' : 'text-rose-600';
+  const scoreBg = score >= 95 ? 'bg-[#EFF6FF] dark:bg-[#334155] border-[#64748B] dark:border-[#2563EB]' : score >= 80 ? 'bg-amber-50 dark:bg-amber-950/20 border-amber-300' : 'bg-rose-50 dark:bg-rose-950/20 border-rose-300';
   const StatusIcon = score >= 95 ? CheckCircle : AlertTriangle;
 
   const checks = [
@@ -43,12 +43,12 @@ const DataQualityPage = () => {
           <div className="flex items-center gap-3">
             <StatusIcon className={`w-8 h-8 ${scoreColor}`} />
             <div>
-              <p className="text-xs font-semibold text-[#235347] dark:text-[#8EB69B]">Data Quality Score</p>
+              <p className="text-xs font-semibold text-[#2563EB] dark:text-[#64748B]">Data Quality Score</p>
               <p className={`text-4xl font-black ${scoreColor}`}>{score.toFixed(1)}%</p>
-              <p className="text-xs text-[#235347] capitalize mt-0.5">Status: <strong className={scoreColor}>{data.status}</strong></p>
+              <p className="text-xs text-[#2563EB] capitalize mt-0.5">Status: <strong className={scoreColor}>{data.status}</strong></p>
             </div>
           </div>
-          <button onClick={load} className="flex items-center gap-1.5 text-xs bg-[#235347] hover:bg-[#163832] text-[#DAF1DE] px-3 py-1.5 rounded-lg cursor-pointer">
+          <button onClick={load} className="flex items-center gap-1.5 text-xs bg-[#2563EB] hover:bg-[#334155] text-[#EFF6FF] px-3 py-1.5 rounded-lg cursor-pointer">
             <RefreshCw className="w-3.5 h-3.5" /> Refresh
           </button>
         </div>
@@ -63,46 +63,46 @@ const DataQualityPage = () => {
           ['Customers', data.dim_customer_count],
         ].map(([k, v]) => (
           <div key={k} className="fintech-card p-4">
-            <p className="text-xs text-[#235347] dark:text-[#8EB69B]">{k}</p>
-            <p className="text-2xl font-bold text-[#051F20] dark:text-[#DAF1DE] mt-1">{Number(v || 0).toLocaleString()}</p>
+            <p className="text-xs text-[#2563EB] dark:text-[#64748B]">{k}</p>
+            <p className="text-2xl font-bold text-[#0F172A] dark:text-[#EFF6FF] mt-1">{Number(v || 0).toLocaleString()}</p>
           </div>
         ))}
       </div>
 
       {/* Quality Checks */}
       <div className="fintech-card overflow-hidden">
-        <div className="p-4 border-b border-[#DAF1DE] dark:border-[#235347]">
-          <h3 className="text-sm font-bold text-[#051F20] dark:text-[#DAF1DE] flex items-center gap-2">
-            <ShieldCheck className="w-4 h-4 text-[#235347] dark:text-[#8EB69B]" /> Data Integrity Checks — fact_sales table
+        <div className="p-4 border-b border-[#EFF6FF] dark:border-[#2563EB]">
+          <h3 className="text-sm font-bold text-[#0F172A] dark:text-[#EFF6FF] flex items-center gap-2">
+            <ShieldCheck className="w-4 h-4 text-[#2563EB] dark:text-[#64748B]" /> Data Integrity Checks — fact_sales table
           </h3>
-          <p className="text-[11px] text-[#8EB69B] mt-0.5">All checks run directly against PostgreSQL at query time</p>
+          <p className="text-[11px] text-[#64748B] mt-0.5">All checks run directly against PostgreSQL at query time</p>
         </div>
-        <div className="divide-y divide-[#DAF1DE] dark:divide-[#235347]">
+        <div className="divide-y divide-[#EFF6FF] dark:divide-[#2563EB]">
           {checks.map(({ label, value, isGood }) => (
-            <div key={label} className="px-5 py-3 flex items-center justify-between hover:bg-[#EDF8EF] dark:hover:bg-[#163832]">
+            <div key={label} className="px-5 py-3 flex items-center justify-between hover:bg-[#F8FAFC] dark:hover:bg-[#334155]">
               <div className="flex items-center gap-3">
                 {isGood
-                  ? <CheckCircle className="w-4 h-4 text-[#8EB69B] shrink-0" />
+                  ? <CheckCircle className="w-4 h-4 text-[#64748B] shrink-0" />
                   : <XCircle className="w-4 h-4 text-rose-500 shrink-0" />}
-                <span className="text-xs font-medium text-[#051F20] dark:text-[#DAF1DE]">{label}</span>
+                <span className="text-xs font-medium text-[#0F172A] dark:text-[#EFF6FF]">{label}</span>
               </div>
-              <span className={`text-xs font-bold px-2 py-0.5 rounded ${isGood ? 'bg-[#DAF1DE] text-[#235347] dark:bg-[#163832] dark:text-[#8EB69B]' : 'bg-rose-100 text-rose-700 dark:bg-rose-950/40 dark:text-rose-300'}`}>
+              <span className={`text-xs font-bold px-2 py-0.5 rounded ${isGood ? 'bg-[#EFF6FF] text-[#2563EB] dark:bg-[#334155] dark:text-[#64748B]' : 'bg-rose-100 text-rose-700 dark:bg-rose-950/40 dark:text-rose-300'}`}>
                 {Number(value || 0).toLocaleString()} {isGood ? '✓' : 'issues'}
               </span>
             </div>
           ))}
         </div>
-        <div className="px-5 py-3 border-t border-[#c4dfc8] dark:border-[#235347] bg-[#EDF8EF] dark:bg-[#0B2B26] flex items-center justify-between">
-          <span className="text-xs font-semibold text-[#235347] dark:text-[#8EB69B]">Total Issues Found</span>
-          <span className={`text-sm font-bold ${!data.total_issues ? 'text-[#8EB69B]' : 'text-rose-600'}`}>{data.total_issues || 0}</span>
+        <div className="px-5 py-3 border-t border-[#E2E8F0] dark:border-[#2563EB] bg-[#F8FAFC] dark:bg-[#1E293B] flex items-center justify-between">
+          <span className="text-xs font-semibold text-[#2563EB] dark:text-[#64748B]">Total Issues Found</span>
+          <span className={`text-sm font-bold ${!data.total_issues ? 'text-[#64748B]' : 'text-rose-600'}`}>{data.total_issues || 0}</span>
         </div>
       </div>
 
       {/* Last Ingestion */}
       {data.last_ingestion && (
         <div className="fintech-card p-4">
-          <p className="text-xs text-[#235347] dark:text-[#8EB69B]">Last Data Ingestion (staging_sales)</p>
-          <p className="text-sm font-bold text-[#051F20] dark:text-[#DAF1DE] mt-1">
+          <p className="text-xs text-[#2563EB] dark:text-[#64748B]">Last Data Ingestion (staging_sales)</p>
+          <p className="text-sm font-bold text-[#0F172A] dark:text-[#EFF6FF] mt-1">
             {new Date(data.last_ingestion).toLocaleString()}
           </p>
         </div>

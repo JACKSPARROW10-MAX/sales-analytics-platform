@@ -67,8 +67,15 @@ async def add_security_headers(request: Request, call_next):
     response.headers["Permissions-Policy"] = "geolocation=(), camera=(), microphone=()"
     return response
 
-# Enable CORS for React frontend (configurable via CORS_ORIGINS)
-cors_origins_env = os.getenv("CORS_ORIGINS", "http://localhost:5173,http://localhost:3000")
+# Enable CORS for the React frontend.
+# Production: set CORS_ORIGINS to the deployed dashboard URL(s), comma-separated.
+# Default covers the common local Vite / CRA dev hosts.
+_DEV_ORIGINS = (
+    "http://localhost:5173,http://127.0.0.1:5173,"
+    "http://localhost:3000,http://127.0.0.1:3000,"
+    "http://localhost:4173,http://127.0.0.1:4173"
+)
+cors_origins_env = os.getenv("CORS_ORIGINS", _DEV_ORIGINS)
 if cors_origins_env == "*":
     allow_origins = ["*"]
     allow_credentials = False  # Browser security rejects allow_credentials=True with allow_origins=["*"]
@@ -412,6 +419,62 @@ def trigger_pipeline():
             status_code=500,
             detail="The ETL/ML pipeline run failed. Please check server logs.",
         )
+
+
+@app.get("/api/v1/reports/summary")
+@app.get("/reports/summary")
+def report_summary():
+    """Reporting-page metadata: live period + KPIs, email-automation status, last PDF.
+
+    Never returns credentials — only booleans indicating whether env vars are set.
+    """
+    try:
+        kpis = get_kpi_metrics()
+    except Exception as e:
+        logger.error(f"report_summary KPI error: {e}")
+        kpis = {}
+
+    period = {"start": None, "end": None}
+    try:
+        engine = get_db_connection()
+        with engine.connect() as conn:
+            row = conn.execute(text(
+                "SELECT MIN(dd.full_date), MAX(dd.full_date) "
+                "FROM fact_sales fs JOIN dim_date dd ON fs.date_id = dd.date_id"
+            )).first()
+            if row and row[0]:
+                period = {"start": row[0].isoformat(), "end": row[1].isoformat()}
+    except Exception as e:
+        logger.warning(f"report_summary period error: {e}")
+
+    latest_pdf = None
+    for name in ("weekly_sales_report.pdf", "sales_executive_report.pdf"):
+        p = PROJECT_ROOT / "reports" / name
+        if p.exists():
+            latest_pdf = {
+                "filename": name,
+                "size_bytes": p.stat().st_size,
+                "generated_at": __import__("datetime").datetime.fromtimestamp(p.stat().st_mtime).isoformat(),
+            }
+            break
+
+    email_ready = all(bool(os.getenv(k)) for k in ("EMAIL_USERNAME", "EMAIL_PASSWORD", "REPORT_RECIPIENT"))
+    return {
+        "period": period,
+        "kpis": {
+            "total_revenue": kpis.get("total_revenue"),
+            "total_orders": kpis.get("total_orders"),
+            "total_quantity": kpis.get("total_quantity"),
+            "average_order_value": kpis.get("average_order_value"),
+            "revenue_growth_pct": kpis.get("growth_pct"),
+        },
+        "latest_pdf": latest_pdf,
+        "email_automation": {
+            "configured": email_ready,
+            "schedule": "Every Monday 09:00 IST (via GitHub Actions)",
+            "note": "Email dispatch runs in CI only; this app does not send email.",
+        },
+    }
 
 
 @app.get("/api/v1/reports/download")

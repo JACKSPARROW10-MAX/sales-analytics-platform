@@ -11,7 +11,7 @@ const fmt = (v) => {
   return `₹${Number(v).toFixed(0)}`;
 };
 
-const COLORS = ['#235347','#8EB69B','#163832','#0B2B26','#DAF1DE','#2d6b5a'];
+const COLORS = ['#2563EB','#64748B','#334155','#1E293B','#EFF6FF','#1D4ED8'];
 
 const PricingPage = () => {
   const [data, setData] = useState({ summary: {}, by_product: [], by_category: [], discount_vs_quantity: [] });
@@ -30,7 +30,7 @@ const PricingPage = () => {
     return () => window.removeEventListener('dashboard-refresh', loadData);
   }, []);
 
-  if (loading) return <div className="flex items-center justify-center h-64 text-[#8EB69B] text-sm">Loading pricing analytics…</div>;
+  if (loading) return <div className="flex items-center justify-center h-64 text-[#64748B] text-sm">Loading pricing analytics…</div>;
 
   const { summary, by_product, by_category, discount_vs_quantity } = data;
 
@@ -45,8 +45,8 @@ const PricingPage = () => {
           ['Total Discount Given', fmt(summary.total_discount_amount)],
         ].map(([k, v]) => (
           <div key={k} className="fintech-card p-4">
-            <p className="text-xs text-[#235347] dark:text-[#8EB69B]">{k}</p>
-            <p className="text-xl font-bold text-[#051F20] dark:text-[#DAF1DE] mt-1">{v}</p>
+            <p className="text-xs text-[#2563EB] dark:text-[#64748B]">{k}</p>
+            <p className="text-xl font-bold text-[#0F172A] dark:text-[#EFF6FF] mt-1">{v}</p>
           </div>
         ))}
       </div>
@@ -66,12 +66,12 @@ const PricingPage = () => {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
         {/* By Category */}
         <div className="fintech-card p-5">
-          <h3 className="text-sm font-bold text-[#051F20] dark:text-[#DAF1DE] mb-4 flex items-center gap-2">
+          <h3 className="text-sm font-bold text-[#0F172A] dark:text-[#EFF6FF] mb-4 flex items-center gap-2">
             <Percent className="w-4 h-4 text-amber-600" /> Avg Discount by Category
           </h3>
           <ResponsiveContainer width="100%" height={220}>
             <BarChart data={by_category} layout="vertical" margin={{ top: 0, right: 20, left: 90, bottom: 0 }}>
-              <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#8EB69B" opacity={0.3} />
+              <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#64748B" opacity={0.3} />
               <XAxis type="number" tick={{ fontSize: 10 }} tickFormatter={v => `${(v*100).toFixed(1)}%`} />
               <YAxis type="category" dataKey="category" tick={{ fontSize: 10 }} width={85} />
               <Tooltip formatter={(v) => [`${(v*100).toFixed(1)}%`, 'Avg Discount']} />
@@ -84,15 +84,15 @@ const PricingPage = () => {
 
         {/* Revenue Before vs After Discount */}
         <div className="fintech-card p-5">
-          <h3 className="text-sm font-bold text-[#051F20] dark:text-[#DAF1DE] mb-4">Revenue Before vs After Discount — by Category</h3>
+          <h3 className="text-sm font-bold text-[#0F172A] dark:text-[#EFF6FF] mb-4">Revenue Before vs After Discount — by Category</h3>
           <ResponsiveContainer width="100%" height={220}>
             <BarChart data={by_category} margin={{ top: 0, right: 10, left: 10, bottom: 20 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#8EB69B" opacity={0.3} />
+              <CartesianGrid strokeDasharray="3 3" stroke="#64748B" opacity={0.3} />
               <XAxis dataKey="category" tick={{ fontSize: 9 }} angle={-20} textAnchor="end" />
               <YAxis tick={{ fontSize: 10 }} tickFormatter={fmt} />
               <Tooltip formatter={(v) => [fmt(v)]} />
-              <Bar dataKey="revenue_before_discount" name="Before Discount" fill="#235347" radius={[3, 3, 0, 0]} />
-              <Bar dataKey="revenue_after_discount" name="After Discount" fill="#8EB69B" radius={[3, 3, 0, 0]} />
+              <Bar dataKey="revenue_before_discount" name="Before Discount" fill="#2563EB" radius={[3, 3, 0, 0]} />
+              <Bar dataKey="revenue_after_discount" name="After Discount" fill="#64748B" radius={[3, 3, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
         </div>
@@ -100,15 +100,15 @@ const PricingPage = () => {
 
       {/* Highest Discount Products Table */}
       <div className="fintech-card overflow-hidden">
-        <div className="p-4 border-b border-[#DAF1DE] dark:border-[#235347]">
-          <h3 className="text-sm font-bold text-[#051F20] dark:text-[#DAF1DE]">Products — Discount Analysis (Sorted by Avg Discount)</h3>
+        <div className="p-4 border-b border-[#EFF6FF] dark:border-[#2563EB]">
+          <h3 className="text-sm font-bold text-[#0F172A] dark:text-[#EFF6FF]">Products — Discount Analysis (Sorted by Avg Discount)</h3>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full text-xs">
-            <thead className="bg-[#163832]">
+            <thead className="bg-[#334155]">
               <tr>
                 {['Product','Category','Avg Discount %','Revenue Before','Revenue After','Discount Amount','Qty'].map(h => (
-                  <th key={h} className="px-4 py-2.5 text-left font-semibold text-[#DAF1DE] whitespace-nowrap">{h}</th>
+                  <th key={h} className="px-4 py-2.5 text-left font-semibold text-[#EFF6FF] whitespace-nowrap">{h}</th>
                 ))}
               </tr>
             </thead>
@@ -116,16 +116,16 @@ const PricingPage = () => {
               {by_product.map((p, i) => {
                 const discountAmt = (p.revenue_before_discount || 0) - (p.revenue_after_discount || 0);
                 return (
-                  <tr key={i} className="border-t border-[#DAF1DE] dark:border-[#235347] hover:bg-[#EDF8EF] dark:hover:bg-[#163832]">
-                    <td className="px-4 py-2.5 font-medium text-[#051F20] dark:text-[#DAF1DE]">{p.product_name}</td>
-                    <td className="px-4 py-2.5 text-[#235347] dark:text-[#8EB69B]">{p.category}</td>
+                  <tr key={i} className="border-t border-[#EFF6FF] dark:border-[#2563EB] hover:bg-[#F8FAFC] dark:hover:bg-[#334155]">
+                    <td className="px-4 py-2.5 font-medium text-[#0F172A] dark:text-[#EFF6FF]">{p.product_name}</td>
+                    <td className="px-4 py-2.5 text-[#2563EB] dark:text-[#64748B]">{p.category}</td>
                     <td className="px-4 py-2.5">
                       <span className={`font-bold ${(p.avg_discount||0) > 0.25 ? 'text-rose-600' : 'text-amber-600'}`}>
                         {((p.avg_discount||0)*100).toFixed(1)}%
                       </span>
                     </td>
-                    <td className="px-4 py-2.5 text-[#235347] dark:text-[#8EB69B]">{fmt(p.revenue_before_discount)}</td>
-                    <td className="px-4 py-2.5 font-semibold text-[#8EB69B]">{fmt(p.revenue_after_discount)}</td>
+                    <td className="px-4 py-2.5 text-[#2563EB] dark:text-[#64748B]">{fmt(p.revenue_before_discount)}</td>
+                    <td className="px-4 py-2.5 font-semibold text-[#64748B]">{fmt(p.revenue_after_discount)}</td>
                     <td className="px-4 py-2.5 text-rose-600 font-medium">-{fmt(discountAmt)}</td>
                     <td className="px-4 py-2.5">{Number(p.total_quantity||0).toLocaleString()}</td>
                   </tr>

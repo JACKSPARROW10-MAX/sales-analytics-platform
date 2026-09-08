@@ -12,53 +12,43 @@ const apiClient = axios.create({
   timeout: 90000,
 });
 
+export const API_BASE_URL = BASE_URL;
+
+// Root origin (without /api/v1) for /health.
+const ORIGIN = BASE_URL.replace(/\/api\/v1$/, '');
+
+export const getHealth = async () => {
+  try {
+    const res = await axios.get(`${ORIGIN}/health`, { timeout: 8000 });
+    return res.data || null;
+  } catch {
+    return { status: 'degraded', database: 'disconnected' };
+  }
+};
+
+export const getReportSummary = async () => {
+  try {
+    const res = await apiClient.get('/reports/summary');
+    return res.data || null;
+  } catch (e) {
+    console.error('Report summary error:', e.message);
+    return null;
+  }
+};
+
 // ─── Core Dynamic Endpoints ──────────────────────────────────────────────────
 
 export const getKPIData = async () => {
+  // Returns the raw KPI object from the backend. Every field is computed from
+  // fact_sales / the ML pipeline server-side; the UI must not substitute
+  // placeholder numbers when a field is missing.
   try {
     const res = await apiClient.get('/kpis');
-    if (res.data) {
-      const totalRev = res.data.totalRevenue?.value ?? res.data.total_revenue ?? 0;
-      const totalOrders = res.data.total_orders ?? 0;
-      const growthPct = res.data.growth_pct ?? 0;
-      const isPositive = growthPct >= 0;
-
-      return {
-        totalRevenue: res.data.totalRevenue || {
-          value: totalRev,
-          formatted: `₹${Number(totalRev).toLocaleString(undefined, { maximumFractionDigits: 0 })}`,
-          change: `${isPositive ? '+' : ''}${growthPct}%`,
-          isPositive,
-          subtext: `Across ${totalOrders.toLocaleString()} sales records`
-        },
-        forecastAccuracy: res.data.forecastAccuracy || {
-          value: 94.8,
-          formatted: '94.8%',
-          change: '+1.8%',
-          mape: '5.2% Margin Error',
-          isPositive: true,
-          subtext: 'Prediction Reliability'
-        },
-        anomaliesDetected: res.data.anomaliesDetected || {
-          value: res.data.anomaly_count ?? 0,
-          formatted: `${res.data.anomaly_count ?? 0} Flagged`,
-          change: '0 High Urgency',
-          isPositive: false,
-          subtext: 'Statistical Sales Anomalies'
-        },
-        activeRecommendations: res.data.activeRecommendations || {
-          value: 4,
-          formatted: '4 Actionable',
-          change: '+₹85,000',
-          isPositive: true,
-          subtext: 'Identified growth potential'
-        }
-      };
-    }
+    return res.data || null;
   } catch (e) {
     console.error('Failed to fetch live KPIs from backend:', e.message);
+    return null;
   }
-  return null;
 };
 
 export const getForecast = async (productId = 'all') => {
@@ -244,8 +234,8 @@ export const getExplainability = async () => {
 
 export default {
   getKPIData, getForecast, getAnomalies, getRecommendations, getProducts,
-  triggerPipelineRun, uploadSalesCSV, getReportDownloadUrl,
-  getAnalyticsSummary, getProductAnalytics, getCustomerAnalytics,
+  triggerPipelineRun, uploadSalesCSV, getReportDownloadUrl, getReportSummary,
+  getHealth, getAnalyticsSummary, getProductAnalytics, getCustomerAnalytics,
   getCategoryAnalytics, getSubcategoryAnalytics, getRegionAnalytics,
   getSegmentAnalytics, getPricingAnalytics, getVarianceData,
   getDataQuality, getPipelineHealth, getExplainability,
