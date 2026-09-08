@@ -15,7 +15,7 @@ if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
 import re
-from fastapi import FastAPI, UploadFile, File, HTTPException, Query, Request, Depends
+from fastapi import FastAPI, UploadFile, File, HTTPException, Query, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 from pydantic import BaseModel
@@ -25,6 +25,8 @@ from slowapi import Limiter, _rate_limit_exceeded_handler
 # pyrefly: ignore [missing-import]
 from slowapi.util import get_remote_address
 from slowapi.errors import RateLimitExceeded
+# pyrefly: ignore [missing-import]
+from slowapi.middleware import SlowAPIMiddleware
 
 from api.routers import (
     variance, trend, anomaly_explain,
@@ -45,11 +47,13 @@ from reports.generate_pdf_report import generate_sales_report_pdf
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+# Rate limiter must be constructed before the app so it can be attached below.
+limiter = Limiter(key_func=get_remote_address, default_limits=["100/minute"])
+
 app = FastAPI(
     title="Sales Analytics Platform API",
     description="Enterprise FastAPI Backend for Sales Analytics, Forecasting, Anomaly Detection & Reports",
     version="1.0.0",
-    dependencies=[Depends(limiter.limit("100/minute"))]
 )
 
 # Security Headers Middleware
@@ -80,9 +84,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-limiter = Limiter(key_func=get_remote_address)
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+app.add_middleware(SlowAPIMiddleware)
 
 # Routers
 app.include_router(variance.router, prefix="/api/v1")
