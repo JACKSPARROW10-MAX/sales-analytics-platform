@@ -1,7 +1,11 @@
 """
 Time-Series Sales Forecasting Module
-Implements time-series forecasting (Prophet / Scikit-Learn Ridge / Holt-Winters Exponential Smoothing)
-for daily sales forecasting with upper/lower confidence bounds and MAPE score.
+
+Model: scikit-learn Ridge regression (L2-regularised linear model) trained on
+day-index + day-of-week + month features from daily aggregated fact_sales revenue.
+Produces a 30-day forward forecast with 90/95% confidence bounds (from residual
+standard deviation) and a MAPE-derived accuracy score. Falls back to a damped
+linear trend when scikit-learn is unavailable or history is very short.
 """
 import logging
 import numpy as np
@@ -167,50 +171,10 @@ def generate_forecast(df: pd.DataFrame = None, days_ahead: int = 30) -> Dict[str
 
     return {
         "data": full_series,
+        "model": "Ridge Regression (scikit-learn)" if (SKLEARN_AVAILABLE and len(daily_sales) > 10) else "Damped linear trend",
         "mape": mape,
         "accuracy": accuracy,
         "total_historical_revenue": round(float(y.sum()), 2),
         "projected_30d_revenue": round(sum(r['forecast'] for r in future_records[:30]), 2),
-        "days_forecasted": days_ahead
-    }
-
-
-def _build_fallback_forecast(days_ahead: int) -> Dict[str, Any]:
-    """Generates clean baseline forecast when historical dataset is small."""
-    base_date = datetime.now() - timedelta(days=90)
-    data = []
-    base_rev = 3500.0
-
-    for i in range(90):
-        dt = base_date + timedelta(days=i)
-        rev = base_rev + (i * 12) + np.sin(i / 3) * 400 + np.random.normal(0, 150)
-        data.append({
-            "date": dt.strftime('%Y-%m-%d'),
-            "actual": round(max(1000, rev), 2),
-            "forecast": round(rev * 0.99, 2),
-            "upper": round(rev * 1.08, 2),
-            "lower": round(rev * 0.90, 2),
-            "isForecast": False
-        })
-
-    last_dt = datetime.strptime(data[-1]['date'], '%Y-%m-%d')
-    for i in range(1, days_ahead + 1):
-        dt = last_dt + timedelta(days=i)
-        fut_rev = base_rev + ((90 + i) * 12) + np.sin((90 + i) / 3) * 400
-        data.append({
-            "date": dt.strftime('%Y-%m-%d'),
-            "actual": None,
-            "forecast": round(fut_rev, 2),
-            "upper": round(fut_rev * 1.10, 2),
-            "lower": round(fut_rev * 0.88, 2),
-            "isForecast": True
-        })
-
-    return {
-        "data": data,
-        "mape": 3.6,
-        "accuracy": 96.4,
-        "total_historical_revenue": 385000.0,
-        "projected_30d_revenue": 142000.0,
         "days_forecasted": days_ahead
     }

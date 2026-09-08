@@ -73,5 +73,5 @@ def get_data_quality():
             "status": "good" if quality_score >= 95 else "warning" if quality_score >= 80 else "critical",
         }
     except Exception as e:
-        logger.error(f"Data quality check failed: {e}")
-        raise HTTPException(status_code=500, detail=f"Data quality check failed: {str(e)}")
+        logger.error(f"Data quality check failed: {e}", exc_info=True)
+        raise HTTPException(status_code=500, detail="Data quality check failed. Please check server logs.")

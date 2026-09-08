@@ -179,29 +179,45 @@ def get_kpis():
         anomalies = ml_data.get("anomalies", [])
         recommendations = ml_data.get("recommendations", [])
         
+        critical = len([a for a in anomalies if a.get("severity") == "Critical"])
         live_kpis["anomaliesDetected"] = {
             "value": len(anomalies),
             "formatted": f"{len(anomalies)} Flagged",
-            "change": f"{len([a for a in anomalies if a.get('severity') == 'Critical'])} High Urgency",
-            "subtext": "Unusual Sales Spikes/Drops",
-            "isPositive": False
+            "change": f"{critical} High Urgency",
+            "subtext": "Unusual sales spikes / drops",
+            "isPositive": False,
         }
+        # Only sum impact values that the model actually produced (no fabricated default).
+        impact_total = sum(
+            float(r.get("impact_value") or 0) for r in recommendations if r.get("impact_value")
+        )
         live_kpis["activeRecommendations"] = {
             "value": len(recommendations),
             "formatted": f"{len(recommendations)} Actionable",
-            "change": f"+₹{sum(r.get('impact_value', 15000) for r in recommendations):,.0f}",
-            "subtext": "Est. revenue growth opportunity",
-            "isPositive": True
+            "change": (f"+₹{impact_total:,.0f}" if impact_total else "AI-generated"),
+            "subtext": "Prescriptive growth actions",
+            "isPositive": True,
         }
-        if "forecast" in ml_data and ml_data["forecast"].get("accuracy") is not None:
-            acc = ml_data["forecast"].get("accuracy", 94.8)
+
+        forecast = ml_data.get("forecast", {}) or {}
+        acc = forecast.get("accuracy")
+        mape = forecast.get("mape")
+        model_name = forecast.get("model") or "Ridge Regression (scikit-learn)"
+        if acc is not None:
             live_kpis["forecastAccuracy"] = {
                 "value": acc,
                 "formatted": f"{acc}%",
-                "change": "+1.8%",
-                "mape": f"{ml_data['forecast'].get('mape', 5.2)}% Margin Error",
-                "subtext": "Prediction Reliability",
-                "isPositive": True
+                "mape": (f"{mape}% mean abs. % error" if mape is not None else None),
+                "model": model_name,
+                "horizon_days": forecast.get("days_forecasted", 30),
+                "projected_30d_revenue": forecast.get("projected_30d_revenue"),
+                "subtext": f"{model_name} fit vs. actuals",
+                "isPositive": True,
+            }
+        else:
+            live_kpis["forecastAccuracy"] = {
+                "value": None, "formatted": "—", "model": model_name,
+                "subtext": "Not enough history to score the model", "isPositive": True,
             }
         return live_kpis
     except Exception as e:
@@ -391,8 +407,11 @@ def trigger_pipeline():
             "anomalies_detected": len(ml_res.get("anomalies", []))
         }
     except Exception as e:
-        logger.error(f"Pipeline run error: {e}")
-        raise HTTPException(status_code=500, detail=str(e))
+        logger.error(f"Pipeline run error: {e}", exc_info=True)
+        raise HTTPException(
+            status_code=500,
+            detail="The ETL/ML pipeline run failed. Please check server logs.",
+        )
 
 
 @app.get("/api/v1/reports/download")
