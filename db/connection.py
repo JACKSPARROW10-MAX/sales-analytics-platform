@@ -53,39 +53,68 @@ def _is_local_host(host: str) -> bool:
     return (host or "").lower() in _LOCAL_HOSTS
 
 
-def get_db_connection() -> Engine:
-    """
-    Create and return an enterprise SQLAlchemy Engine configured for both
-    cloud (connection pooling, pre-ping, enforced TLS) and local usage.
+# Module-level engine cache. One pooled Engine per process, keyed by URL, so
+# the whole app shares a single small connection pool. This is essential for
+# hosted poolers such as Supabase's session pooler, which caps total client
+# connections (e.g. 15) — creating a new Engine per request quickly exhausts it.
+_ENGINE_CACHE: dict = {}
 
-    - Local Docker PostgreSQL: plain TCP connection.
-    - Cloud PostgreSQL (Supabase, Neon, RDS, ...): TLS is enforced with
-      sslmode=require unless the DATABASE_URL already specifies an sslmode.
-    """
-    url = get_database_url()
 
+def _build_engine(url: str) -> Engine:
     parsed = urlparse(url)
     safe_host = parsed.hostname or "unknown"
     safe_db = (parsed.path or "").lstrip("/") or "default"
-    # Never log the full URL / password - host + database name only.
-    logger.debug(f"Connecting to database '{safe_db}' on host '{safe_host}'")
+    logger.info(f"Initialising database engine for '{safe_db}' on host '{safe_host}'")
 
-    connect_args = {}
+    connect_args = {"connect_timeout": 10}
     is_local = _is_local_host(parsed.hostname)
     existing_qs = parse_qs(parsed.query or "")
     if not is_local and "sslmode" not in existing_qs:
         # Remote databases must use TLS. psycopg2 reads sslmode from connect_args.
         connect_args["sslmode"] = "require"
 
-    # Cloud-friendly pooling configurations:
-    # pool_pre_ping=True checks liveness before issuing queries, mitigating stale connections
-    # pool_recycle=300 recycles connections every 5 minutes to play nicely with serverless cloud DBs
+    # Pool sizing: conservative by default so N app processes stay under a
+    # hosted pooler's client cap (Supabase's free session pooler allows ~15).
+    # With the default (3 + 2) two gunicorn workers use at most 10 connections.
+    # Raise DB_POOL_SIZE / DB_MAX_OVERFLOW for a bigger database or a pooler
+    # with a higher limit (e.g. Supabase transaction pooler on port 6543).
+    pool_size = int(os.getenv("DB_POOL_SIZE", "3"))
+    max_overflow = int(os.getenv("DB_MAX_OVERFLOW", "2"))
+
     return create_engine(
         url,
-        pool_pre_ping=True,
-        pool_recycle=300,
+        pool_pre_ping=True,     # drop stale connections before use
+        pool_recycle=1800,      # recycle every 30 min
+        pool_size=pool_size,
+        max_overflow=max_overflow,
+        pool_timeout=30,
         connect_args=connect_args,
     )
+
+
+def get_db_connection() -> Engine:
+    """
+    Return a process-wide, pooled SQLAlchemy Engine for the configured database.
+
+    - Reads DATABASE_URL (or POSTGRES_* fallback) from the environment.
+    - Local Docker PostgreSQL: plain TCP.
+    - Cloud PostgreSQL (Supabase, Neon, RDS, ...): TLS enforced (sslmode=require)
+      unless the URL already sets sslmode.
+    - The Engine is cached per URL so every caller shares one connection pool.
+    """
+    url = get_database_url()
+    engine = _ENGINE_CACHE.get(url)
+    if engine is None:
+        engine = _build_engine(url)
+        _ENGINE_CACHE[url] = engine
+    return engine
+
+
+def dispose_engines() -> None:
+    """Dispose all cached engines (useful for tests / graceful shutdown)."""
+    for eng in _ENGINE_CACHE.values():
+        eng.dispose()
+    _ENGINE_CACHE.clear()
 
 
 def check_database_connection():

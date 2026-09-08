@@ -114,43 +114,46 @@ def get_kpi_metrics() -> Dict[str, Any]:
         is_positive = growth_pct >= 0
         growth_str = f"{'+' if is_positive else ''}{growth_pct}%"
 
+        total_transactions = total_orders
+
         return {
             "total_revenue": total_revenue,
             "total_orders": total_orders,
             "total_quantity": total_quantity,
+            "total_transactions": total_transactions,
             "average_order_value": average_order_value,
             "average_discount": average_discount,
             "growth_pct": growth_pct,
-            # Dual-format dictionary matching React frontend KPICard expectations:
+            # Dual-format dictionary matching the React KPICard component.
+            # Every value below is computed from fact_sales — no hardcoded numbers.
             "totalRevenue": {
                 "value": total_revenue,
                 "formatted": f"₹{total_revenue:,.0f}",
                 "change": growth_str,
                 "isPositive": is_positive,
-                "subtext": f"Across {total_orders:,} sales records"
+                "subtext": f"Across {total_orders:,} sales records",
             },
-            "forecastAccuracy": {
-                "value": 94.8,
-                "formatted": "94.8%",
-                "change": "+1.8%",
-                "mape": "5.2% Margin Error",
-                "subtext": "Prediction Reliability",
-                "isPositive": True
+            "totalOrders": {
+                "value": total_orders,
+                "formatted": f"{total_orders:,}",
+                "subtext": "Completed sales transactions",
             },
-            "anomaliesDetected": {
-                "value": 0,
-                "formatted": "0 Flagged",
-                "change": "0 High Urgency",
-                "subtext": "Statistical Sales Anomalies",
-                "isPositive": False
+            "totalQuantity": {
+                "value": total_quantity,
+                "formatted": f"{total_quantity:,}",
+                "subtext": "Units sold across all orders",
             },
-            "activeRecommendations": {
-                "value": 4,
-                "formatted": "4 Actionable",
-                "change": "+₹85,000",
-                "subtext": "Identified growth potential",
-                "isPositive": True
-            }
+            "averageOrderValue": {
+                "value": average_order_value,
+                "formatted": f"₹{average_order_value:,.0f}",
+                "subtext": "Revenue per transaction",
+            },
+            "revenueGrowth": {
+                "value": growth_pct,
+                "formatted": growth_str,
+                "isPositive": is_positive,
+                "subtext": "First half vs. second half of period",
+            },
         }
     except Exception as e:
         logger.error(f"Error computing KPI metrics: {e}")

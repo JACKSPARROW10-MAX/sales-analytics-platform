@@ -226,7 +226,12 @@ def build_dim_customer(engine) -> int:
 def build_fact_sales(engine) -> int:
     """
     Build fact_sales from staging_sales, joining with dimension tables.
-    Inserts fresh records with unique sale_id.
+
+    Idempotent: sale_id is derived deterministically from the source
+    transaction_id (falling back to a hash of the row's natural key when the
+    transaction id is missing), and the insert uses ON CONFLICT DO NOTHING.
+    Re-running the ETL - or re-uploading the same CSV - therefore never
+    double-counts; only genuinely new transactions are added.
     """
     logger.info("Building fact_sales fact table")
     
@@ -253,8 +258,17 @@ def build_fact_sales(engine) -> int:
 
             insert_sql = text("""
                 INSERT INTO fact_sales (sale_id, date_id, product_id, customer_id, quantity, revenue, discount, source_system)
-                SELECT 
-                    gen_random_uuid(),
+                SELECT
+                    LEFT(
+                        COALESCE(
+                            NULLIF(TRIM(s.transaction_id), ''),
+                            'SALE-' || md5(
+                                s.sale_date || '|' || COALESCE(s.product_id,'') || '|' ||
+                                COALESCE(s.customer_id,'') || '|' || COALESCE(s.quantity,'') || '|' ||
+                                COALESCE(s.total_amount,'') || '|' || s.raw_id::text
+                            )
+                        ), 100
+                    ) AS sale_id,
                     dd.date_id,
                     COALESCE(dp.product_id, 'PRD-UNKNOWN'),
                     COALESCE(dc.customer_id, 'CUST-UNKNOWN'),
@@ -270,12 +284,13 @@ def build_fact_sales(engine) -> int:
                   AND s.quantity IS NOT NULL
                   AND s.total_amount IS NOT NULL
                   AND CAST(s.quantity AS NUMERIC) >= 0
-                  AND CAST(s.total_amount AS NUMERIC) >= 0;
+                  AND CAST(s.total_amount AS NUMERIC) >= 0
+                ON CONFLICT (sale_id) DO NOTHING;
             """)
             res = conn.execute(insert_sql)
             conn.commit()
-            rows_inserted = res.rowcount if res.rowcount >= 0 else 0
-            logger.info(f"Successfully inserted {rows_inserted} rows to fact_sales")
+            rows_inserted = res.rowcount if res.rowcount and res.rowcount > 0 else 0
+            logger.info(f"Inserted {rows_inserted} new rows into fact_sales (duplicates skipped)")
             return rows_inserted
     
     except SQLAlchemyError as e:

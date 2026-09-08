@@ -55,3 +55,10 @@ out/
 .DS_Store
 Thumbs.db
 desktop.ini
+
+# Generated runtime artifacts (rebuilt from the database on demand)
+data/ml_results.json
+data/rejected/
+reports/*.pdf
+reports/*.html
+dashboard/dist/

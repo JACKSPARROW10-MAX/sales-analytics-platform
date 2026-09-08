@@ -98,7 +98,12 @@ def send_executive_email_report(
     # 1. Resolve Recipient
     recipient = recipient_email or os.getenv("REPORT_RECIPIENT") or os.getenv("RECIPIENT_EMAIL")
     if not recipient:
-        raise ValueError("Missing recipient email: Provide recipient_email argument or set REPORT_RECIPIENT environment variable.")
+        if dry_run:
+            recipient = "dry-run@example.invalid"
+        else:
+            raise ValueError(
+                "Missing recipient email: pass recipient_email or set REPORT_RECIPIENT."
+            )
 
     # 2. Resolve PDF Path
     if report_pdf_path is None:

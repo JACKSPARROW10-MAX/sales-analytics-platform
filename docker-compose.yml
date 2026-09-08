@@ -38,8 +38,17 @@ services:
     restart: always
     env_file:
       - .env
+    environment:
+      # For local compose the app talks to the postgres service, not localhost.
+      # Any DATABASE_URL in .env (e.g. Supabase) still takes precedence.
+      POSTGRES_HOST: postgres
     ports:
       - "8000:8000"
+    # Apply the schema (idempotent) before starting the API server.
+    command: >
+      sh -c "python init_db.py &&
+             gunicorn api.main:app -w 2 -k uvicorn.workers.UvicornWorker
+             --bind 0.0.0.0:8000 --access-logfile - --timeout 120"
     depends_on:
       postgres:
         condition: service_healthy

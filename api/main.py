@@ -44,7 +44,10 @@ from etl.transform import run_transform
 from ml.train import run_ml_pipeline
 from reports.generate_pdf_report import generate_sales_report_pdf
 
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(
+    level=os.getenv("LOG_LEVEL", "INFO").upper(),
+    format="%(asctime)s %(levelname)s %(name)s %(message)s",
+)
 logger = logging.getLogger(__name__)
 
 # Rate limiter must be constructed before the app so it can be attached below.
@@ -67,8 +70,15 @@ async def add_security_headers(request: Request, call_next):
     response.headers["Permissions-Policy"] = "geolocation=(), camera=(), microphone=()"
     return response
 
-# Enable CORS for React frontend (configurable via CORS_ORIGINS)
-cors_origins_env = os.getenv("CORS_ORIGINS", "http://localhost:5173,http://localhost:3000")
+# Enable CORS for the React frontend.
+# Production: set CORS_ORIGINS to the deployed dashboard URL(s), comma-separated.
+# Default covers the common local Vite / CRA dev hosts.
+_DEV_ORIGINS = (
+    "http://localhost:5173,http://127.0.0.1:5173,"
+    "http://localhost:3000,http://127.0.0.1:3000,"
+    "http://localhost:4173,http://127.0.0.1:4173"
+)
+cors_origins_env = os.getenv("CORS_ORIGINS", _DEV_ORIGINS)
 if cors_origins_env == "*":
     allow_origins = ["*"]
     allow_credentials = False  # Browser security rejects allow_credentials=True with allow_origins=["*"]
@@ -179,29 +189,45 @@ def get_kpis():
         anomalies = ml_data.get("anomalies", [])
         recommendations = ml_data.get("recommendations", [])
         
+        critical = len([a for a in anomalies if a.get("severity") == "Critical"])
         live_kpis["anomaliesDetected"] = {
             "value": len(anomalies),
             "formatted": f"{len(anomalies)} Flagged",
-            "change": f"{len([a for a in anomalies if a.get('severity') == 'Critical'])} High Urgency",
-            "subtext": "Unusual Sales Spikes/Drops",
-            "isPositive": False
+            "change": f"{critical} High Urgency",
+            "subtext": "Unusual sales spikes / drops",
+            "isPositive": False,
         }
+        # Only sum impact values that the model actually produced (no fabricated default).
+        impact_total = sum(
+            float(r.get("impact_value") or 0) for r in recommendations if r.get("impact_value")
+        )
         live_kpis["activeRecommendations"] = {
             "value": len(recommendations),
             "formatted": f"{len(recommendations)} Actionable",
-            "change": f"+₹{sum(r.get('impact_value', 15000) for r in recommendations):,.0f}",
-            "subtext": "Est. revenue growth opportunity",
-            "isPositive": True
+            "change": (f"+₹{impact_total:,.0f}" if impact_total else "AI-generated"),
+            "subtext": "Prescriptive growth actions",
+            "isPositive": True,
         }
-        if "forecast" in ml_data and ml_data["forecast"].get("accuracy") is not None:
-            acc = ml_data["forecast"].get("accuracy", 94.8)
+
+        forecast = ml_data.get("forecast", {}) or {}
+        acc = forecast.get("accuracy")
+        mape = forecast.get("mape")
+        model_name = forecast.get("model") or "Ridge Regression (scikit-learn)"
+        if acc is not None:
             live_kpis["forecastAccuracy"] = {
                 "value": acc,
                 "formatted": f"{acc}%",
-                "change": "+1.8%",
-                "mape": f"{ml_data['forecast'].get('mape', 5.2)}% Margin Error",
-                "subtext": "Prediction Reliability",
-                "isPositive": True
+                "mape": (f"{mape}% mean abs. % error" if mape is not None else None),
+                "model": model_name,
+                "horizon_days": forecast.get("days_forecasted", 30),
+                "projected_30d_revenue": forecast.get("projected_30d_revenue"),
+                "subtext": f"{model_name} fit vs. actuals",
+                "isPositive": True,
+            }
+        else:
+            live_kpis["forecastAccuracy"] = {
+                "value": None, "formatted": "—", "model": model_name,
+                "subtext": "Not enough history to score the model", "isPositive": True,
             }
         return live_kpis
     except Exception as e:
@@ -391,8 +417,67 @@ def trigger_pipeline():
             "anomalies_detected": len(ml_res.get("anomalies", []))
         }
     except Exception as e:
-        logger.error(f"Pipeline run error: {e}")
-        raise HTTPException(status_code=500, detail=str(e))
+        logger.error(f"Pipeline run error: {e}", exc_info=True)
+        raise HTTPException(
+            status_code=500,
+            detail="The ETL/ML pipeline run failed. Please check server logs.",
+        )
+
+
+@app.get("/api/v1/reports/summary")
+@app.get("/reports/summary")
+def report_summary():
+    """Reporting-page metadata: live period + KPIs, email-automation status, last PDF.
+
+    Never returns credentials — only booleans indicating whether env vars are set.
+    """
+    try:
+        kpis = get_kpi_metrics()
+    except Exception as e:
+        logger.error(f"report_summary KPI error: {e}")
+        kpis = {}
+
+    period = {"start": None, "end": None}
+    try:
+        engine = get_db_connection()
+        with engine.connect() as conn:
+            row = conn.execute(text(
+                "SELECT MIN(dd.full_date), MAX(dd.full_date) "
+                "FROM fact_sales fs JOIN dim_date dd ON fs.date_id = dd.date_id"
+            )).first()
+            if row and row[0]:
+                period = {"start": row[0].isoformat(), "end": row[1].isoformat()}
+    except Exception as e:
+        logger.warning(f"report_summary period error: {e}")
+
+    latest_pdf = None
+    for name in ("weekly_sales_report.pdf", "sales_executive_report.pdf"):
+        p = PROJECT_ROOT / "reports" / name
+        if p.exists():
+            latest_pdf = {
+                "filename": name,
+                "size_bytes": p.stat().st_size,
+                "generated_at": __import__("datetime").datetime.fromtimestamp(p.stat().st_mtime).isoformat(),
+            }
+            break
+
+    email_ready = all(bool(os.getenv(k)) for k in ("EMAIL_USERNAME", "EMAIL_PASSWORD", "REPORT_RECIPIENT"))
+    return {
+        "period": period,
+        "kpis": {
+            "total_revenue": kpis.get("total_revenue"),
+            "total_orders": kpis.get("total_orders"),
+            "total_quantity": kpis.get("total_quantity"),
+            "average_order_value": kpis.get("average_order_value"),
+            "revenue_growth_pct": kpis.get("growth_pct"),
+        },
+        "latest_pdf": latest_pdf,
+        "email_automation": {
+            "configured": email_ready,
+            "schedule": "Every Monday 09:00 IST (via GitHub Actions)",
+            "note": "Email dispatch runs in CI only; this app does not send email.",
+        },
+    }
 
 
 @app.get("/api/v1/reports/download")

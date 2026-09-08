@@ -87,5 +87,5 @@ def get_pipeline_health():
         return results
 
     except Exception as e:
-        logger.error(f"Pipeline health check failed: {e}")
-        raise HTTPException(status_code=500, detail=f"Pipeline health check failed: {str(e)}")
+        logger.error(f"Pipeline health check failed: {e}", exc_info=True)
+        raise HTTPException(status_code=500, detail="Pipeline health check failed. Please check server logs.")

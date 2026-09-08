@@ -280,8 +280,14 @@ def load_all_staging(sales_df: pd.DataFrame, erp_df: pd.DataFrame = None, engine
         results['staging_products'] = load_to_staging_products(sales_df, engine)
         results['staging_customers'] = load_to_staging_customers(sales_df, engine)
     
-    # Load ERP data if provided
+    # Load ERP data if provided (truncate first so re-runs don't accumulate)
     if erp_df is not None and not erp_df.empty:
+        try:
+            with engine.connect() as conn:
+                conn.execute(text("TRUNCATE TABLE staging_erp;"))
+                conn.commit()
+        except Exception as e:
+            logger.warning(f"Could not truncate staging_erp: {e}")
         results['staging_erp'] = load_to_staging_erp(erp_df, engine)
     
     logger.info(f"Staging load complete: {results}")
