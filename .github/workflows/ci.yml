@@ -10,6 +10,11 @@ on:
 jobs:
   build-test:
     runs-on: ubuntu-latest
+    # The application always reads the connection string from DATABASE_URL.
+    # In CI this comes from the repository secret (set it to the Supabase URL).
+    # Never hard-code a connection string or use localhost:5432 here.
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -24,6 +29,17 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           pip install flake8 mypy bandit pytest
+
+      - name: Verify database connection (Supabase)
+        if: ${{ env.DATABASE_URL != '' }}
+        run: |
+          python -c "
+          import sys
+          from db.connection import check_database_connection
+          ok, msg = check_database_connection()
+          print('Database connection OK' if ok else 'Database connection FAILED')
+          sys.exit(0 if ok else 1)
+          "
 
       - name: Lint with flake8
         run: flake8 .

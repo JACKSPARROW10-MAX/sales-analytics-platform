@@ -42,6 +42,8 @@ out/
 .env.local
 .env.*
 *.env
+# ...but keep the committed template (repo root only)
+!/.env.example
 
 # IDEs & Editors
 .vscode/
