@@ -49,7 +49,7 @@ const PAGE_TITLES = {
 };
 
 const LoadingSpinner = () => (
-  <div className="flex items-center justify-center h-64 text-slate-400 text-sm gap-2">
+  <div className="flex items-center justify-center h-64 text-[#8EB69B] text-sm gap-2">
     <RefreshCw className="w-4 h-4 animate-spin" /> Loading…
   </div>
 );
@@ -142,7 +142,7 @@ const Dashboard = () => {
   const pageInfo = PAGE_TITLES[activeTab] || PAGE_TITLES.dashboard;
 
   return (
-    <div className={`min-h-screen font-sans transition-colors duration-200 ${darkMode ? 'dark bg-[#0b0f19] text-slate-100' : 'bg-[#f8fafc] text-slate-900'}`}>
+    <div className={`min-h-screen font-sans transition-colors duration-200 ${darkMode ? 'dark bg-[#051F20] text-[#DAF1DE]' : 'bg-[#EDF8EF] text-[#051F20]'}`}>
       <Header
         onRefresh={() => loadDashboardData(true)}
         isRefreshing={isRefreshing}
@@ -162,19 +162,19 @@ const Dashboard = () => {
 
             {/* Toast */}
             {toastMessage && (
-              <div className="fixed bottom-6 right-6 z-50 bg-emerald-700 text-white px-4 py-3 rounded-lg shadow-xl flex items-center gap-2 text-xs font-semibold">
+              <div className="fixed bottom-6 right-6 z-50 bg-[#235347] text-[#DAF1DE] px-4 py-3 rounded-lg shadow-xl flex items-center gap-2 text-xs font-semibold">
                 <CheckCircle className="w-4 h-4" />{toastMessage}
               </div>
             )}
 
             {/* Page Header */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-200 dark:border-slate-800 pb-4">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#c4dfc8] dark:border-[#235347] pb-4">
               <div>
-                <h2 className="text-xl font-bold text-slate-900 dark:text-white tracking-tight">{pageInfo.title}</h2>
-                <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">{pageInfo.sub}</p>
+                <h2 className="text-xl font-bold text-[#051F20] dark:text-[#DAF1DE] tracking-tight">{pageInfo.title}</h2>
+                <p className="text-xs text-[#235347] dark:text-[#8EB69B] mt-0.5">{pageInfo.sub}</p>
               </div>
-              <div className="text-xs font-mono text-slate-600 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 px-3 py-1.5 rounded border border-slate-200 dark:border-slate-700 self-start sm:self-auto">
-                Source: <span className="font-semibold text-emerald-600 dark:text-emerald-400">PostgreSQL → FastAPI</span>
+              <div className="text-xs font-mono text-[#235347] dark:text-[#8EB69B] bg-[#DAF1DE] dark:bg-[#0B2B26] px-3 py-1.5 rounded border border-[#c4dfc8] dark:border-[#235347] self-start sm:self-auto">
+                Source: <span className="font-semibold text-[#8EB69B] dark:text-[#8EB69B]">PostgreSQL → FastAPI</span>
               </div>
             </div>
 
@@ -183,7 +183,7 @@ const Dashboard = () => {
               <>
                 {/* KPI Cards */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                  <KPICard title="Total Revenue" value={kpis?.totalRevenue?.formatted || '—'} change={kpis?.totalRevenue?.change} isPositive subtext={kpis?.totalRevenue?.subtext} icon={IndianRupee} accentColor="blue" isLoading={isLoading} />
+                  <KPICard title="Total Revenue" value={kpis?.totalRevenue?.formatted || '—'} change={kpis?.totalRevenue?.change} isPositive subtext={kpis?.totalRevenue?.subtext} icon={IndianRupee} accentColor="green" isLoading={isLoading} />
                   <KPICard title="Forecast Accuracy" value={kpis?.forecastAccuracy?.formatted || '—'} change={kpis?.forecastAccuracy?.change} isPositive subtext={kpis?.forecastAccuracy?.mape} icon={Target} accentColor="emerald" isLoading={isLoading} />
                   <KPICard title="Anomalies Detected" value={kpis?.anomaliesDetected?.formatted || '—'} change={kpis?.anomaliesDetected?.change} isPositive={false} subtext={kpis?.anomaliesDetected?.subtext} icon={AlertTriangle} accentColor="rose" isLoading={isLoading} />
                   <KPICard title="AI Recommendations" value={kpis?.activeRecommendations?.formatted || '—'} change={kpis?.activeRecommendations?.change} isPositive subtext={kpis?.activeRecommendations?.subtext} icon={Lightbulb} accentColor="amber" isLoading={isLoading} />
@@ -191,25 +191,25 @@ const Dashboard = () => {
 
                 {/* Compact Charts */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <CompactChart data={forecastData} series={[{ key: 'actual', name: 'Actual', color: '#2563eb', type: 'line' }, { key: 'forecast', name: 'Forecast', color: '#059669', type: 'line' }]} title="Actual vs Forecast" />
-                  <CompactChart data={forecastData} series={[{ key: 'lower', name: 'Lower', color: '#3b82f6', type: 'area' }, { key: 'upper', name: 'Upper', color: '#3b82f6', type: 'area' }]} title="Confidence Interval" />
-                  <CompactChart data={forecastData} series={[{ key: 'forecast', name: 'Forecast Trend', color: '#059669', type: 'line' }]} title="Forecast Trend" />
+                  <CompactChart data={forecastData} series={[{ key: 'actual', name: 'Actual', color: '#235347', type: 'line' }, { key: 'forecast', name: 'Forecast', color: '#8EB69B', type: 'line' }]} title="Actual vs Forecast" />
+                  <CompactChart data={forecastData} series={[{ key: 'lower', name: 'Lower', color: '#8EB69B', type: 'area' }, { key: 'upper', name: 'Upper', color: '#8EB69B', type: 'area' }]} title="Confidence Interval" />
+                  <CompactChart data={forecastData} series={[{ key: 'forecast', name: 'Forecast Trend', color: '#235347', type: 'line' }]} title="Forecast Trend" />
                 </div>
 
                 {/* Recent Anomalies (top 5) */}
                 <section>
-                  <h3 className="text-sm font-bold text-slate-900 dark:text-white mb-3 flex items-center gap-2">
+                  <h3 className="text-sm font-bold text-[#051F20] dark:text-[#DAF1DE] mb-3 flex items-center gap-2">
                     <AlertTriangle className="w-4 h-4 text-rose-500" /> Recent Anomalies
-                    <button onClick={() => setActiveTab('anomalies')} className="ml-auto text-[11px] text-blue-600 hover:underline cursor-pointer">View all →</button>
+                    <button onClick={() => setActiveTab('anomalies')} className="ml-auto text-[11px] text-[#235347] dark:text-[#8EB69B] hover:underline cursor-pointer">View all →</button>
                   </h3>
                   <AnomalyTable anomalies={anomaliesData.slice(0, 5)} isLoading={isLoading} compact />
                 </section>
 
                 {/* Top Recommendations (top 2) */}
                 <section>
-                  <h3 className="text-sm font-bold text-slate-900 dark:text-white mb-3 flex items-center gap-2">
+                  <h3 className="text-sm font-bold text-[#051F20] dark:text-[#DAF1DE] mb-3 flex items-center gap-2">
                     <Lightbulb className="w-4 h-4 text-amber-500" /> AI Recommendations
-                    <button onClick={() => setActiveTab('strategy')} className="ml-auto text-[11px] text-blue-600 hover:underline cursor-pointer">View all →</button>
+                    <button onClick={() => setActiveTab('strategy')} className="ml-auto text-[11px] text-[#235347] dark:text-[#8EB69B] hover:underline cursor-pointer">View all →</button>
                   </h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {recommendationsData.slice(0, 2).map(rec => (
@@ -242,9 +242,9 @@ const Dashboard = () => {
             {activeTab === 'forecast' && (
               <div className="space-y-5">
                 <div className="fintech-card p-4">
-                  <label className="text-xs font-semibold text-slate-600 dark:text-slate-400 mr-3">Filter by Product:</label>
+                  <label className="text-xs font-semibold text-[#235347] dark:text-[#8EB69B] mr-3">Filter by Product:</label>
                   <select value={selectedProduct} onChange={e => setSelectedProduct(e.target.value)}
-                    className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-1.5 text-xs">
+                    className="bg-white dark:bg-[#0B2B26] border border-[#c4dfc8] dark:border-[#235347] rounded-lg px-3 py-1.5 text-xs">
                     {productsList.map(p => <option key={p} value={p}>{p}</option>)}
                   </select>
                 </div>
@@ -260,8 +260,8 @@ const Dashboard = () => {
                     ['Accuracy', kpis?.forecastAccuracy?.formatted || '—'],
                   ].map(([k, v]) => (
                     <div key={k} className="fintech-card p-4">
-                      <p className="text-xs text-slate-500 dark:text-slate-400">{k}</p>
-                      <p className="text-sm font-bold text-slate-900 dark:text-white mt-1">{v}</p>
+                      <p className="text-xs text-[#235347] dark:text-[#8EB69B]">{k}</p>
+                      <p className="text-sm font-bold text-[#051F20] dark:text-[#DAF1DE] mt-1">{v}</p>
                     </div>
                   ))}
                 </div>
@@ -273,13 +273,13 @@ const Dashboard = () => {
               <div className="space-y-5">
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                   {[
-                    ['Total Anomalies', anomaliesData.length, 'text-slate-900 dark:text-white'],
+                    ['Total Anomalies', anomaliesData.length, 'text-[#051F20] dark:text-[#DAF1DE]'],
                     ['Critical', anomaliesData.filter(a => a.severity === 'Critical').length, 'text-rose-600'],
                     ['Warning', anomaliesData.filter(a => a.severity === 'Warning').length, 'text-amber-600'],
-                    ['Info', anomaliesData.filter(a => a.severity === 'Info').length, 'text-blue-600'],
+                    ['Info', anomaliesData.filter(a => a.severity === 'Info').length, 'text-[#235347]'],
                   ].map(([k, v, cls]) => (
                     <div key={k} className="fintech-card p-4">
-                      <p className="text-xs text-slate-500 dark:text-slate-400">{k}</p>
+                      <p className="text-xs text-[#235347] dark:text-[#8EB69B]">{k}</p>
                       <p className={`text-2xl font-bold mt-1 ${cls}`}>{v}</p>
                     </div>
                   ))}
@@ -303,7 +303,7 @@ const Dashboard = () => {
                   ))}
                 </div>
                 {!isLoading && !recommendationsData.length && (
-                  <div className="fintech-card p-8 text-center text-slate-400 text-sm">
+                  <div className="fintech-card p-8 text-center text-[#8EB69B] text-sm">
                     No recommendations yet. Ensure the Groq API key is set and run the ML pipeline.
                   </div>
                 )}
@@ -314,28 +314,28 @@ const Dashboard = () => {
             {activeTab === 'upload' && (
               <div className="space-y-6">
                 <div className="fintech-card p-6 space-y-4">
-                  <h3 className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                    <UploadCloud className="w-5 h-5 text-blue-600" /> Upload Sales CSV to ETL Pipeline
+                  <h3 className="text-base font-bold text-[#051F20] dark:text-[#DAF1DE] flex items-center gap-2">
+                    <UploadCloud className="w-5 h-5 text-[#235347]" /> Upload Sales CSV to ETL Pipeline
                   </h3>
-                  <p className="text-xs text-slate-500 dark:text-slate-400">
+                  <p className="text-xs text-[#235347] dark:text-[#8EB69B]">
                     Upload a CSV file of sales transactions. It will be parsed, validated via Pandera schemas,
                     loaded into staging tables, transformed into the PostgreSQL Star Schema, and trigger ML retraining.
                   </p>
-                  <div className="border-2 border-dashed border-slate-300 dark:border-slate-700 rounded-xl p-8 text-center space-y-3 bg-slate-50 dark:bg-slate-800/40">
-                    <UploadCloud className="w-10 h-10 text-slate-400 mx-auto" />
-                    <div className="text-xs text-slate-600 dark:text-slate-300">
-                      <label htmlFor="csv-upload" className="font-bold text-blue-600 dark:text-blue-400 hover:underline cursor-pointer">Click to choose CSV</label>
+                  <div className="border-2 border-dashed border-[#235347] dark:border-[#235347] rounded-xl p-8 text-center space-y-3 bg-[#EDF8EF] dark:bg-[#0B2B26]">
+                    <UploadCloud className="w-10 h-10 text-[#8EB69B] mx-auto" />
+                    <div className="text-xs text-[#235347] dark:text-[#DAF1DE]">
+                      <label htmlFor="csv-upload" className="font-bold text-[#235347] dark:text-[#8EB69B] hover:underline cursor-pointer">Click to choose CSV</label>
                       <span> or drag and drop</span>
                     </div>
-                    <p className="text-[11px] text-slate-400">Columns: transaction_id, sale_date, product_id, customer_id, quantity, unit_price, discount, total_amount</p>
+                    <p className="text-[11px] text-[#8EB69B]">Columns: transaction_id, sale_date, product_id, customer_id, quantity, unit_price, discount, total_amount</p>
                     <input id="csv-upload" type="file" accept=".csv" onChange={handleFileUpload} className="hidden" />
                   </div>
                   {uploadStatus && (
                     <div className="space-y-4 pt-2">
-                      <div className={`p-4 rounded-xl text-xs font-semibold space-y-2 border ${uploadStatus.loading ? 'bg-blue-50/70 border-blue-200 text-blue-800 dark:bg-blue-950/40 dark:border-blue-900 dark:text-blue-300' : uploadStatus.success ? 'bg-emerald-50/70 border-emerald-200 text-emerald-900 dark:bg-emerald-950/40 dark:border-emerald-900 dark:text-emerald-300' : 'bg-rose-50/70 border-rose-200 text-rose-800 dark:bg-rose-950/40 dark:border-rose-900 dark:text-rose-300'}`}>
+                      <div className={`p-4 rounded-xl text-xs font-semibold space-y-2 border ${uploadStatus.loading ? 'bg-[#DAF1DE]/70 border-[#8EB69B] text-[#235347] dark:bg-[#163832] dark:border-[#235347] dark:text-[#8EB69B]' : uploadStatus.success ? 'bg-[#DAF1DE]/70 border-[#8EB69B] text-[#235347] dark:bg-[#163832] dark:border-[#235347] dark:text-[#8EB69B]' : 'bg-rose-50/70 border-rose-200 text-rose-800 dark:bg-rose-950/40 dark:border-rose-900 dark:text-rose-300'}`}>
                         <div className="flex items-center gap-2 text-sm font-bold">
-                          {uploadStatus.loading && <RefreshCw className="w-4 h-4 animate-spin text-blue-600" />}
-                          {uploadStatus.success && <CheckCircle className="w-4 h-4 text-emerald-600" />}
+                          {uploadStatus.loading && <RefreshCw className="w-4 h-4 animate-spin text-[#235347]" />}
+                          {uploadStatus.success && <CheckCircle className="w-4 h-4 text-[#8EB69B]" />}
                           <span>{uploadStatus.success ? 'CSV Upload & Data Pipeline Completed' : uploadStatus.loading ? 'Executing Data Pipeline…' : 'Upload Error'}</span>
                         </div>
                         <p>{uploadStatus.message}</p>
@@ -351,7 +351,7 @@ const Dashboard = () => {
                           ['Fact Star Schema', uploadStatus.success],
                           ['Dashboard Sync', uploadStatus.success],
                         ].map(([stageName, isDone], idx) => (
-                          <div key={stageName} className={`p-2 rounded-lg border transition-all ${isDone ? 'bg-emerald-50 dark:bg-emerald-900/30 border-emerald-300 text-emerald-700 dark:text-emerald-300 font-bold' : 'bg-slate-100 dark:bg-slate-800 border-slate-200 text-slate-400'}`}>
+                          <div key={stageName} className={`p-2 rounded-lg border transition-all ${isDone ? 'bg-[#DAF1DE] dark:bg-[#163832] border-[#8EB69B] text-[#235347] dark:text-[#8EB69B] font-bold' : 'bg-[#EDF8EF] dark:bg-[#0B2B26] border-[#c4dfc8] dark:border-[#235347] text-[#8EB69B]'}`}>
                             <span>{isDone ? '✓' : `${idx + 1}.`} {stageName}</span>
                           </div>
                         ))}
@@ -359,22 +359,22 @@ const Dashboard = () => {
 
                       {/* Database Count Breakdown */}
                       {uploadStatus.data && (
-                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 bg-slate-50 dark:bg-slate-800/60 p-4 rounded-xl border border-slate-200 dark:border-slate-700 text-xs">
+                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 bg-[#EDF8EF] dark:bg-[#0B2B26] p-4 rounded-xl border border-[#c4dfc8] dark:border-[#235347] text-xs">
                           <div>
-                            <span className="text-slate-500 block">Rows Received</span>
-                            <span className="text-sm font-bold text-slate-900 dark:text-white">{uploadStatus.data.rows_received?.toLocaleString()}</span>
+                            <span className="text-[#235347] dark:text-[#8EB69B] block">Rows Received</span>
+                            <span className="text-sm font-bold text-[#051F20] dark:text-[#DAF1DE]">{uploadStatus.data.rows_received?.toLocaleString()}</span>
                           </div>
                           <div>
-                            <span className="text-slate-500 block">Rows Inserted</span>
-                            <span className="text-sm font-bold text-emerald-600">{uploadStatus.data.rows_accepted?.toLocaleString()}</span>
+                            <span className="text-[#235347] dark:text-[#8EB69B] block">Rows Inserted</span>
+                            <span className="text-sm font-bold text-[#8EB69B]">{uploadStatus.data.rows_accepted?.toLocaleString()}</span>
                           </div>
                           <div>
-                            <span className="text-slate-500 block">Database Before</span>
-                            <span className="text-sm font-bold text-slate-900 dark:text-white">{uploadStatus.data.database_total_before?.toLocaleString()} sales</span>
+                            <span className="text-[#235347] dark:text-[#8EB69B] block">Database Before</span>
+                            <span className="text-sm font-bold text-[#051F20] dark:text-[#DAF1DE]">{uploadStatus.data.database_total_before?.toLocaleString()} sales</span>
                           </div>
                           <div>
-                            <span className="text-slate-500 block">Database Total</span>
-                            <span className="text-sm font-bold text-blue-600">{uploadStatus.data.database_total_after?.toLocaleString()} sales</span>
+                            <span className="text-[#235347] dark:text-[#8EB69B] block">Database Total</span>
+                            <span className="text-sm font-bold text-[#235347]">{uploadStatus.data.database_total_after?.toLocaleString()} sales</span>
                           </div>
                         </div>
                       )}
@@ -393,30 +393,30 @@ const Dashboard = () => {
             {/* ── EXECUTIVE REPORTS ────────────────────────────── */}
             {activeTab === 'reports' && (
               <div className="fintech-card p-6 space-y-5">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 dark:border-slate-800 pb-4">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#DAF1DE] dark:border-[#235347] pb-4">
                   <div>
-                    <h3 className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                      <FileText className="w-5 h-5 text-blue-600" /> Automated Executive Analytics Report
+                    <h3 className="text-base font-bold text-[#051F20] dark:text-[#DAF1DE] flex items-center gap-2">
+                      <FileText className="w-5 h-5 text-[#235347]" /> Automated Executive Analytics Report
                     </h3>
-                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                    <p className="text-xs text-[#235347] dark:text-[#8EB69B] mt-1">
                       Generates a PDF with KPIs, sales trends, anomaly audit, variance analysis and AI recommendations — all from live database data.
                     </p>
                   </div>
                   <a href={getReportDownloadUrl()} target="_blank" rel="noreferrer"
-                    className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-xs font-semibold shadow-sm transition-colors cursor-pointer self-start sm:self-auto">
+                    className="flex items-center gap-2 bg-[#235347] hover:bg-[#163832] text-[#DAF1DE] px-4 py-2 rounded-lg text-xs font-semibold shadow-sm transition-colors cursor-pointer self-start sm:self-auto">
                     <FileText className="w-4 h-4" /> Download PDF Report
                   </a>
                 </div>
-                <div className="bg-slate-50 dark:bg-slate-800/50 p-5 rounded-lg border border-slate-200/80 dark:border-slate-800 space-y-2 text-xs">
-                  <h4 className="font-bold text-slate-800 dark:text-slate-200 text-sm">Report Contents:</h4>
+                <div className="bg-[#EDF8EF] dark:bg-[#0B2B26] p-5 rounded-lg border border-[#c4dfc8] dark:border-[#235347] space-y-2 text-xs">
+                  <h4 className="font-bold text-[#051F20] dark:text-[#DAF1DE] text-sm">Report Contents:</h4>
                   {[
                     'Executive KPI Summary (Total Revenue, Forecast Accuracy, Anomaly Count)',
                     'Statistical Anomaly & Variance Audit Table',
                     'Product & Category Performance Summary',
                     'Prescriptive Strategy Roadmap from AI Recommendations',
                   ].map((item, i) => (
-                    <div key={i} className="flex items-center gap-2 text-slate-600 dark:text-slate-400">
-                      <CheckCircle className="w-4 h-4 text-emerald-600 shrink-0" />
+                    <div key={i} className="flex items-center gap-2 text-[#235347] dark:text-[#8EB69B]">
+                      <CheckCircle className="w-4 h-4 text-[#8EB69B] shrink-0" />
                       <span><strong>{i+1}.</strong> {item}</span>
                     </div>
                   ))}

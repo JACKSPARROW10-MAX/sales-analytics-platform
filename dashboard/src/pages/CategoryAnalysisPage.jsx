@@ -11,7 +11,7 @@ const fmt = (v) => {
   return `₹${Number(v).toFixed(0)}`;
 };
 
-const COLORS = ['#2563eb','#059669','#d97706','#dc2626','#7c3aed','#0891b2'];
+const COLORS = ['#235347','#8EB69B','#163832','#0B2B26','#DAF1DE','#2d6b5a'];
 
 const CategoryAnalysisPage = () => {
   const [categories, setCategories] = useState([]);
@@ -19,13 +19,25 @@ const CategoryAnalysisPage = () => {
   const [loading, setLoading] = useState(true);
   const [view, setView] = useState('category');
 
-  useEffect(() => {
+  const loadData = () => {
+    setLoading(true);
     Promise.all([getCategoryAnalytics(), getSubcategoryAnalytics()])
-      .then(([cats, subs]) => { setCategories(cats); setSubcategories(subs); setLoading(false); });
+      .then(([cats, subs]) => { 
+        setCategories(cats || []); 
+        setSubcategories(subs || []); 
+        setLoading(false); 
+      })
+      .catch(() => setLoading(false));
+  };
+
+  useEffect(() => {
+    loadData();
+    window.addEventListener('dashboard-refresh', loadData);
+    return () => window.removeEventListener('dashboard-refresh', loadData);
   }, []);
 
-  if (loading) return <div className="flex items-center justify-center h-64 text-slate-400 text-sm">Loading category analytics…</div>;
-  if (!categories.length) return <div className="flex items-center justify-center h-64 text-slate-400 text-sm">No category data found.</div>;
+  if (loading) return <div className="flex items-center justify-center h-64 text-[#8EB69B] text-sm">Loading category analytics…</div>;
+  if (!categories.length) return <div className="flex items-center justify-center h-64 text-[#8EB69B] text-sm">No category data found.</div>;
 
   const displayData = view === 'category' ? categories : subcategories;
 
@@ -35,7 +47,7 @@ const CategoryAnalysisPage = () => {
         {[['category','Category'],['subcategory','Subcategory']].map(([k,label]) => (
           <button key={k} onClick={() => setView(k)}
             className={`px-4 py-2 rounded-lg text-xs font-semibold cursor-pointer transition-colors
-              ${view===k ? 'bg-blue-600 text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700'}`}>
+              ${view===k ? 'bg-[#235347] text-[#DAF1DE]' : 'bg-[#DAF1DE] dark:bg-[#0B2B26] text-[#235347] dark:text-[#8EB69B] hover:bg-[#c4dfc8] dark:hover:bg-[#163832]'}`}>
             {label} View
           </button>
         ))}
@@ -44,12 +56,12 @@ const CategoryAnalysisPage = () => {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
         {/* Revenue Bar */}
         <div className="fintech-card p-5">
-          <h3 className="text-sm font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
-            <Tag className="w-4 h-4 text-blue-600" /> Revenue by {view === 'category' ? 'Category' : 'Subcategory'}
+          <h3 className="text-sm font-bold text-[#051F20] dark:text-[#DAF1DE] mb-4 flex items-center gap-2">
+            <Tag className="w-4 h-4 text-[#235347] dark:text-[#8EB69B]" /> Revenue by {view === 'category' ? 'Category' : 'Subcategory'}
           </h3>
           <ResponsiveContainer width="100%" height={240}>
             <BarChart data={displayData} layout="vertical" margin={{ top: 0, right: 20, left: 100, bottom: 0 }}>
-              <CartesianGrid strokeDasharray="3 3" horizontal={false} />
+              <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#8EB69B" opacity={0.3} />
               <XAxis type="number" tick={{ fontSize: 10 }} tickFormatter={fmt} />
               <YAxis type="category" dataKey={view === 'category' ? 'category' : 'subcategory'} tick={{ fontSize: 9 }} width={95} />
               <Tooltip formatter={(v) => [fmt(v), 'Revenue']} />
@@ -62,7 +74,7 @@ const CategoryAnalysisPage = () => {
 
         {/* Contribution Pie */}
         <div className="fintech-card p-5">
-          <h3 className="text-sm font-bold text-slate-900 dark:text-white mb-4">Revenue Contribution %</h3>
+          <h3 className="text-sm font-bold text-[#051F20] dark:text-[#DAF1DE] mb-4">Revenue Contribution %</h3>
           <ResponsiveContainer width="100%" height={240}>
             <PieChart>
               <Pie
@@ -83,34 +95,34 @@ const CategoryAnalysisPage = () => {
 
       {/* Table */}
       <div className="fintech-card overflow-hidden">
-        <div className="p-4 border-b border-slate-100 dark:border-slate-800">
-          <h3 className="text-sm font-bold text-slate-900 dark:text-white">
+        <div className="p-4 border-b border-[#DAF1DE] dark:border-[#235347]">
+          <h3 className="text-sm font-bold text-[#051F20] dark:text-[#DAF1DE]">
             {view === 'category' ? 'Category' : 'Subcategory'} Breakdown
           </h3>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full text-xs">
-            <thead className="bg-slate-50 dark:bg-slate-800/60">
+            <thead className="bg-[#163832]">
               <tr>
                 {(view === 'category'
                   ? ['Category','Revenue','Quantity','Orders','AOV','Contribution %','Avg Discount','Products']
                   : ['Category','Subcategory','Revenue','Quantity','Orders','AOV','Contribution %','Products']
                 ).map(h => (
-                  <th key={h} className="px-4 py-2.5 text-left font-semibold text-slate-600 dark:text-slate-400 whitespace-nowrap">{h}</th>
+                  <th key={h} className="px-4 py-2.5 text-left font-semibold text-[#DAF1DE] whitespace-nowrap">{h}</th>
                 ))}
               </tr>
             </thead>
             <tbody>
               {displayData.map((row, i) => (
-                <tr key={i} className="border-t border-slate-100 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800/40">
-                  <td className="px-4 py-2.5 font-medium text-slate-900 dark:text-white">{row.category}</td>
-                  {view === 'subcategory' && <td className="px-4 py-2.5 text-slate-500">{row.subcategory}</td>}
-                  <td className="px-4 py-2.5 font-semibold text-emerald-600">{fmt(row.total_revenue)}</td>
+                <tr key={i} className="border-t border-[#DAF1DE] dark:border-[#235347] hover:bg-[#EDF8EF] dark:hover:bg-[#163832]">
+                  <td className="px-4 py-2.5 font-medium text-[#051F20] dark:text-[#DAF1DE]">{row.category}</td>
+                  {view === 'subcategory' && <td className="px-4 py-2.5 text-[#235347] dark:text-[#8EB69B]">{row.subcategory}</td>}
+                  <td className="px-4 py-2.5 font-semibold text-[#8EB69B]">{fmt(row.total_revenue)}</td>
                   <td className="px-4 py-2.5">{Number(row.total_quantity||0).toLocaleString()}</td>
                   <td className="px-4 py-2.5">{Number(row.total_orders||0).toLocaleString()}</td>
                   <td className="px-4 py-2.5">{fmt(row.avg_order_value)}</td>
                   <td className="px-4 py-2.5">
-                    <span className="bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 px-2 py-0.5 rounded text-[10px] font-bold">
+                    <span className="bg-[#DAF1DE] dark:bg-[#163832] text-[#235347] dark:text-[#8EB69B] px-2 py-0.5 rounded text-[10px] font-bold">
                       {Number(row.revenue_contribution_pct||0).toFixed(1)}%
                     </span>
                   </td>

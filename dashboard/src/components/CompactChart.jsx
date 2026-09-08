@@ -28,24 +28,24 @@ const CompactChart = ({ data = [], series = [], title = '' }) => {
   return (
     <div className="fintech-card p-4 h-[260px] flex flex-col">
       {title && (
-        <h3 className="text-sm font-medium mb-2 text-slate-800 dark:text-slate-200">{title}</h3>
+        <h3 className="text-sm font-medium mb-2 text-[#051F20] dark:text-[#DAF1DE]">{title}</h3>
       )}
       <ResponsiveContainer width="100%" height="100%">
         <LineChart data={data} margin={{ top: 5, right: 5, left: 5, bottom: 5 }}>
-          <CartesianGrid strokeDasharray="3 3" stroke="#cbd5e1" opacity={0.3} />
-          <XAxis dataKey="date" tick={{ fontSize: 10, fill: '#64748b' }} />
+          <CartesianGrid strokeDasharray="3 3" stroke="#8EB69B" opacity={0.3} />
+          <XAxis dataKey="date" tick={{ fontSize: 10, fill: '#235347' }} />
           <YAxis
-            tick={{ fontSize: 10, fill: '#64748b' }}
+            tick={{ fontSize: 10, fill: '#235347' }}
             tickFormatter={(val) => `₹${val >= 1000 ? `${(val / 1000).toFixed(0)}k` : val}`}
           />
           <Tooltip
             formatter={(value) => formatCurrency(value)}
             labelFormatter={(label) => `Date: ${label}`}
             contentStyle={{
-              backgroundColor: '#0f172a',
-              borderColor: '#334155',
+              backgroundColor: '#051F20',
+              borderColor: '#235347',
               borderRadius: '8px',
-              color: '#f8fafc',
+              color: '#DAF1DE',
               fontSize: '12px',
             }}
           />

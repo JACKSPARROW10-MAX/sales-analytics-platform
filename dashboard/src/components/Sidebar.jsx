@@ -56,15 +56,15 @@ const Sidebar = ({ activeTab, setActiveTab, anomalyCount = 0 }) => {
 
   return (
     <aside
-      className={`relative flex flex-col bg-white dark:bg-[#0f172a] border-r border-slate-200
-        dark:border-slate-800 transition-all duration-200 min-h-[calc(100vh-3.75rem)]
+      className={`relative flex flex-col bg-white dark:bg-[#051F20] border-r border-[#c4dfc8]
+        dark:border-[#235347] transition-all duration-200 min-h-[calc(100vh-3.75rem)]
         shrink-0 select-none ${collapsed ? 'w-16' : 'w-64'}`}
     >
       {/* Collapse Toggle */}
       <button
         onClick={() => setCollapsed(!collapsed)}
-        className="absolute -right-3 top-5 bg-white dark:bg-slate-800 border border-slate-200
-          dark:border-slate-700 text-slate-500 hover:text-slate-900 dark:hover:text-white
+        className="absolute -right-3 top-5 bg-white dark:bg-[#0B2B26] border border-[#c4dfc8]
+          dark:border-[#235347] text-[#235347] hover:text-[#051F20] dark:hover:text-[#DAF1DE]
           p-1 rounded-full shadow-sm z-40 transition-colors cursor-pointer"
         title={collapsed ? 'Expand' : 'Collapse'}
       >
@@ -77,11 +77,11 @@ const Sidebar = ({ activeTab, setActiveTab, anomalyCount = 0 }) => {
             {/* Section Header */}
             {!collapsed && (
               <div className="px-4 pt-3 pb-1 text-[10px] font-bold tracking-widest uppercase
-                text-slate-400 dark:text-slate-500">
+                text-[#8EB69B] dark:text-[#8EB69B]">
                 {section.label}
               </div>
             )}
-            {collapsed && <div className="border-t border-slate-100 dark:border-slate-800 mx-2 my-2" />}
+            {collapsed && <div className="border-t border-[#DAF1DE] dark:border-[#235347] mx-2 my-2" />}
 
             {/* Nav Items */}
             {section.items.map((item) => {
@@ -99,20 +99,20 @@ const Sidebar = ({ activeTab, setActiveTab, anomalyCount = 0 }) => {
                   className={`w-full flex items-center justify-between px-3 py-2 rounded-lg mx-1
                     text-xs font-semibold transition-all duration-150 cursor-pointer
                     ${isActive
-                      ? 'bg-blue-50 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300 border border-blue-200/70 dark:border-blue-800/70'
-                      : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800/60'
+                      ? 'bg-[#235347] text-[#DAF1DE] dark:bg-[#235347] dark:text-[#DAF1DE] border border-[#8EB69B]/40 dark:border-[#8EB69B]/40'
+                      : 'text-[#235347] dark:text-[#DAF1DE] hover:text-[#051F20] dark:hover:text-[#DAF1DE] hover:bg-[#DAF1DE] dark:hover:bg-[#163832]'
                     }`}
                   style={{ width: collapsed ? 'calc(100% - 8px)' : 'calc(100% - 8px)' }}
                 >
                   <div className="flex items-center gap-2.5 min-w-0">
-                    <Icon className={`w-4 h-4 shrink-0 ${isActive ? 'text-blue-600 dark:text-blue-400' : 'text-slate-400 dark:text-slate-500'}`} />
+                    <Icon className={`w-4 h-4 shrink-0 ${isActive ? 'text-[#DAF1DE]' : 'text-[#8EB69B] dark:text-[#8EB69B]'}`} />
                     {!collapsed && <span className="truncate">{item.label}</span>}
                   </div>
                   {!collapsed && badgeLabel && (
                     <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded shrink-0 ml-1
                       ${item.id === 'anomalies'
                         ? 'bg-rose-100 text-rose-700 dark:bg-rose-950/80 dark:text-rose-300'
-                        : 'bg-blue-100 text-blue-700 dark:bg-blue-950/80 dark:text-blue-300'}`}
+                        : 'bg-[#163832] text-[#DAF1DE] dark:bg-[#163832] dark:text-[#8EB69B]'}`}
                     >
                       {badgeLabel}
                     </span>
@@ -126,14 +126,14 @@ const Sidebar = ({ activeTab, setActiveTab, anomalyCount = 0 }) => {
 
       {/* Footer Status */}
       {!collapsed && (
-        <div className="p-3 border-t border-slate-100 dark:border-slate-800">
-          <div className="p-2.5 rounded-lg bg-slate-50 dark:bg-slate-800/60 border
-            border-slate-200/70 dark:border-slate-700/60 text-xs space-y-1">
-            <div className="flex items-center justify-between text-slate-500 dark:text-slate-400">
+        <div className="p-3 border-t border-[#DAF1DE] dark:border-[#235347]">
+          <div className="p-2.5 rounded-lg bg-[#EDF8EF] dark:bg-[#0B2B26] border
+            border-[#c4dfc8] dark:border-[#235347] text-xs space-y-1">
+            <div className="flex items-center justify-between text-[#235347] dark:text-[#8EB69B]">
               <span className="text-[11px] font-semibold">Engine Status</span>
-              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse inline-block" />
+              <span className="w-2 h-2 rounded-full bg-[#8EB69B] animate-pulse inline-block" />
             </div>
-            <div className="text-[11px] text-slate-800 dark:text-slate-200 font-mono font-medium">
+            <div className="text-[11px] text-[#051F20] dark:text-[#DAF1DE] font-mono font-medium">
               FastAPI + ML Active
             </div>
           </div>

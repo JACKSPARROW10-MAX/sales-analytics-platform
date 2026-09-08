@@ -1,7 +1,7 @@
 """
 ML Pipeline Orchestrator & Training Script
 Reads curated data from DB (fact_sales), executes forecasting, anomaly detection,
-explainability, and recommendations, then caches the results for FastAPI backend.
+explainability, and dynamic recommendations, then caches the results for FastAPI backend.
 """
 import json
 import logging
@@ -18,6 +18,7 @@ from ml.forecasting import generate_forecast
 from ml.anomaly_detection import detect_anomalies
 from ml.explainability import compute_feature_importance
 from ml.recommendations import generate_recommendations
+from api.utils.sql_helpers import get_kpi_metrics
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -63,11 +64,8 @@ def run_ml_pipeline():
         df = pd.read_sql(query, engine)
         logger.info(f"Loaded {len(df)} records from fact_sales database")
     except Exception as e:
-        logger.warning(f"Could not read from DB ({e}), loading sample sales CSV fallback")
-        sample_path = Path(__file__).resolve().parent.parent / "data" / "sample" / "sales_data.csv"
-        df = pd.read_csv(sample_path)
-        if 'total_amount' in df.columns:
-            df['revenue'] = df['total_amount']
+        logger.error(f"Error querying fact_sales: {e}")
+        df = pd.DataFrame()
 
     # 1. Generate Overall Forecast
     logger.info("Training overall sales forecast model...")
@@ -75,12 +73,12 @@ def run_ml_pipeline():
     
     # Generate Per-Product Forecasts
     product_forecasts = {}
-    products = df['product_name'].dropna().unique().tolist() if 'product_name' in df.columns else []
+    products = df['product_name'].dropna().unique().tolist() if 'product_name' in df.columns and not df.empty else []
     
     for prod in products[:5]:
         prod_df = df[df['product_name'] == prod]
-        if len(prod_df) > 5:
-            product_forecasts[prod] = generate_forecast(prod_df, days_ahead=30)['data']
+        if len(prod_df) >= 5:
+            product_forecasts[prod] = generate_forecast(prod_df, days_ahead=30).get('data', [])
 
     # 2. Run Anomaly Detection
     logger.info("Executing anomaly detection engine...")
@@ -91,43 +89,25 @@ def run_ml_pipeline():
     logger.info("Calculating feature importance attributions...")
     explainability = compute_feature_importance(df)
 
-    # 4. Generate Recommendations
+    # 4. Generate Dynamic Recommendations from CURRENT metrics
     logger.info("Generating prescriptive business recommendations...")
-    recommendations = generate_recommendations(forecast_results, anomalies)
+    recommendations = generate_recommendations(df, forecast_results, anomalies)
 
-    # 5. Build KPI Summary
-    total_rev = float(df['revenue'].sum()) if 'revenue' in df.columns else 1248500.0
-    kpis = {
-        "totalRevenue": {
-            "value": total_rev,
-            "formatted": f"₹{total_rev:,.0f}",
-            "change": "+14.2%",
-            "subtext": f"Across {len(df):,} sales records",
-            "isPositive": True
-        },
-        "forecastAccuracy": {
-            "value": forecast_results.get('accuracy', 96.4),
-            "formatted": f"{forecast_results.get('accuracy', 96.4)}%",
-            "change": "+1.8%",
-            "mape": f"{forecast_results.get('mape', 3.6)}% Margin Error",
-            "subtext": "High Prediction Reliability",
-            "isPositive": True
-        },
-        "anomaliesDetected": {
-            "value": len(anomalies),
-            "formatted": f"{len(anomalies)} Flagged",
-            "change": f"{len([a for a in anomalies if a['severity'] == 'Critical'])} High Urgency",
-            "subtext": "Unusual Sales Spikes/Drops",
-            "isPositive": False
-        },
-        "activeRecommendations": {
-            "value": len(recommendations),
-            "formatted": f"{len(recommendations)} Actionable",
-            "change": f"+₹{sum(r.get('impact_value', 15000) for r in recommendations):,.0f}",
-            "subtext": "Est. revenue growth opportunity",
-            "isPositive": True
+    # 5. Build KPI Summary from live database
+    try:
+        kpis = get_kpi_metrics()
+    except Exception as e:
+        logger.warning(f"Could not fetch get_kpi_metrics: {e}")
+        total_rev = float(df['revenue'].sum()) if 'revenue' in df.columns and not df.empty else 0.0
+        kpis = {
+            "totalRevenue": {
+                "value": total_rev,
+                "formatted": f"₹{total_rev:,.0f}",
+                "change": "+14.2%",
+                "subtext": f"Across {len(df):,} sales records",
+                "isPositive": True
+            }
         }
-    }
 
     # Format final results payload
     ml_output = {

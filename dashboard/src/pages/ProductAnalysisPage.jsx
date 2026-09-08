@@ -11,7 +11,7 @@ const fmt = (v) => {
   return `₹${Number(v).toFixed(0)}`;
 };
 
-const COLORS = ['#2563eb','#0891b2','#059669','#d97706','#dc2626','#7c3aed','#db2777','#ea580c','#16a34a','#0e7490'];
+const COLORS = ['#235347','#8EB69B','#163832','#0B2B26','#DAF1DE','#051F20','#2d6b5a','#5a9e82','#3d7a66','#1a4a3c'];
 
 const ProductAnalysisPage = () => {
   const [products, setProducts] = useState([]);
@@ -35,8 +35,8 @@ const ProductAnalysisPage = () => {
 
   const sorted = [...products].sort((a, b) => (b[sort] || 0) - (a[sort] || 0));
 
-  if (loading) return <div className="flex items-center justify-center h-64 text-slate-400 text-sm">Loading product analytics…</div>;
-  if (!products.length) return <div className="flex items-center justify-center h-64 text-slate-400 text-sm">No product data — run the ETL pipeline first.</div>;
+  if (loading) return <div className="flex items-center justify-center h-64 text-[#8EB69B] text-sm">Loading product analytics…</div>;
+  if (!products.length) return <div className="flex items-center justify-center h-64 text-[#8EB69B] text-sm">No product data — run the ETL pipeline first.</div>;
 
   return (
     <div className="space-y-6">
@@ -45,7 +45,7 @@ const ProductAnalysisPage = () => {
         {[['total_revenue','By Revenue'],['total_quantity','By Quantity'],['total_orders','By Orders'],['avg_order_value','By AOV']].map(([k, label]) => (
           <button key={k} onClick={() => setSort(k)}
             className={`px-3 py-1.5 rounded-lg text-xs font-semibold cursor-pointer transition-colors
-              ${sort === k ? 'bg-blue-600 text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700'}`}>
+              ${sort === k ? 'bg-[#235347] text-[#DAF1DE]' : 'bg-[#DAF1DE] dark:bg-[#0B2B26] text-[#235347] dark:text-[#8EB69B] hover:bg-[#c4dfc8] dark:hover:bg-[#163832]'}`}>
             {label}
           </button>
         ))}
@@ -53,12 +53,12 @@ const ProductAnalysisPage = () => {
 
       {/* Top Products Bar Chart */}
       <div className="fintech-card p-5">
-        <h3 className="text-sm font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
-          <Package className="w-4 h-4 text-blue-600" /> Top Products — {sort.replace(/_/g,' ')}
+        <h3 className="text-sm font-bold text-[#051F20] dark:text-[#DAF1DE] mb-4 flex items-center gap-2">
+          <Package className="w-4 h-4 text-[#235347] dark:text-[#8EB69B]" /> Top Products — {sort.replace(/_/g,' ')}
         </h3>
         <ResponsiveContainer width="100%" height={260}>
           <BarChart data={sorted} layout="vertical" margin={{ top: 0, right: 20, left: 120, bottom: 0 }}>
-            <CartesianGrid strokeDasharray="3 3" horizontal={false} />
+            <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#8EB69B" opacity={0.3} />
             <XAxis type="number" tick={{ fontSize: 10 }} tickFormatter={v => sort === 'total_revenue' || sort === 'avg_order_value' ? fmt(v) : v.toLocaleString()} />
             <YAxis type="category" dataKey="product_name" tick={{ fontSize: 10 }} width={115} />
             <Tooltip formatter={(v) => [sort.includes('revenue') || sort.includes('value') ? fmt(v) : v.toLocaleString(), sort.replace(/_/g,' ')]} />
@@ -71,15 +71,15 @@ const ProductAnalysisPage = () => {
 
       {/* Product Table */}
       <div className="fintech-card overflow-hidden">
-        <div className="p-4 border-b border-slate-100 dark:border-slate-800">
-          <h3 className="text-sm font-bold text-slate-900 dark:text-white">All Products — Detailed Breakdown</h3>
+        <div className="p-4 border-b border-[#DAF1DE] dark:border-[#235347]">
+          <h3 className="text-sm font-bold text-[#051F20] dark:text-[#DAF1DE]">All Products — Detailed Breakdown</h3>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full text-xs">
-            <thead className="bg-slate-50 dark:bg-slate-800/60">
+            <thead className="bg-[#163832]">
               <tr>
                 {['Product','Category','Revenue','Qty','Orders','AOV','Contribution %','Avg Discount','Unit Price'].map(h => (
-                  <th key={h} className="px-4 py-2.5 text-left font-semibold text-slate-600 dark:text-slate-400 whitespace-nowrap">{h}</th>
+                  <th key={h} className="px-4 py-2.5 text-left font-semibold text-[#DAF1DE] whitespace-nowrap">{h}</th>
                 ))}
               </tr>
             </thead>
@@ -87,16 +87,16 @@ const ProductAnalysisPage = () => {
               {sorted.map((p, i) => (
                 <tr key={p.product_id}
                   onClick={() => setSelected(selected?.product_id === p.product_id ? null : p)}
-                  className={`border-t border-slate-100 dark:border-slate-800 cursor-pointer transition-colors
-                    ${selected?.product_id === p.product_id ? 'bg-blue-50 dark:bg-blue-900/20' : 'hover:bg-slate-50 dark:hover:bg-slate-800/40'}`}>
-                  <td className="px-4 py-2.5 font-medium text-slate-900 dark:text-white">{p.product_name}</td>
-                  <td className="px-4 py-2.5 text-slate-500">{p.category}</td>
-                  <td className="px-4 py-2.5 font-semibold text-emerald-600">{fmt(p.total_revenue)}</td>
+                  className={`border-t border-[#DAF1DE] dark:border-[#235347] cursor-pointer transition-colors
+                    ${selected?.product_id === p.product_id ? 'bg-[#DAF1DE] dark:bg-[#163832]' : 'hover:bg-[#EDF8EF] dark:hover:bg-[#0B2B26]'}`}>
+                  <td className="px-4 py-2.5 font-medium text-[#051F20] dark:text-[#DAF1DE]">{p.product_name}</td>
+                  <td className="px-4 py-2.5 text-[#235347] dark:text-[#8EB69B]">{p.category}</td>
+                  <td className="px-4 py-2.5 font-semibold text-[#8EB69B]">{fmt(p.total_revenue)}</td>
                   <td className="px-4 py-2.5">{Number(p.total_quantity || 0).toLocaleString()}</td>
                   <td className="px-4 py-2.5">{Number(p.total_orders || 0).toLocaleString()}</td>
                   <td className="px-4 py-2.5">{fmt(p.avg_order_value)}</td>
                   <td className="px-4 py-2.5">
-                    <span className="bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 px-2 py-0.5 rounded text-[10px] font-bold">
+                    <span className="bg-[#DAF1DE] dark:bg-[#163832] text-[#235347] dark:text-[#8EB69B] px-2 py-0.5 rounded text-[10px] font-bold">
                       {Number(p.revenue_contribution_pct || 0).toFixed(1)}%
                     </span>
                   </td>
@@ -111,8 +111,8 @@ const ProductAnalysisPage = () => {
 
       {/* Selected Product Detail */}
       {selected && (
-        <div className="fintech-card p-5 border-l-4 border-blue-500">
-          <h4 className="text-sm font-bold text-slate-900 dark:text-white mb-3">📦 {selected.product_name} — Detail</h4>
+        <div className="fintech-card p-5 border-l-4 border-[#235347]">
+          <h4 className="text-sm font-bold text-[#051F20] dark:text-[#DAF1DE] mb-3">📦 {selected.product_name} — Detail</h4>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-xs">
             {[
               ['Revenue', fmt(selected.total_revenue)],
@@ -124,9 +124,9 @@ const ProductAnalysisPage = () => {
               ['Min Order', fmt(selected.min_order_revenue)],
               ['Max Order', fmt(selected.max_order_revenue)],
             ].map(([k, v]) => (
-              <div key={k} className="bg-slate-50 dark:bg-slate-800 p-3 rounded-lg">
-                <p className="text-slate-500 dark:text-slate-400 mb-0.5">{k}</p>
-                <p className="font-bold text-slate-900 dark:text-white">{v}</p>
+              <div key={k} className="bg-[#EDF8EF] dark:bg-[#0B2B26] p-3 rounded-lg">
+                <p className="text-[#235347] dark:text-[#8EB69B] mb-0.5">{k}</p>
+                <p className="font-bold text-[#051F20] dark:text-[#DAF1DE]">{v}</p>
               </div>
             ))}
           </div>

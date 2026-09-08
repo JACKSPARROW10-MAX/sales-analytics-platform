@@ -2,21 +2,41 @@
 
 @variant dark (&:where(.dark, .dark *));
 
+@theme {
+  --color-green-950: #051F20;
+  --color-green-900: #0B2B26;
+  --color-green-800: #163832;
+  --color-green-700: #235347;
+  --color-green-300: #8EB69B;
+  --color-green-100: #DAF1DE;
+  --color-green-50: #EDF8EF;
+}
+
 @layer base {
   :root {
-    --bg-main: #f8fafc;
+    --bg-main: #EDF8EF;
     --card-bg: #ffffff;
-    --card-border: #e2e8f0;
-    --text-primary: #0f172a;
-    --text-secondary: #64748b;
+    --card-border: #c4dfc8;
+    --text-primary: #051F20;
+    --text-secondary: #235347;
+    --accent-primary: #235347;
+    --accent-secondary: #8EB69B;
+    --accent-light: #DAF1DE;
+    --surface-elevated: #DAF1DE;
+    --hover-bg: #DAF1DE;
   }
 
   html.dark, body.dark, .dark {
-    --bg-main: #0b0f19;
-    --card-bg: #1e293b;
-    --card-border: #334155;
-    --text-primary: #f8fafc;
-    --text-secondary: #94a3b8;
+    --bg-main: #051F20;
+    --card-bg: #0B2B26;
+    --card-border: #235347;
+    --text-primary: #DAF1DE;
+    --text-secondary: #8EB69B;
+    --accent-primary: #235347;
+    --accent-secondary: #8EB69B;
+    --accent-light: #DAF1DE;
+    --surface-elevated: #163832;
+    --hover-bg: #163832;
   }
 
   body {
@@ -30,7 +50,7 @@
   }
 }
 
-/* Custom scrollbar for clean fintech dashboard */
+/* Custom scrollbar — green theme */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
@@ -39,29 +59,29 @@
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
+  background: #8EB69B;
   border-radius: 4px;
 }
 .dark ::-webkit-scrollbar-thumb {
-  background: #334155;
+  background: #235347;
 }
 
-/* Fintech Metric & Card Containers */
+/* Card System */
 .fintech-card {
   background-color: var(--card-bg);
   border: 1px solid var(--card-border);
-  box-shadow: 0 1px 3px 0 rgba(15, 23, 42, 0.05);
+  box-shadow: 0 1px 3px 0 rgba(5, 31, 32, 0.05);
   border-radius: 0.75rem;
   transition: background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .fintech-card:hover {
-  border-color: #cbd5e1;
-  box-shadow: 0 4px 12px -2px rgba(15, 23, 42, 0.08);
+  border-color: #8EB69B;
+  box-shadow: 0 4px 12px -2px rgba(5, 31, 32, 0.08);
 }
 
 .dark .fintech-card:hover {
-  border-color: #475569;
+  border-color: #8EB69B;
   box-shadow: 0 4px 12px -2px rgba(0, 0, 0, 0.4);
 }
 
@@ -69,7 +89,7 @@
   font-variant-numeric: tabular-nums;
 }
 
-/* Clean Fintech Table Styling */
+/* Table Styling — green theme */
 .fintech-table {
   width: 100%;
   border-collapse: separate;
@@ -77,36 +97,36 @@
 }
 
 .fintech-table th {
-  background-color: #f1f5f9;
-  color: #475569;
+  background-color: #163832;
+  color: #DAF1DE;
   font-size: 0.75rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.05em;
   padding: 0.75rem 1rem;
-  border-bottom: 1px solid #e2e8f0;
+  border-bottom: 1px solid #235347;
 }
 
 .dark .fintech-table th {
-  background-color: #0f172a;
-  color: #94a3b8;
-  border-bottom-color: #334155;
+  background-color: #163832;
+  color: #DAF1DE;
+  border-bottom-color: #235347;
 }
 
 .fintech-table td {
   padding: 0.875rem 1rem;
-  border-bottom: 1px solid #f1f5f9;
+  border-bottom: 1px solid #DAF1DE;
   font-size: 0.875rem;
 }
 
 .dark .fintech-table td {
-  border-bottom-color: #1e293b;
+  border-bottom-color: #0B2B26;
 }
 
 .fintech-table tbody tr:hover {
-  background-color: #f8fafc;
+  background-color: #EDF8EF;
 }
 
 .dark .fintech-table tbody tr:hover {
-  background-color: #334155;
+  background-color: #163832;
 }

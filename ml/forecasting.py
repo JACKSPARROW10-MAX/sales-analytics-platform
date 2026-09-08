@@ -21,20 +21,30 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
-def generate_forecast(df: pd.DataFrame, days_ahead: int = 30) -> Dict[str, Any]:
+from etl.load_staging import get_db_connection
+
+def generate_forecast(df: pd.DataFrame = None, days_ahead: int = 30) -> Dict[str, Any]:
     """
     Generate sales forecast for overall sales or product-specific sales.
-    
-    Args:
-        df: DataFrame with 'sale_date' (or 'date') and 'revenue' (or 'total_amount')
-        days_ahead: Number of days to forecast into the future
-        
-    Returns:
-        Dict containing time_series data, forecast metrics (MAPE, trend), and summary statistics.
+    If df is None, loads current sales data directly from PostgreSQL fact_sales.
     """
-    if df.empty:
+    if df is None:
+        try:
+            engine = get_db_connection()
+            query = """
+            SELECT dd.full_date as sale_date, fs.revenue
+            FROM fact_sales fs
+            JOIN dim_date dd ON fs.date_id = dd.date_id
+            ORDER BY dd.full_date ASC;
+            """
+            df = pd.read_sql(query, engine)
+        except Exception as e:
+            logger.error(f"Error querying fact_sales for forecasting: {e}")
+            return {"data": [], "status": "error", "message": str(e), "accuracy": None, "mape": None}
+
+    if df is None or df.empty:
         logger.warning("Empty dataframe provided to generate_forecast")
-        return {"data": [], "mape": 4.2, "accuracy": 95.8}
+        return {"data": [], "status": "no_data", "message": "No sales records available for forecasting.", "accuracy": None, "mape": None}
 
     # Ensure standardized column names
     df_clean = df.copy()
@@ -52,8 +62,27 @@ def generate_forecast(df: pd.DataFrame, days_ahead: int = 30) -> Dict[str, Any]:
     daily_sales = daily_sales.sort_values('date').reset_index(drop=True)
 
     if len(daily_sales) < 5:
-        logger.warning("Not enough data points for time series model, generating synthetic baseline")
-        return _build_fallback_forecast(days_ahead)
+        logger.warning(f"Insufficient history ({len(daily_sales)} days) for time series forecast")
+        return {
+            "data": [
+                {
+                    "date": row['date'].strftime('%Y-%m-%d'),
+                    "actual": round(float(row[revenue_col]), 2),
+                    "forecast": round(float(row[revenue_col]), 2),
+                    "upper": round(float(row[revenue_col]) * 1.1, 2),
+                    "lower": round(float(row[revenue_col]) * 0.9, 2),
+                    "isForecast": False
+                }
+                for _, row in daily_sales.iterrows()
+            ],
+            "status": "insufficient_history",
+            "message": f"Insufficient historical series ({len(daily_sales)} days available; minimum 5 days required for predictive modeling).",
+            "accuracy": None,
+            "mape": None,
+            "total_historical_revenue": round(float(daily_sales[revenue_col].sum()), 2),
+            "projected_30d_revenue": 0.0,
+            "days_forecasted": 0
+        }
 
     # Calculate day index for regression
     daily_sales['day_idx'] = (daily_sales['date'] - daily_sales['date'].min()).dt.days

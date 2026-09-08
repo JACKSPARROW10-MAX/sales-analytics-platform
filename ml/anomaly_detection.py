@@ -17,18 +17,39 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
-def detect_anomalies(df: pd.DataFrame, contamination: float = 0.02) -> List[Dict[str, Any]]:
+from etl.load_staging import get_db_connection
+
+def detect_anomalies(df: pd.DataFrame = None, contamination: float = 0.02) -> List[Dict[str, Any]]:
     """
     Detect anomalous transactions or daily aggregates.
-    
-    Args:
-        df: DataFrame containing sales data (sale_id/transaction_id, date, quantity, total_amount, discount, etc.)
-        contamination: Proportion of anomalies expected in dataset (e.g. 0.02 = 2%)
-        
-    Returns:
-        List of anomaly dicts formatted for API & UI dashboard presentation.
+    If df is None, loads current transactions directly from PostgreSQL fact_sales.
     """
-    if df.empty:
+    if df is None:
+        try:
+            engine = get_db_connection()
+            query = """
+            SELECT 
+                fs.sale_id,
+                dd.full_date as sale_date,
+                COALESCE(dp.product_name, fs.product_id) as product_name,
+                COALESCE(dc.customer_name, fs.customer_id) as customer_name,
+                COALESCE(dc.region, 'Global') as region,
+                fs.quantity,
+                fs.revenue,
+                fs.discount
+            FROM fact_sales fs
+            LEFT JOIN dim_date dd ON fs.date_id = dd.date_id
+            LEFT JOIN dim_product dp ON fs.product_id = dp.product_id
+            LEFT JOIN dim_customer dc ON fs.customer_id = dc.customer_id
+            ORDER BY dd.full_date DESC
+            LIMIT 5000;
+            """
+            df = pd.read_sql(query, engine)
+        except Exception as e:
+            logger.error(f"Error reading fact_sales for anomaly detection: {e}")
+            return []
+
+    if df is None or df.empty:
         logger.warning("Empty dataframe passed to detect_anomalies")
         return []
 

@@ -122,17 +122,19 @@ def build_dim_product(engine) -> int:
     """
     Build dim_product dimension from staging_products.
     Uses upsert on natural key (product_id).
-    
-    Args:
-        engine: SQLAlchemy engine
-    
-    Returns:
-        Number of rows upserted
     """
     logger.info("Building dim_product dimension")
     
     try:
         with engine.connect() as conn:
+            # First ensure default unknown product exists
+            conn.execute(text("""
+                INSERT INTO dim_product (product_id, product_name, category, subcategory, unit_price)
+                VALUES ('PRD-UNKNOWN', 'Unknown Product', 'General', 'Standard', 100.0)
+                ON CONFLICT (product_id) DO NOTHING;
+            """))
+            conn.commit()
+
             # Read from staging_products
             staging_products = pd.read_sql(
                 "SELECT DISTINCT product_id, product_name, category, subcategory, unit_price FROM staging_products",
@@ -141,11 +143,13 @@ def build_dim_product(engine) -> int:
             
             if staging_products.empty:
                 logger.warning("No data in staging_products")
-                return 0
+                return 1
             
             # Clean and convert unit_price
-            staging_products['unit_price'] = pd.to_numeric(staging_products['unit_price'], errors='coerce')
-            staging_products = staging_products.dropna(subset=['unit_price'])
+            staging_products['unit_price'] = pd.to_numeric(staging_products['unit_price'], errors='coerce').fillna(100.0)
+            staging_products['product_name'] = staging_products['product_name'].fillna(staging_products['product_id'])
+            staging_products['category'] = staging_products['category'].fillna('General')
+            staging_products['subcategory'] = staging_products['subcategory'].fillna('Standard')
             
             # Upsert using ON CONFLICT DO UPDATE
             for _, row in staging_products.iterrows():
@@ -159,11 +163,11 @@ def build_dim_product(engine) -> int:
                         subcategory = EXCLUDED.subcategory,
                         unit_price = EXCLUDED.unit_price
                 """), {
-                    'product_id': row['product_id'],
-                    'product_name': row['product_name'],
-                    'category': row['category'],
-                    'subcategory': row.get('subcategory'),
-                    'unit_price': row['unit_price']
+                    'product_id': str(row['product_id']),
+                    'product_name': str(row['product_name']),
+                    'category': str(row['category']),
+                    'subcategory': str(row['subcategory']),
+                    'unit_price': float(row['unit_price'])
                 })
             
             conn.commit()
@@ -179,17 +183,19 @@ def build_dim_customer(engine) -> int:
     """
     Build dim_customer dimension from staging_customers.
     Uses upsert on natural key (customer_id).
-    
-    Args:
-        engine: SQLAlchemy engine
-    
-    Returns:
-        Number of rows upserted
     """
     logger.info("Building dim_customer dimension")
     
     try:
         with engine.connect() as conn:
+            # First ensure default unknown customer exists
+            conn.execute(text("""
+                INSERT INTO dim_customer (customer_id, customer_name, region, segment)
+                VALUES ('CUST-UNKNOWN', 'Standard Customer', 'Global', 'Corporate')
+                ON CONFLICT (customer_id) DO NOTHING;
+            """))
+            conn.commit()
+
             # Read from staging_customers
             staging_customers = pd.read_sql(
                 "SELECT DISTINCT customer_id, customer_name, region, segment FROM staging_customers",
@@ -198,8 +204,12 @@ def build_dim_customer(engine) -> int:
             
             if staging_customers.empty:
                 logger.warning("No data in staging_customers")
-                return 0
+                return 1
             
+            staging_customers['customer_name'] = staging_customers['customer_name'].fillna(staging_customers['customer_id'])
+            staging_customers['region'] = staging_customers['region'].fillna('Global')
+            staging_customers['segment'] = staging_customers['segment'].fillna('Corporate')
+
             # Upsert using ON CONFLICT DO UPDATE
             for _, row in staging_customers.iterrows():
                 conn.execute(text("""
@@ -211,10 +221,10 @@ def build_dim_customer(engine) -> int:
                         region = EXCLUDED.region,
                         segment = EXCLUDED.segment
                 """), {
-                    'customer_id': row['customer_id'],
-                    'customer_name': row['customer_name'],
-                    'region': row['region'],
-                    'segment': row['segment']
+                    'customer_id': str(row['customer_id']),
+                    'customer_name': str(row['customer_name']),
+                    'region': str(row['region']),
+                    'segment': str(row['segment'])
                 })
             
             conn.commit()
@@ -229,45 +239,51 @@ def build_dim_customer(engine) -> int:
 def build_fact_sales(engine) -> int:
     """
     Build fact_sales from staging_sales, joining with dimension tables.
-    Uses upsert on natural key (sale_id = transaction_id_raw_id) for idempotency.
-    
-    Args:
-        engine: SQLAlchemy engine
-    
-    Returns:
-        Number of rows upserted
-    Uses plain insert for new sales records.
-    
-    Args:
-        engine: SQLAlchemy engine
-    
-    Returns:
-        Number of rows inserted
+    Inserts fresh records with unique sale_id.
     """
     logger.info("Building fact_sales fact table")
     
     try:
         with engine.connect() as conn:
+            # Also auto-insert any missing product_ids or customer_ids from staging_sales into dimensions
+            conn.execute(text("""
+                INSERT INTO dim_product (product_id, product_name, category, subcategory, unit_price)
+                SELECT DISTINCT s.product_id, s.product_id, 'General', 'Standard', 100.0
+                FROM staging_sales s
+                WHERE s.product_id IS NOT NULL
+                  AND NOT EXISTS (SELECT 1 FROM dim_product dp WHERE dp.product_id = s.product_id)
+                ON CONFLICT (product_id) DO NOTHING;
+            """))
+            conn.execute(text("""
+                INSERT INTO dim_customer (customer_id, customer_name, region, segment)
+                SELECT DISTINCT s.customer_id, s.customer_id, COALESCE(s.region, 'Global'), 'Corporate'
+                FROM staging_sales s
+                WHERE s.customer_id IS NOT NULL
+                  AND NOT EXISTS (SELECT 1 FROM dim_customer dc WHERE dc.customer_id = s.customer_id)
+                ON CONFLICT (customer_id) DO NOTHING;
+            """))
+            conn.commit()
+
             insert_sql = text("""
                 INSERT INTO fact_sales (sale_id, date_id, product_id, customer_id, quantity, revenue, discount, source_system)
                 SELECT 
                     gen_random_uuid(),
                     dd.date_id,
-                    s.product_id,
-                    s.customer_id,
+                    COALESCE(dp.product_id, 'PRD-UNKNOWN'),
+                    COALESCE(dc.customer_id, 'CUST-UNKNOWN'),
                     CAST(s.quantity AS INTEGER),
                     CAST(s.total_amount AS NUMERIC(12,2)),
                     COALESCE(CAST(s.discount AS NUMERIC(5,2)), 0.00),
                     'POS'
                 FROM staging_sales s
                 JOIN dim_date dd ON dd.full_date = s.sale_date::date
+                LEFT JOIN dim_product dp ON s.product_id = dp.product_id
+                LEFT JOIN dim_customer dc ON s.customer_id = dc.customer_id
                 WHERE s.sale_date IS NOT NULL
-                  AND s.product_id IS NOT NULL
-                  AND s.customer_id IS NOT NULL
                   AND s.quantity IS NOT NULL
                   AND s.total_amount IS NOT NULL
                   AND CAST(s.quantity AS NUMERIC) >= 0
-                  AND CAST(s.total_amount AS NUMERIC) >= 0
+                  AND CAST(s.total_amount AS NUMERIC) >= 0;
             """)
             res = conn.execute(insert_sql)
             conn.commit()

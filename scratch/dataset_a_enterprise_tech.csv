@@ -1,0 +1,401 @@
+transaction_id,sale_date,product_id,product_name,category,subcategory,customer_id,customer_name,region,segment,quantity,unit_price,discount,total_amount
+TECH-TXN-1000,2025-04-06,PRD-TECH-04,Zero-Trust Identity Gateway,Cybersecurity,Access,CUST-ENT-005,Enterprise Corp 23,North America,Strategic Enterprise,2,28000.0,0.08,51520.0
+TECH-TXN-1001,2025-01-12,PRD-TECH-04,Zero-Trust Identity Gateway,Cybersecurity,Access,CUST-ENT-014,Enterprise Corp 13,Nordic Europe,Strategic Enterprise,1,28000.0,0.03,27160.0
+TECH-TXN-1002,2025-03-23,PRD-TECH-03,High-Performance GPU Cluster,Cloud Infrastructure,Hardware,CUST-ENT-021,Enterprise Corp 14,North America,Strategic Enterprise,3,120000.0,0.07,334800.0
+TECH-TXN-1003,2025-03-12,PRD-TECH-01,Enterprise Quantum Cloud,Cloud Infrastructure,Quantum,CUST-ENT-024,Enterprise Corp 7,North America,Strategic Enterprise,2,75000.0,0.03,145500.0
+TECH-TXN-1004,2025-03-05,PRD-TECH-02,Cybersecurity AI Shield,Cybersecurity,Defense,CUST-ENT-017,Enterprise Corp 28,North America,Strategic Enterprise,3,45000.0,0.03,130950.0
+TECH-TXN-1005,2025-03-29,PRD-TECH-01,Enterprise Quantum Cloud,Cloud Infrastructure,Quantum,CUST-ENT-011,Enterprise Corp 25,North America,Strategic Enterprise,1,75000.0,0.06,70500.0
+TECH-TXN-1006,2025-03-17,PRD-TECH-04,Zero-Trust Identity Gateway,Cybersecurity,Access,CUST-ENT-004,Enterprise Corp 7,North America,Strategic Enterprise,3,28000.0,0.04,80640.0
+TECH-TXN-1007,2025-05-18,PRD-TECH-01,Enterprise Quantum Cloud,Cloud Infrastructure,Quantum,CUST-ENT-021,Enterprise Corp 29,North America,Strategic Enterprise,3,75000.0,0.02,220500.0
+TECH-TXN-1008,2025-02-10,PRD-TECH-01,Enterprise Quantum Cloud,Cloud Infrastructure,Quantum,CUST-ENT-003,Enterprise Corp 21,North America,Strategic Enterprise,2,75000.0,0.0,150000.0
+TECH-TXN-1009,2025-05-13,PRD-TECH-04,Zero-Trust Identity Gateway,Cybersecurity,Access,CUST-ENT-020,Enterprise Corp 22,North America,Strategic Enterprise,2,28000.0,0.02,54880.0
+TECH-TXN-1010,2025-03-05,PRD-TECH-02,Cybersecurity AI Shield,Cybersecurity,Defense,CUST-ENT-016,Enterprise Corp 26,Nordic Europe,Strategic Enterprise,3,45000.0,0.45,74250.0
+TECH-TXN-1011,2025-06-18,PRD-TECH-01,Enterprise Quantum Cloud,Cloud Infrastructure,Quantum,CUST-ENT-005,Enterprise Corp 18,Nordic Europe,Strategic Enterprise,3,75000.0,0.02,220500.0
+TECH-TXN-1012,2025-03-02,PRD-TECH-02,Cybersecurity AI Shield,Cybersecurity,Defense,CUST-ENT-022,Enterprise Corp 22,Nordic Europe,Strategic Enterprise,3,45000.0,0.03,130950.0
+TECH-TXN-1013,2025-04-21,PRD-TECH-04,Zero-Trust Identity Gateway,Cybersecurity,Access,CUST-ENT-029,Enterprise Corp 12,Nordic Europe,Strategic Enterprise,2,28000.0,0.03,54320.0
+TECH-TXN-1014,2025-01-06,PRD-TECH-02,Cybersecurity AI Shield,Cybersecurity,Defense,CUST-ENT-019,Enterprise Corp 23,Nordic Europe,Strategic Enterprise,1,45000.0,0.07,41850.0
+TECH-TXN-1015,2025-05-21,PRD-TECH-01,Enterprise Quantum Cloud,Cloud Infrastructure,Quantum,CUST-ENT-007,Enterprise Corp 19,Nordic Europe,Strategic Enterprise,1,75000.0,0.02,73500.0
+TECH-TXN-1016,2025-02-10,PRD-TECH-04,Zero-Trust Identity Gateway,Cybersecurity,Access,CUST-ENT-008,Enterprise Corp 13,North America,Strategic Enterprise,3,28000.0,0.04,80640.0
+TECH-TXN-1017,2025-02-19,PRD-TECH-04,Zero-Trust Identity Gateway,Cybersecurity,Access,CUST-ENT-018,Enterprise Corp 4,North America,Strategic Enterprise,2,28000.0,0.07,52080.0
+TECH-TXN-1018,2025-03-25,PRD-TECH-01,Enterprise Quantum Cloud,Cloud Infrastructure,Quantum,CUST-ENT-026,Enterprise Corp 3,Nordic Europe,Strategic Enterprise,3,75000.0,0.0,225000.0
+TECH-TXN-1019,2025-04-22,PRD-TECH-02,Cybersecurity AI Shield,Cybersecurity,Defense,CUST-ENT-015,Enterprise Corp 7,North America,Strategic Enterprise,1,45000.0,0.06,42300.0
+TECH-TXN-1020,2025-05-17,PRD-TECH-03,High-Performance GPU Cluster,Cloud Infrastructure,Hardware,CUST-ENT-022,Enterprise Corp 28,North America,Strategic Enterprise,2,120000.0,0.02,235200.0
+TECH-TXN-1021,2025-04-26,PRD-TECH-03,High-Performance GPU Cluster,Cloud Infrastructure,Hardware,CUST-ENT-012,Enterprise Corp 3,Nordic Europe,Strategic Enterprise,3,120000.0,0.08,331200.0
+TECH-TXN-1022,2025-06-07,PRD-TECH-02,Cybersecurity AI Shield,Cybersecurity,Defense,CUST-ENT-019,Enterprise Corp 3,North America,Strategic Enterprise,3,45000.0,0.04,129600.0
+TECH-TXN-1023,2025-04-26,PRD-TECH-03,High-Performance GPU Cluster,Cloud Infrastructure,Hardware,CUST-ENT-024,Enterprise Corp 15,North America,Strategic Enterprise,2,120000.0,0.08,220800.0
+TECH-TXN-1024,2025-03-01,PRD-TECH-03,High-Performance GPU Cluster,Cloud Infrastructure,Hardware,CUST-ENT-026,Enterprise Corp 20,Nordic Europe,Strategic Enterprise,2,120000.0,0.06,225600.0
+TECH-TXN-1025,2025-06-12,PRD-TECH-03,High-Performance GPU Cluster,Cloud Infrastructure,Hardware,CUST-ENT-026,Enterprise Corp 6,Nordic Europe,Strategic Enterprise,2,120000.0,0.5,120000.0
+TECH-TXN-1026,2025-02-14,PRD-TECH-01,Enterprise Quantum Cloud,Cloud Infrastructure,Quantum,CUST-ENT-016,Enterprise Corp 2,North America,Strategic Enterprise,1,75000.0,0.06,70500.0
+TECH-TXN-1027,2025-03-14,PRD-TECH-03,High-Performance GPU Cluster,Cloud Infrastructure,Hardware,CUST-ENT-021,Enterprise Corp 17,Nordic Europe,Strategic Enterprise,2,120000.0,0.08,220800.0
+TECH-TXN-1028,2025-01-20,PRD-TECH-03,High-Performance GPU Cluster,Cloud Infrastructure,Hardware,CUST-ENT-008,Enterprise Corp 23,North America,Strategic Enterprise,2,120000.0,0.03,232800.0
+TECH-TXN-1029,2025-05-07,PRD-TECH-02,Cybersecurity AI Shield,Cybersecurity,Defense,CUST-ENT-020,Enterprise Corp 2,North America,Strategic Enterprise,2,45000.0,0.06,84600.0
+TECH-TXN-1030,2025-05-19,PRD-TECH-03,High-Performance GPU Cluster,Cloud Infrastructure,Hardware,CUST-ENT-022,Enterprise Corp 16,Nordic Europe,Strategic Enterprise,2,120000.0,0.02,235200.0
+TECH-TXN-1031,2025-03-18,PRD-TECH-03,High-Performance GPU Cluster,Cloud Infrastructure,Hardware,CUST-ENT-010,Enterprise Corp 19,North America,Strategic Enterprise,1,120000.0,0.06,112800.0
+TECH-TXN-1032,2025-04-18,PRD-TECH-04,Zero-Trust Identity Gateway,Cybersecurity,Access,CUST-ENT-029,Enterprise Corp 26,Nordic Europe,Strategic Enterprise,3,28000.0,0.04,80640.0
+TECH-TXN-1033,2025-03-29,PRD-TECH-01,Enterprise Quantum Cloud,Cloud Infrastructure,Quantum,CUST-ENT-019,Enterprise Corp 5,Nordic Europe,Strategic Enterprise,3,75000.0,0.04,216000.0
+TECH-TXN-1034,2025-05-09,PRD-TECH-02,Cybersecurity AI Shield,Cybersecurity,Defense,CUST-ENT-001,Enterprise Corp 4,Nordic Europe,Strategic Enterprise,2,45000.0,0.05,85500.0
+TECH-TXN-1035,2025-04-16,PRD-TECH-03,High-Performance GPU Cluster,Cloud Infrastructure,Hardware,CUST-ENT-019,Enterprise Corp 14,North America,Strategic Enterprise,3,120000.0,0.05,342000.0
+TECH-TXN-1036,2025-01-09,PRD-TECH-03,High-Performance GPU Cluster,Cloud Infrastructure,Hardware,CUST-ENT-023,Enterprise Corp 10,Nordic Europe,Strategic Enterprise,3,120000.0,0.05,342000.0
+TECH-TXN-1037,2025-03-04,PRD-TECH-03,High-Performance GPU Cluster,Cloud Infrastructure,Hardware,CUST-ENT-016,Enterprise Corp 28,Nordic Europe,Strategic Enterprise,2,120000.0,0.03,232800.0
+TECH-TXN-1038,2025-06-14,PRD-TECH-01,Enterprise Quantum Cloud,Cloud Infrastructure,Quantum,CUST-ENT-016,Enterprise Corp 25,North America,Strategic Enterprise,2,75000.0,0.06,141000.0
+TECH-TXN-1039,2025-04-10,PRD-TECH-01,Enterprise Quantum Cloud,Cloud Infrastructure,Quantum,CUST-ENT-024,Enterprise Corp 18,Nordic Europe,Strategic Enterprise,1,75000.0,0.03,72750.0
+TECH-TXN-1040,2025-01-29,PRD-TECH-04,Zero-Trust Identity Gateway,Cybersecurity,Access,CUST-ENT-024,Enterprise Corp 1,Nordic Europe,Strategic Enterprise,3,28000.0,0.03,81480.0
+TECH-TXN-1041,2025-03-05,PRD-TECH-01,Enterprise Quantum Cloud,Cloud Infrastructure,Quantum,CUST-ENT-002,Enterprise Corp 17,North America,Strategic Enterprise,1,75000.0,0.04,72000.0
+TECH-TXN-1042,2025-01-08,PRD-TECH-02,Cybersecurity AI Shield,Cybersecurity,Defense,CUST-ENT-005,Enterprise Corp 17,Nordic Europe,Strategic Enterprise,1,45000.0,0.01,44550.0
+TECH-TXN-1043,2025-05-19,PRD-TECH-02,Cybersecurity AI Shield,Cybersecurity,Defense,CUST-ENT-014,Enterprise Corp 23,Nordic Europe,Strategic Enterprise,2,45000.0,0.01,89100.0
+TECH-TXN-1044,2025-04-14,PRD-TECH-03,High-Performance GPU Cluster,Cloud Infrastructure,Hardware,CUST-ENT-020,Enterprise Corp 22,Nordic Europe,Strategic Enterprise,1,120000.0,0.08,110400.0
+TECH-TXN-1045,2025-02-08,PRD-TECH-02,Cybersecurity AI Shield,Cybersecurity,Defense,CUST-ENT-014,Enterprise Corp 22,Nordic Europe,Strategic Enterprise,3,45000.0,0.01,133650.0
+TECH-TXN-1046,2025-03-15,PRD-TECH-04,Zero-Trust Identity Gateway,Cybersecurity,Access,CUST-ENT-015,Enterprise Corp 25,North America,Strategic Enterprise,2,28000.0,0.04,53760.0
+TECH-TXN-1047,2025-05-27,PRD-TECH-03,High-Performance GPU Cluster,Cloud Infrastructure,Hardware,CUST-ENT-006,Enterprise Corp 23,Nordic Europe,Strategic Enterprise,1,120000.0,0.03,116400.0
+TECH-TXN-1048,2025-03-13,PRD-TECH-01,Enterprise Quantum Cloud,Cloud Infrastructure,Quantum,CUST-ENT-012,Enterprise Corp 18,Nordic Europe,Strategic Enterprise,2,75000.0,0.07,139500.0
+TECH-TXN-1049,2025-04-14,PRD-TECH-01,Enterprise Quantum Cloud,Cloud Infrastructure,Quantum,CUST-ENT-017,Enterprise Corp 12,Nordic Europe,Strategic Enterprise,3,75000.0,0.06,211500.0
+TECH-TXN-1050,2025-05-24,PRD-TECH-02,Cybersecurity AI Shield,Cybersecurity,Defense,CUST-ENT-022,Enterprise Corp 16,Nordic Europe,Strategic Enterprise,3,45000.0,0.01,133650.0
+TECH-TXN-1051,2025-02-14,PRD-TECH-02,Cybersecurity AI Shield,Cybersecurity,Defense,CUST-ENT-020,Enterprise Corp 28,Nordic Europe,Strategic Enterprise,2,45000.0,0.0,90000.0
+TECH-TXN-1052,2025-01-01,PRD-TECH-04,Zero-Trust Identity Gateway,Cybersecurity,Access,CUST-ENT-014,Enterprise Corp 29,North America,Strategic Enterprise,3,28000.0,0.02,82320.0
+TECH-TXN-1053,2025-04-27,PRD-TECH-02,Cybersecurity AI Shield,Cybersecurity,Defense,CUST-ENT-004,Enterprise Corp 4,North America,Strategic Enterprise,1,45000.0,0.05,42750.0
+TECH-TXN-1054,2025-04-17,PRD-TECH-03,High-Performance GPU Cluster,Cloud Infrastructure,Hardware,CUST-ENT-005,Enterprise Corp 27,Nordic Europe,Strategic Enterprise,3,120000.0,0.05,342000.0
+TECH-TXN-1055,2025-05-21,PRD-TECH-02,Cybersecurity AI Shield,Cybersecurity,Defense,CUST-ENT-020,Enterprise Corp 13,Nordic Europe,Strategic Enterprise,2,45000.0,0.06,84600.0
+TECH-TXN-1056,2025-01-18,PRD-TECH-01,Enterprise Quantum Cloud,Cloud Infrastructure,Quantum,CUST-ENT-028,Enterprise Corp 14,North America,Strategic Enterprise,3,75000.0,0.07,209250.0
+TECH-TXN-1057,2025-04-08,PRD-TECH-02,Cybersecurity AI Shield,Cybersecurity,Defense,CUST-ENT-021,Enterprise Corp 10,North America,Strategic Enterprise,1,45000.0,0.06,42300.0
+TECH-TXN-1058,2025-06-02,PRD-TECH-03,High-Performance GPU Cluster,Cloud Infrastructure,Hardware,CUST-ENT-009,Enterprise Corp 28,North America,Strategic Enterprise,3,120000.0,0.0,360000.0
+TECH-TXN-1059,2025-06-14,PRD-TECH-04,Zero-Trust Identity Gateway,Cybersecurity,Access,CUST-ENT-029,Enterprise Corp 20,North America,Strategic Enterprise,1,28000.0,0.01,27720.0
+TECH-TXN-1060,2025-05-05,PRD-TECH-02,Cybersecurity AI Shield,Cybersecurity,Defense,CUST-ENT-027,Enterprise Corp 27,North America,Strategic Enterprise,2,45000.0,0.03,87300.0
+TECH-TXN-1061,2025-01-20,PRD-TECH-01,Enterprise Quantum Cloud,Cloud Infrastructure,Quantum,CUST-ENT-009,Enterprise Corp 8,Nordic Europe,Strategic Enterprise,1,75000.0,0.06,70500.0
+TECH-TXN-1062,2025-06-13,PRD-TECH-02,Cybersecurity AI Shield,Cybersecurity,Defense,CUST-ENT-024,Enterprise Corp 6,North America,Strategic Enterprise,3,45000.0,0.06,126900.0
+TECH-TXN-1063,2025-01-31,PRD-TECH-04,Zero-Trust Identity Gateway,Cybersecurity,Access,CUST-ENT-011,Enterprise Corp 12,North America,Strategic Enterprise,2,28000.0,0.07,52080.0
+TECH-TXN-1064,2025-01-11,PRD-TECH-03,High-Performance GPU Cluster,Cloud Infrastructure,Hardware,CUST-ENT-024,Enterprise Corp 7,North America,Strategic Enterprise,3,120000.0,0.01,356400.0
+TECH-TXN-1065,2025-04-14,PRD-TECH-02,Cybersecurity AI Shield,Cybersecurity,Defense,CUST-ENT-008,Enterprise Corp 25,North America,Strategic Enterprise,1,45000.0,0.05,42750.0
+TECH-TXN-1066,2025-01-21,PRD-TECH-04,Zero-Trust Identity Gateway,Cybersecurity,Access,CUST-ENT-006,Enterprise Corp 25,North America,Strategic Enterprise,3,28000.0,0.04,80640.0
+TECH-TXN-1067,2025-06-05,PRD-TECH-01,Enterprise Quantum Cloud,Cloud Infrastructure,Quantum,CUST-ENT-025,Enterprise Corp 22,Nordic Europe,Strategic Enterprise,2,75000.0,0.06,141000.0
+TECH-TXN-1068,2025-01-09,PRD-TECH-01,Enterprise Quantum Cloud,Cloud Infrastructure,Quantum,CUST-ENT-026,Enterprise Corp 6,Nordic Europe,Strategic Enterprise,2,75000.0,0.04,144000.0
+TECH-TXN-1069,2025-03-28,PRD-TECH-02,Cybersecurity AI Shield,Cybersecurity,Defense,CUST-ENT-003,Enterprise Corp 15,North America,Strategic Enterprise,3,45000.0,0.07,125550.0
+TECH-TXN-1070,2025-05-03,PRD-TECH-04,Zero-Trust Identity Gateway,Cybersecurity,Access,CUST-ENT-010,Enterprise Corp 5,North America,Strategic Enterprise,3,28000.0,0.0,84000.0
+TECH-TXN-1071,2025-01-27,PRD-TECH-02,Cybersecurity AI Shield,Cybersecurity,Defense,CUST-ENT-017,Enterprise Corp 8,Nordic Europe,Strategic Enterprise,2,45000.0,0.01,89100.0
+TECH-TXN-1072,2025-03-29,PRD-TECH-03,High-Performance GPU Cluster,Cloud Infrastructure,Hardware,CUST-ENT-021,Enterprise Corp 28,Nordic Europe,Strategic Enterprise,2,120000.0,0.01,237600.0
+TECH-TXN-1073,2025-06-24,PRD-TECH-04,Zero-Trust Identity Gateway,Cybersecurity,Access,CUST-ENT-021,Enterprise Corp 14,Nordic Europe,Strategic Enterprise,3,28000.0,0.07,78120.0
+TECH-TXN-1074,2025-02-17,PRD-TECH-03,High-Performance GPU Cluster,Cloud Infrastructure,Hardware,CUST-ENT-015,Enterprise Corp 23,Nordic Europe,Strategic Enterprise,3,120000.0,0.03,349200.0
+TECH-TXN-1075,2025-05-18,PRD-TECH-04,Zero-Trust Identity Gateway,Cybersecurity,Access,CUST-ENT-004,Enterprise Corp 13,Nordic Europe,Strategic Enterprise,1,28000.0,0.02,27440.0
+TECH-TXN-1076,2025-06-23,PRD-TECH-04,Zero-Trust Identity Gateway,Cybersecurity,Access,CUST-ENT-010,Enterprise Corp 22,Nordic Europe,Strategic Enterprise,1,28000.0,0.03,27160.0
+TECH-TXN-1077,2025-05-11,PRD-TECH-04,Zero-Trust Identity Gateway,Cybersecurity,Access,CUST-ENT-007,Enterprise Corp 8,North America,Strategic Enterprise,2,28000.0,0.07,52080.0
+TECH-TXN-1078,2025-05-27,PRD-TECH-04,Zero-Trust Identity Gateway,Cybersecurity,Access,CUST-ENT-014,Enterprise Corp 3,North America,Strategic Enterprise,2,28000.0,0.01,55440.0
+TECH-TXN-1079,2025-02-28,PRD-TECH-02,Cybersecurity AI Shield,Cybersecurity,Defense,CUST-ENT-007,Enterprise Corp 25,Nordic Europe,Strategic Enterprise,1,45000.0,0.08,41400.0
+TECH-TXN-1080,2025-04-03,PRD-TECH-02,Cybersecurity AI Shield,Cybersecurity,Defense,CUST-ENT-023,Enterprise Corp 18,Nordic Europe,Strategic Enterprise,3,45000.0,0.02,132300.0
+TECH-TXN-1081,2025-05-20,PRD-TECH-02,Cybersecurity AI Shield,Cybersecurity,Defense,CUST-ENT-005,Enterprise Corp 11,Nordic Europe,Strategic Enterprise,3,45000.0,0.03,130950.0
+TECH-TXN-1082,2025-05-19,PRD-TECH-04,Zero-Trust Identity Gateway,Cybersecurity,Access,CUST-ENT-011,Enterprise Corp 10,North America,Strategic Enterprise,2,28000.0,0.06,52640.0
+TECH-TXN-1083,2025-04-24,PRD-TECH-01,Enterprise Quantum Cloud,Cloud Infrastructure,Quantum,CUST-ENT-018,Enterprise Corp 25,North America,Strategic Enterprise,1,75000.0,0.04,72000.0
+TECH-TXN-1084,2025-06-13,PRD-TECH-04,Zero-Trust Identity Gateway,Cybersecurity,Access,CUST-ENT-008,Enterprise Corp 25,Nordic Europe,Strategic Enterprise,2,28000.0,0.08,51520.0
+TECH-TXN-1085,2025-01-29,PRD-TECH-01,Enterprise Quantum Cloud,Cloud Infrastructure,Quantum,CUST-ENT-021,Enterprise Corp 18,Nordic Europe,Strategic Enterprise,1,75000.0,0.02,73500.0
+TECH-TXN-1086,2025-01-04,PRD-TECH-03,High-Performance GPU Cluster,Cloud Infrastructure,Hardware,CUST-ENT-012,Enterprise Corp 26,North America,Strategic Enterprise,1,120000.0,0.02,117600.0
+TECH-TXN-1087,2025-03-25,PRD-TECH-02,Cybersecurity AI Shield,Cybersecurity,Defense,CUST-ENT-008,Enterprise Corp 10,North America,Strategic Enterprise,3,45000.0,0.07,125550.0
+TECH-TXN-1088,2025-03-26,PRD-TECH-04,Zero-Trust Identity Gateway,Cybersecurity,Access,CUST-ENT-011,Enterprise Corp 12,Nordic Europe,Strategic Enterprise,1,28000.0,0.07,26040.0
+TECH-TXN-1089,2025-02-17,PRD-TECH-02,Cybersecurity AI Shield,Cybersecurity,Defense,CUST-ENT-022,Enterprise Corp 11,North America,Strategic Enterprise,1,45000.0,0.07,41850.0
+TECH-TXN-1090,2025-01-15,PRD-TECH-01,Enterprise Quantum Cloud,Cloud Infrastructure,Quantum,CUST-ENT-026,Enterprise Corp 22,Nordic Europe,Strategic Enterprise,2,75000.0,0.0,150000.0
+TECH-TXN-1091,2025-05-01,PRD-TECH-04,Zero-Trust Identity Gateway,Cybersecurity,Access,CUST-ENT-021,Enterprise Corp 28,North America,Strategic Enterprise,2,28000.0,0.03,54320.0
+TECH-TXN-1092,2025-06-29,PRD-TECH-03,High-Performance GPU Cluster,Cloud Infrastructure,Hardware,CUST-ENT-014,Enterprise Corp 26,Nordic Europe,Strategic Enterprise,2,120000.0,0.01,237600.0
+TECH-TXN-1093,2025-01-07,PRD-TECH-03,High-Performance GPU Cluster,Cloud Infrastructure,Hardware,CUST-ENT-005,Enterprise Corp 25,Nordic Europe,Strategic Enterprise,3,120000.0,0.02,352800.0
+TECH-TXN-1094,2025-04-14,PRD-TECH-01,Enterprise Quantum Cloud,Cloud Infrastructure,Quantum,CUST-ENT-015,Enterprise Corp 12,Nordic Europe,Strategic Enterprise,1,75000.0,0.05,71250.0
+TECH-TXN-1095,2025-04-21,PRD-TECH-02,Cybersecurity AI Shield,Cybersecurity,Defense,CUST-ENT-028,Enterprise Corp 6,Nordic Europe,Strategic Enterprise,1,45000.0,0.0,45000.0
+TECH-TXN-1096,2025-03-13,PRD-TECH-04,Zero-Trust Identity Gateway,Cybersecurity,Access,CUST-ENT-017,Enterprise Corp 19,North America,Strategic Enterprise,3,28000.0,0.01,83160.0
+TECH-TXN-1097,2025-04-12,PRD-TECH-03,High-Performance GPU Cluster,Cloud Infrastructure,Hardware,CUST-ENT-019,Enterprise Corp 20,Nordic Europe,Strategic Enterprise,2,120000.0,0.07,223200.0
+TECH-TXN-1098,2025-06-01,PRD-TECH-04,Zero-Trust Identity Gateway,Cybersecurity,Access,CUST-ENT-001,Enterprise Corp 13,North America,Strategic Enterprise,3,28000.0,0.08,77280.0
+TECH-TXN-1099,2025-06-13,PRD-TECH-01,Enterprise Quantum Cloud,Cloud Infrastructure,Quantum,CUST-ENT-020,Enterprise Corp 16,Nordic Europe,Strategic Enterprise,1,75000.0,0.06,70500.0
+TECH-TXN-1100,2025-03-24,PRD-TECH-01,Enterprise Quantum Cloud,Cloud Infrastructure,Quantum,CUST-ENT-021,Enterprise Corp 15,Nordic Europe,Strategic Enterprise,2,75000.0,0.01,148500.0
+TECH-TXN-1101,2025-02-16,PRD-TECH-04,Zero-Trust Identity Gateway,Cybersecurity,Access,CUST-ENT-005,Enterprise Corp 20,North America,Strategic Enterprise,2,28000.0,0.08,51520.0
+TECH-TXN-1102,2025-05-12,PRD-TECH-02,Cybersecurity AI Shield,Cybersecurity,Defense,CUST-ENT-008,Enterprise Corp 3,Nordic Europe,Strategic Enterprise,1,45000.0,0.07,41850.0
+TECH-TXN-1103,2025-02-16,PRD-TECH-01,Enterprise Quantum Cloud,Cloud Infrastructure,Quantum,CUST-ENT-026,Enterprise Corp 9,North America,Strategic Enterprise,1,75000.0,0.07,69750.0
+TECH-TXN-1104,2025-01-30,PRD-TECH-01,Enterprise Quantum Cloud,Cloud Infrastructure,Quantum,CUST-ENT-018,Enterprise Corp 4,Nordic Europe,Strategic Enterprise,2,75000.0,0.06,141000.0
+TECH-TXN-1105,2025-05-30,PRD-TECH-04,Zero-Trust Identity Gateway,Cybersecurity,Access,CUST-ENT-025,Enterprise Corp 26,North America,Strategic Enterprise,3,28000.0,0.02,82320.0
+TECH-TXN-1106,2025-05-03,PRD-TECH-04,Zero-Trust Identity Gateway,Cybersecurity,Access,CUST-ENT-003,Enterprise Corp 8,North America,Strategic Enterprise,2,28000.0,0.01,55440.0
+TECH-TXN-1107,2025-01-22,PRD-TECH-01,Enterprise Quantum Cloud,Cloud Infrastructure,Quantum,CUST-ENT-013,Enterprise Corp 26,North America,Strategic Enterprise,3,75000.0,0.07,209250.0
+TECH-TXN-1108,2025-01-24,PRD-TECH-04,Zero-Trust Identity Gateway,Cybersecurity,Access,CUST-ENT-007,Enterprise Corp 15,North America,Strategic Enterprise,1,28000.0,0.06,26320.0
+TECH-TXN-1109,2025-05-08,PRD-TECH-03,High-Performance GPU Cluster,Cloud Infrastructure,Hardware,CUST-ENT-023,Enterprise Corp 18,North America,Strategic Enterprise,3,120000.0,0.0,360000.0
+TECH-TXN-1110,2025-04-05,PRD-TECH-03,High-Performance GPU Cluster,Cloud Infrastructure,Hardware,CUST-ENT-025,Enterprise Corp 29,North America,Strategic Enterprise,1,120000.0,0.02,117600.0
+TECH-TXN-1111,2025-04-11,PRD-TECH-02,Cybersecurity AI Shield,Cybersecurity,Defense,CUST-ENT-025,Enterprise Corp 5,Nordic Europe,Strategic Enterprise,3,45000.0,0.05,128250.0
+TECH-TXN-1112,2025-01-21,PRD-TECH-04,Zero-Trust Identity Gateway,Cybersecurity,Access,CUST-ENT-007,Enterprise Corp 11,Nordic Europe,Strategic Enterprise,1,28000.0,0.08,25760.0
+TECH-TXN-1113,2025-01-28,PRD-TECH-01,Enterprise Quantum Cloud,Cloud Infrastructure,Quantum,CUST-ENT-025,Enterprise Corp 4,North America,Strategic Enterprise,2,75000.0,0.01,148500.0
+TECH-TXN-1114,2025-01-06,PRD-TECH-02,Cybersecurity AI Shield,Cybersecurity,Defense,CUST-ENT-004,Enterprise Corp 16,Nordic Europe,Strategic Enterprise,2,45000.0,0.03,87300.0
+TECH-TXN-1115,2025-02-19,PRD-TECH-02,Cybersecurity AI Shield,Cybersecurity,Defense,CUST-ENT-009,Enterprise Corp 5,North America,Strategic Enterprise,1,45000.0,0.04,43200.0
+TECH-TXN-1116,2025-03-24,PRD-TECH-02,Cybersecurity AI Shield,Cybersecurity,Defense,CUST-ENT-028,Enterprise Corp 17,Nordic Europe,Strategic Enterprise,2,45000.0,0.03,87300.0
+TECH-TXN-1117,2025-03-19,PRD-TECH-03,High-Performance GPU Cluster,Cloud Infrastructure,Hardware,CUST-ENT-018,Enterprise Corp 20,Nordic Europe,Strategic Enterprise,2,120000.0,0.04,230400.0
+TECH-TXN-1118,2025-04-13,PRD-TECH-04,Zero-Trust Identity Gateway,Cybersecurity,Access,CUST-ENT-013,Enterprise Corp 7,North America,Strategic Enterprise,2,28000.0,0.04,53760.0
+TECH-TXN-1119,2025-05-12,PRD-TECH-02,Cybersecurity AI Shield,Cybersecurity,Defense,CUST-ENT-019,Enterprise Corp 3,Nordic Europe,Strategic Enterprise,3,45000.0,0.03,130950.0
+TECH-TXN-1120,2025-05-08,PRD-TECH-04,Zero-Trust Identity Gateway,Cybersecurity,Access,CUST-ENT-008,Enterprise Corp 27,Nordic Europe,Strategic Enterprise,2,28000.0,0.04,53760.0
+TECH-TXN-1121,2025-05-23,PRD-TECH-02,Cybersecurity AI Shield,Cybersecurity,Defense,CUST-ENT-028,Enterprise Corp 26,North America,Strategic Enterprise,3,45000.0,0.01,133650.0
+TECH-TXN-1122,2025-05-08,PRD-TECH-01,Enterprise Quantum Cloud,Cloud Infrastructure,Quantum,CUST-ENT-027,Enterprise Corp 23,Nordic Europe,Strategic Enterprise,1,75000.0,0.08,69000.0
+TECH-TXN-1123,2025-02-19,PRD-TECH-04,Zero-Trust Identity Gateway,Cybersecurity,Access,CUST-ENT-015,Enterprise Corp 28,Nordic Europe,Strategic Enterprise,2,28000.0,0.06,52640.0
+TECH-TXN-1124,2025-03-29,PRD-TECH-04,Zero-Trust Identity Gateway,Cybersecurity,Access,CUST-ENT-011,Enterprise Corp 24,North America,Strategic Enterprise,1,28000.0,0.01,27720.0
+TECH-TXN-1125,2025-02-22,PRD-TECH-03,High-Performance GPU Cluster,Cloud Infrastructure,Hardware,CUST-ENT-017,Enterprise Corp 27,North America,Strategic Enterprise,3,120000.0,0.05,342000.0
+TECH-TXN-1126,2025-05-22,PRD-TECH-02,Cybersecurity AI Shield,Cybersecurity,Defense,CUST-ENT-003,Enterprise Corp 12,North America,Strategic Enterprise,3,45000.0,0.05,128250.0
+TECH-TXN-1127,2025-06-25,PRD-TECH-03,High-Performance GPU Cluster,Cloud Infrastructure,Hardware,CUST-ENT-021,Enterprise Corp 11,North America,Strategic Enterprise,1,120000.0,0.01,118800.0
+TECH-TXN-1128,2025-06-27,PRD-TECH-03,High-Performance GPU Cluster,Cloud Infrastructure,Hardware,CUST-ENT-016,Enterprise Corp 10,North America,Strategic Enterprise,3,120000.0,0.01,356400.0
+TECH-TXN-1129,2025-01-25,PRD-TECH-03,High-Performance GPU Cluster,Cloud Infrastructure,Hardware,CUST-ENT-018,Enterprise Corp 29,Nordic Europe,Strategic Enterprise,1,120000.0,0.07,111600.0
+TECH-TXN-1130,2025-05-29,PRD-TECH-01,Enterprise Quantum Cloud,Cloud Infrastructure,Quantum,CUST-ENT-003,Enterprise Corp 10,Nordic Europe,Strategic Enterprise,2,75000.0,0.03,145500.0
+TECH-TXN-1131,2025-03-02,PRD-TECH-03,High-Performance GPU Cluster,Cloud Infrastructure,Hardware,CUST-ENT-025,Enterprise Corp 23,North America,Strategic Enterprise,2,120000.0,0.07,223200.0
+TECH-TXN-1132,2025-02-17,PRD-TECH-02,Cybersecurity AI Shield,Cybersecurity,Defense,CUST-ENT-003,Enterprise Corp 23,North America,Strategic Enterprise,2,45000.0,0.03,87300.0
+TECH-TXN-1133,2025-04-25,PRD-TECH-04,Zero-Trust Identity Gateway,Cybersecurity,Access,CUST-ENT-026,Enterprise Corp 3,North America,Strategic Enterprise,3,28000.0,0.06,78960.0
+TECH-TXN-1134,2025-01-30,PRD-TECH-01,Enterprise Quantum Cloud,Cloud Infrastructure,Quantum,CUST-ENT-018,Enterprise Corp 3,Nordic Europe,Strategic Enterprise,1,75000.0,0.03,72750.0
+TECH-TXN-1135,2025-03-02,PRD-TECH-03,High-Performance GPU Cluster,Cloud Infrastructure,Hardware,CUST-ENT-020,Enterprise Corp 29,Nordic Europe,Strategic Enterprise,1,120000.0,0.03,116400.0
+TECH-TXN-1136,2025-02-23,PRD-TECH-01,Enterprise Quantum Cloud,Cloud Infrastructure,Quantum,CUST-ENT-019,Enterprise Corp 4,North America,Strategic Enterprise,3,75000.0,0.0,225000.0
+TECH-TXN-1137,2025-05-20,PRD-TECH-01,Enterprise Quantum Cloud,Cloud Infrastructure,Quantum,CUST-ENT-025,Enterprise Corp 6,North America,Strategic Enterprise,1,75000.0,0.03,72750.0
+TECH-TXN-1138,2025-02-10,PRD-TECH-01,Enterprise Quantum Cloud,Cloud Infrastructure,Quantum,CUST-ENT-019,Enterprise Corp 12,North America,Strategic Enterprise,1,75000.0,0.02,73500.0
+TECH-TXN-1139,2025-02-15,PRD-TECH-02,Cybersecurity AI Shield,Cybersecurity,Defense,CUST-ENT-010,Enterprise Corp 3,North America,Strategic Enterprise,1,45000.0,0.02,44100.0
+TECH-TXN-1140,2025-04-08,PRD-TECH-01,Enterprise Quantum Cloud,Cloud Infrastructure,Quantum,CUST-ENT-022,Enterprise Corp 29,North America,Strategic Enterprise,2,75000.0,0.02,147000.0
+TECH-TXN-1141,2025-06-02,PRD-TECH-01,Enterprise Quantum Cloud,Cloud Infrastructure,Quantum,CUST-ENT-010,Enterprise Corp 1,North America,Strategic Enterprise,1,75000.0,0.07,69750.0
+TECH-TXN-1142,2025-02-06,PRD-TECH-01,Enterprise Quantum Cloud,Cloud Infrastructure,Quantum,CUST-ENT-028,Enterprise Corp 9,Nordic Europe,Strategic Enterprise,1,75000.0,0.0,75000.0
+TECH-TXN-1143,2025-06-16,PRD-TECH-03,High-Performance GPU Cluster,Cloud Infrastructure,Hardware,CUST-ENT-016,Enterprise Corp 5,Nordic Europe,Strategic Enterprise,3,120000.0,0.07,334800.0
+TECH-TXN-1144,2025-05-18,PRD-TECH-03,High-Performance GPU Cluster,Cloud Infrastructure,Hardware,CUST-ENT-005,Enterprise Corp 16,North America,Strategic Enterprise,3,120000.0,0.03,349200.0
+TECH-TXN-1145,2025-05-06,PRD-TECH-04,Zero-Trust Identity Gateway,Cybersecurity,Access,CUST-ENT-029,Enterprise Corp 21,North America,Strategic Enterprise,3,28000.0,0.04,80640.0
+TECH-TXN-1146,2025-02-22,PRD-TECH-02,Cybersecurity AI Shield,Cybersecurity,Defense,CUST-ENT-003,Enterprise Corp 11,Nordic Europe,Strategic Enterprise,2,45000.0,0.08,82800.0
+TECH-TXN-1147,2025-03-09,PRD-TECH-01,Enterprise Quantum Cloud,Cloud Infrastructure,Quantum,CUST-ENT-018,Enterprise Corp 9,North America,Strategic Enterprise,3,75000.0,0.02,220500.0
+TECH-TXN-1148,2025-02-13,PRD-TECH-03,High-Performance GPU Cluster,Cloud Infrastructure,Hardware,CUST-ENT-029,Enterprise Corp 15,Nordic Europe,Strategic Enterprise,2,120000.0,0.05,228000.0
+TECH-TXN-1149,2025-05-10,PRD-TECH-02,Cybersecurity AI Shield,Cybersecurity,Defense,CUST-ENT-014,Enterprise Corp 4,North America,Strategic Enterprise,1,45000.0,0.06,42300.0
+TECH-TXN-1150,2025-03-21,PRD-TECH-01,Enterprise Quantum Cloud,Cloud Infrastructure,Quantum,CUST-ENT-026,Enterprise Corp 7,Nordic Europe,Strategic Enterprise,3,75000.0,0.01,222750.0
+TECH-TXN-1151,2025-03-10,PRD-TECH-03,High-Performance GPU Cluster,Cloud Infrastructure,Hardware,CUST-ENT-013,Enterprise Corp 25,Nordic Europe,Strategic Enterprise,2,120000.0,0.07,223200.0
+TECH-TXN-1152,2025-03-03,PRD-TECH-04,Zero-Trust Identity Gateway,Cybersecurity,Access,CUST-ENT-010,Enterprise Corp 13,North America,Strategic Enterprise,1,28000.0,0.06,26320.0
+TECH-TXN-1153,2025-05-27,PRD-TECH-01,Enterprise Quantum Cloud,Cloud Infrastructure,Quantum,CUST-ENT-017,Enterprise Corp 20,Nordic Europe,Strategic Enterprise,1,75000.0,0.01,74250.0
+TECH-TXN-1154,2025-02-21,PRD-TECH-04,Zero-Trust Identity Gateway,Cybersecurity,Access,CUST-ENT-026,Enterprise Corp 22,North America,Strategic Enterprise,2,28000.0,0.06,52640.0
+TECH-TXN-1155,2025-01-15,PRD-TECH-04,Zero-Trust Identity Gateway,Cybersecurity,Access,CUST-ENT-022,Enterprise Corp 14,Nordic Europe,Strategic Enterprise,3,28000.0,0.02,82320.0
+TECH-TXN-1156,2025-06-06,PRD-TECH-04,Zero-Trust Identity Gateway,Cybersecurity,Access,CUST-ENT-005,Enterprise Corp 23,Nordic Europe,Strategic Enterprise,2,28000.0,0.03,54320.0
+TECH-TXN-1157,2025-05-26,PRD-TECH-03,High-Performance GPU Cluster,Cloud Infrastructure,Hardware,CUST-ENT-024,Enterprise Corp 3,North America,Strategic Enterprise,3,120000.0,0.01,356400.0
+TECH-TXN-1158,2025-03-29,PRD-TECH-03,High-Performance GPU Cluster,Cloud Infrastructure,Hardware,CUST-ENT-010,Enterprise Corp 18,Nordic Europe,Strategic Enterprise,2,120000.0,0.05,228000.0
+TECH-TXN-1159,2025-02-16,PRD-TECH-02,Cybersecurity AI Shield,Cybersecurity,Defense,CUST-ENT-004,Enterprise Corp 2,North America,Strategic Enterprise,2,45000.0,0.04,86400.0
+TECH-TXN-1160,2025-02-22,PRD-TECH-02,Cybersecurity AI Shield,Cybersecurity,Defense,CUST-ENT-029,Enterprise Corp 2,Nordic Europe,Strategic Enterprise,1,45000.0,0.01,44550.0
+TECH-TXN-1161,2025-05-25,PRD-TECH-03,High-Performance GPU Cluster,Cloud Infrastructure,Hardware,CUST-ENT-025,Enterprise Corp 26,Nordic Europe,Strategic Enterprise,1,120000.0,0.02,117600.0
+TECH-TXN-1162,2025-03-26,PRD-TECH-03,High-Performance GPU Cluster,Cloud Infrastructure,Hardware,CUST-ENT-001,Enterprise Corp 10,Nordic Europe,Strategic Enterprise,1,120000.0,0.02,117600.0
+TECH-TXN-1163,2025-01-11,PRD-TECH-03,High-Performance GPU Cluster,Cloud Infrastructure,Hardware,CUST-ENT-019,Enterprise Corp 14,North America,Strategic Enterprise,1,120000.0,0.02,117600.0
+TECH-TXN-1164,2025-04-17,PRD-TECH-04,Zero-Trust Identity Gateway,Cybersecurity,Access,CUST-ENT-018,Enterprise Corp 28,Nordic Europe,Strategic Enterprise,3,28000.0,0.04,80640.0
+TECH-TXN-1165,2025-04-07,PRD-TECH-04,Zero-Trust Identity Gateway,Cybersecurity,Access,CUST-ENT-012,Enterprise Corp 2,Nordic Europe,Strategic Enterprise,1,28000.0,0.04,26880.0
+TECH-TXN-1166,2025-05-03,PRD-TECH-03,High-Performance GPU Cluster,Cloud Infrastructure,Hardware,CUST-ENT-009,Enterprise Corp 16,North America,Strategic Enterprise,3,120000.0,0.04,345600.0
+TECH-TXN-1167,2025-06-01,PRD-TECH-03,High-Performance GPU Cluster,Cloud Infrastructure,Hardware,CUST-ENT-027,Enterprise Corp 6,North America,Strategic Enterprise,1,120000.0,0.02,117600.0
+TECH-TXN-1168,2025-01-27,PRD-TECH-01,Enterprise Quantum Cloud,Cloud Infrastructure,Quantum,CUST-ENT-004,Enterprise Corp 14,North America,Strategic Enterprise,1,75000.0,0.01,74250.0
+TECH-TXN-1169,2025-03-18,PRD-TECH-03,High-Performance GPU Cluster,Cloud Infrastructure,Hardware,CUST-ENT-001,Enterprise Corp 6,North America,Strategic Enterprise,2,120000.0,0.06,225600.0
+TECH-TXN-1170,2025-03-08,PRD-TECH-03,High-Performance GPU Cluster,Cloud Infrastructure,Hardware,CUST-ENT-016,Enterprise Corp 17,North America,Strategic Enterprise,1,120000.0,0.04,115200.0
+TECH-TXN-1171,2025-02-24,PRD-TECH-04,Zero-Trust Identity Gateway,Cybersecurity,Access,CUST-ENT-021,Enterprise Corp 26,Nordic Europe,Strategic Enterprise,3,28000.0,0.07,78120.0
+TECH-TXN-1172,2025-05-26,PRD-TECH-03,High-Performance GPU Cluster,Cloud Infrastructure,Hardware,CUST-ENT-018,Enterprise Corp 23,Nordic Europe,Strategic Enterprise,1,120000.0,0.08,110400.0
+TECH-TXN-1173,2025-01-03,PRD-TECH-03,High-Performance GPU Cluster,Cloud Infrastructure,Hardware,CUST-ENT-024,Enterprise Corp 12,Nordic Europe,Strategic Enterprise,3,120000.0,0.0,360000.0
+TECH-TXN-1174,2025-03-22,PRD-TECH-01,Enterprise Quantum Cloud,Cloud Infrastructure,Quantum,CUST-ENT-018,Enterprise Corp 4,North America,Strategic Enterprise,1,75000.0,0.07,69750.0
+TECH-TXN-1175,2025-02-20,PRD-TECH-04,Zero-Trust Identity Gateway,Cybersecurity,Access,CUST-ENT-012,Enterprise Corp 20,North America,Strategic Enterprise,2,28000.0,0.06,52640.0
+TECH-TXN-1176,2025-03-08,PRD-TECH-02,Cybersecurity AI Shield,Cybersecurity,Defense,CUST-ENT-008,Enterprise Corp 9,Nordic Europe,Strategic Enterprise,3,45000.0,0.02,132300.0
+TECH-TXN-1177,2025-03-30,PRD-TECH-03,High-Performance GPU Cluster,Cloud Infrastructure,Hardware,CUST-ENT-027,Enterprise Corp 5,North America,Strategic Enterprise,3,120000.0,0.0,360000.0
+TECH-TXN-1178,2025-03-21,PRD-TECH-02,Cybersecurity AI Shield,Cybersecurity,Defense,CUST-ENT-017,Enterprise Corp 1,North America,Strategic Enterprise,3,45000.0,0.05,128250.0
+TECH-TXN-1179,2025-04-04,PRD-TECH-02,Cybersecurity AI Shield,Cybersecurity,Defense,CUST-ENT-023,Enterprise Corp 9,Nordic Europe,Strategic Enterprise,3,45000.0,0.01,133650.0
+TECH-TXN-1180,2025-01-07,PRD-TECH-03,High-Performance GPU Cluster,Cloud Infrastructure,Hardware,CUST-ENT-002,Enterprise Corp 2,North America,Strategic Enterprise,3,120000.0,0.03,349200.0
+TECH-TXN-1181,2025-04-03,PRD-TECH-04,Zero-Trust Identity Gateway,Cybersecurity,Access,CUST-ENT-029,Enterprise Corp 27,North America,Strategic Enterprise,3,28000.0,0.01,83160.0
+TECH-TXN-1182,2025-02-12,PRD-TECH-01,Enterprise Quantum Cloud,Cloud Infrastructure,Quantum,CUST-ENT-004,Enterprise Corp 15,Nordic Europe,Strategic Enterprise,2,75000.0,0.07,139500.0
+TECH-TXN-1183,2025-01-23,PRD-TECH-03,High-Performance GPU Cluster,Cloud Infrastructure,Hardware,CUST-ENT-024,Enterprise Corp 1,North America,Strategic Enterprise,2,120000.0,0.02,235200.0
+TECH-TXN-1184,2025-05-02,PRD-TECH-02,Cybersecurity AI Shield,Cybersecurity,Defense,CUST-ENT-022,Enterprise Corp 17,Nordic Europe,Strategic Enterprise,1,45000.0,0.01,44550.0
+TECH-TXN-1185,2025-04-23,PRD-TECH-01,Enterprise Quantum Cloud,Cloud Infrastructure,Quantum,CUST-ENT-006,Enterprise Corp 26,Nordic Europe,Strategic Enterprise,3,75000.0,0.06,211500.0
+TECH-TXN-1186,2025-05-29,PRD-TECH-02,Cybersecurity AI Shield,Cybersecurity,Defense,CUST-ENT-001,Enterprise Corp 21,North America,Strategic Enterprise,1,45000.0,0.06,42300.0
+TECH-TXN-1187,2025-06-03,PRD-TECH-04,Zero-Trust Identity Gateway,Cybersecurity,Access,CUST-ENT-003,Enterprise Corp 10,North America,Strategic Enterprise,3,28000.0,0.04,80640.0
+TECH-TXN-1188,2025-05-08,PRD-TECH-04,Zero-Trust Identity Gateway,Cybersecurity,Access,CUST-ENT-001,Enterprise Corp 27,North America,Strategic Enterprise,2,28000.0,0.02,54880.0
+TECH-TXN-1189,2025-04-08,PRD-TECH-01,Enterprise Quantum Cloud,Cloud Infrastructure,Quantum,CUST-ENT-025,Enterprise Corp 7,Nordic Europe,Strategic Enterprise,3,75000.0,0.02,220500.0
+TECH-TXN-1190,2025-04-21,PRD-TECH-02,Cybersecurity AI Shield,Cybersecurity,Defense,CUST-ENT-012,Enterprise Corp 7,Nordic Europe,Strategic Enterprise,3,45000.0,0.04,129600.0
+TECH-TXN-1191,2025-03-13,PRD-TECH-03,High-Performance GPU Cluster,Cloud Infrastructure,Hardware,CUST-ENT-021,Enterprise Corp 24,North America,Strategic Enterprise,1,120000.0,0.06,112800.0
+TECH-TXN-1192,2025-04-19,PRD-TECH-04,Zero-Trust Identity Gateway,Cybersecurity,Access,CUST-ENT-015,Enterprise Corp 21,Nordic Europe,Strategic Enterprise,2,28000.0,0.05,53200.0
+TECH-TXN-1193,2025-03-05,PRD-TECH-01,Enterprise Quantum Cloud,Cloud Infrastructure,Quantum,CUST-ENT-008,Enterprise Corp 3,Nordic Europe,Strategic Enterprise,2,75000.0,0.06,141000.0
+TECH-TXN-1194,2025-04-14,PRD-TECH-03,High-Performance GPU Cluster,Cloud Infrastructure,Hardware,CUST-ENT-005,Enterprise Corp 7,Nordic Europe,Strategic Enterprise,1,120000.0,0.05,114000.0
+TECH-TXN-1195,2025-06-16,PRD-TECH-04,Zero-Trust Identity Gateway,Cybersecurity,Access,CUST-ENT-002,Enterprise Corp 6,Nordic Europe,Strategic Enterprise,3,28000.0,0.0,84000.0
+TECH-TXN-1196,2025-02-15,PRD-TECH-01,Enterprise Quantum Cloud,Cloud Infrastructure,Quantum,CUST-ENT-014,Enterprise Corp 19,Nordic Europe,Strategic Enterprise,2,75000.0,0.04,144000.0
+TECH-TXN-1197,2025-04-14,PRD-TECH-01,Enterprise Quantum Cloud,Cloud Infrastructure,Quantum,CUST-ENT-006,Enterprise Corp 28,North America,Strategic Enterprise,3,75000.0,0.01,222750.0
+TECH-TXN-1198,2025-04-14,PRD-TECH-01,Enterprise Quantum Cloud,Cloud Infrastructure,Quantum,CUST-ENT-005,Enterprise Corp 28,North America,Strategic Enterprise,2,75000.0,0.04,144000.0
+TECH-TXN-1199,2025-04-27,PRD-TECH-03,High-Performance GPU Cluster,Cloud Infrastructure,Hardware,CUST-ENT-018,Enterprise Corp 18,North America,Strategic Enterprise,3,120000.0,0.02,352800.0
+TECH-TXN-1200,2025-06-13,PRD-TECH-02,Cybersecurity AI Shield,Cybersecurity,Defense,CUST-ENT-015,Enterprise Corp 22,Nordic Europe,Strategic Enterprise,3,45000.0,0.03,130950.0
+TECH-TXN-1201,2025-01-26,PRD-TECH-02,Cybersecurity AI Shield,Cybersecurity,Defense,CUST-ENT-002,Enterprise Corp 28,Nordic Europe,Strategic Enterprise,3,45000.0,0.01,133650.0
+TECH-TXN-1202,2025-03-17,PRD-TECH-01,Enterprise Quantum Cloud,Cloud Infrastructure,Quantum,CUST-ENT-010,Enterprise Corp 11,North America,Strategic Enterprise,1,75000.0,0.05,71250.0
+TECH-TXN-1203,2025-01-12,PRD-TECH-04,Zero-Trust Identity Gateway,Cybersecurity,Access,CUST-ENT-026,Enterprise Corp 21,North America,Strategic Enterprise,2,28000.0,0.03,54320.0
+TECH-TXN-1204,2025-03-18,PRD-TECH-03,High-Performance GPU Cluster,Cloud Infrastructure,Hardware,CUST-ENT-015,Enterprise Corp 10,North America,Strategic Enterprise,3,120000.0,0.07,334800.0
+TECH-TXN-1205,2025-04-24,PRD-TECH-02,Cybersecurity AI Shield,Cybersecurity,Defense,CUST-ENT-006,Enterprise Corp 8,North America,Strategic Enterprise,1,45000.0,0.03,43650.0
+TECH-TXN-1206,2025-05-04,PRD-TECH-01,Enterprise Quantum Cloud,Cloud Infrastructure,Quantum,CUST-ENT-026,Enterprise Corp 19,Nordic Europe,Strategic Enterprise,1,75000.0,0.07,69750.0
+TECH-TXN-1207,2025-02-20,PRD-TECH-03,High-Performance GPU Cluster,Cloud Infrastructure,Hardware,CUST-ENT-009,Enterprise Corp 9,Nordic Europe,Strategic Enterprise,3,120000.0,0.01,356400.0
+TECH-TXN-1208,2025-05-31,PRD-TECH-04,Zero-Trust Identity Gateway,Cybersecurity,Access,CUST-ENT-022,Enterprise Corp 1,Nordic Europe,Strategic Enterprise,2,28000.0,0.05,53200.0
+TECH-TXN-1209,2025-04-12,PRD-TECH-03,High-Performance GPU Cluster,Cloud Infrastructure,Hardware,CUST-ENT-024,Enterprise Corp 21,North America,Strategic Enterprise,3,120000.0,0.01,356400.0
+TECH-TXN-1210,2025-03-01,PRD-TECH-01,Enterprise Quantum Cloud,Cloud Infrastructure,Quantum,CUST-ENT-023,Enterprise Corp 25,North America,Strategic Enterprise,3,75000.0,0.07,209250.0
+TECH-TXN-1211,2025-03-08,PRD-TECH-03,High-Performance GPU Cluster,Cloud Infrastructure,Hardware,CUST-ENT-019,Enterprise Corp 20,Nordic Europe,Strategic Enterprise,3,120000.0,0.04,345600.0
+TECH-TXN-1212,2025-04-13,PRD-TECH-02,Cybersecurity AI Shield,Cybersecurity,Defense,CUST-ENT-008,Enterprise Corp 26,Nordic Europe,Strategic Enterprise,3,45000.0,0.06,126900.0
+TECH-TXN-1213,2025-05-03,PRD-TECH-02,Cybersecurity AI Shield,Cybersecurity,Defense,CUST-ENT-018,Enterprise Corp 11,Nordic Europe,Strategic Enterprise,1,45000.0,0.07,41850.0
+TECH-TXN-1214,2025-01-02,PRD-TECH-03,High-Performance GPU Cluster,Cloud Infrastructure,Hardware,CUST-ENT-029,Enterprise Corp 26,Nordic Europe,Strategic Enterprise,3,120000.0,0.06,338400.0
+TECH-TXN-1215,2025-02-04,PRD-TECH-03,High-Performance GPU Cluster,Cloud Infrastructure,Hardware,CUST-ENT-009,Enterprise Corp 17,Nordic Europe,Strategic Enterprise,2,120000.0,0.06,225600.0
+TECH-TXN-1216,2025-02-07,PRD-TECH-04,Zero-Trust Identity Gateway,Cybersecurity,Access,CUST-ENT-024,Enterprise Corp 15,Nordic Europe,Strategic Enterprise,3,28000.0,0.06,78960.0
+TECH-TXN-1217,2025-02-05,PRD-TECH-01,Enterprise Quantum Cloud,Cloud Infrastructure,Quantum,CUST-ENT-022,Enterprise Corp 5,North America,Strategic Enterprise,1,75000.0,0.06,70500.0
+TECH-TXN-1218,2025-02-12,PRD-TECH-02,Cybersecurity AI Shield,Cybersecurity,Defense,CUST-ENT-007,Enterprise Corp 20,Nordic Europe,Strategic Enterprise,1,45000.0,0.03,43650.0
+TECH-TXN-1219,2025-04-26,PRD-TECH-04,Zero-Trust Identity Gateway,Cybersecurity,Access,CUST-ENT-015,Enterprise Corp 2,North America,Strategic Enterprise,3,28000.0,0.06,78960.0
+TECH-TXN-1220,2025-04-12,PRD-TECH-03,High-Performance GPU Cluster,Cloud Infrastructure,Hardware,CUST-ENT-008,Enterprise Corp 20,North America,Strategic Enterprise,3,120000.0,0.04,345600.0
+TECH-TXN-1221,2025-06-22,PRD-TECH-04,Zero-Trust Identity Gateway,Cybersecurity,Access,CUST-ENT-017,Enterprise Corp 2,North America,Strategic Enterprise,2,28000.0,0.07,52080.0
+TECH-TXN-1222,2025-04-19,PRD-TECH-02,Cybersecurity AI Shield,Cybersecurity,Defense,CUST-ENT-003,Enterprise Corp 18,Nordic Europe,Strategic Enterprise,2,45000.0,0.08,82800.0
+TECH-TXN-1223,2025-06-27,PRD-TECH-02,Cybersecurity AI Shield,Cybersecurity,Defense,CUST-ENT-022,Enterprise Corp 4,Nordic Europe,Strategic Enterprise,2,45000.0,0.05,85500.0
+TECH-TXN-1224,2025-06-09,PRD-TECH-01,Enterprise Quantum Cloud,Cloud Infrastructure,Quantum,CUST-ENT-026,Enterprise Corp 19,Nordic Europe,Strategic Enterprise,3,75000.0,0.07,209250.0
+TECH-TXN-1225,2025-03-21,PRD-TECH-01,Enterprise Quantum Cloud,Cloud Infrastructure,Quantum,CUST-ENT-022,Enterprise Corp 28,Nordic Europe,Strategic Enterprise,1,75000.0,0.0,75000.0
+TECH-TXN-1226,2025-03-27,PRD-TECH-03,High-Performance GPU Cluster,Cloud Infrastructure,Hardware,CUST-ENT-025,Enterprise Corp 21,North America,Strategic Enterprise,1,120000.0,0.01,118800.0
+TECH-TXN-1227,2025-01-04,PRD-TECH-01,Enterprise Quantum Cloud,Cloud Infrastructure,Quantum,CUST-ENT-021,Enterprise Corp 23,North America,Strategic Enterprise,3,75000.0,0.06,211500.0
+TECH-TXN-1228,2025-02-25,PRD-TECH-03,High-Performance GPU Cluster,Cloud Infrastructure,Hardware,CUST-ENT-021,Enterprise Corp 4,Nordic Europe,Strategic Enterprise,1,120000.0,0.08,110400.0
+TECH-TXN-1229,2025-03-15,PRD-TECH-02,Cybersecurity AI Shield,Cybersecurity,Defense,CUST-ENT-002,Enterprise Corp 11,Nordic Europe,Strategic Enterprise,1,45000.0,0.07,41850.0
+TECH-TXN-1230,2025-04-10,PRD-TECH-03,High-Performance GPU Cluster,Cloud Infrastructure,Hardware,CUST-ENT-016,Enterprise Corp 24,Nordic Europe,Strategic Enterprise,1,120000.0,0.06,112800.0
+TECH-TXN-1231,2025-02-10,PRD-TECH-01,Enterprise Quantum Cloud,Cloud Infrastructure,Quantum,CUST-ENT-007,Enterprise Corp 5,North America,Strategic Enterprise,2,75000.0,0.05,142500.0
+TECH-TXN-1232,2025-04-05,PRD-TECH-04,Zero-Trust Identity Gateway,Cybersecurity,Access,CUST-ENT-008,Enterprise Corp 9,Nordic Europe,Strategic Enterprise,2,28000.0,0.03,54320.0
+TECH-TXN-1233,2025-04-14,PRD-TECH-01,Enterprise Quantum Cloud,Cloud Infrastructure,Quantum,CUST-ENT-007,Enterprise Corp 15,Nordic Europe,Strategic Enterprise,3,75000.0,0.02,220500.0
+TECH-TXN-1234,2025-05-26,PRD-TECH-03,High-Performance GPU Cluster,Cloud Infrastructure,Hardware,CUST-ENT-029,Enterprise Corp 25,Nordic Europe,Strategic Enterprise,1,120000.0,0.06,112800.0
+TECH-TXN-1235,2025-03-10,PRD-TECH-02,Cybersecurity AI Shield,Cybersecurity,Defense,CUST-ENT-016,Enterprise Corp 26,North America,Strategic Enterprise,3,45000.0,0.04,129600.0
+TECH-TXN-1236,2025-05-26,PRD-TECH-01,Enterprise Quantum Cloud,Cloud Infrastructure,Quantum,CUST-ENT-016,Enterprise Corp 4,North America,Strategic Enterprise,3,75000.0,0.03,218250.0
+TECH-TXN-1237,2025-05-27,PRD-TECH-04,Zero-Trust Identity Gateway,Cybersecurity,Access,CUST-ENT-003,Enterprise Corp 1,Nordic Europe,Strategic Enterprise,3,28000.0,0.04,80640.0
+TECH-TXN-1238,2025-03-25,PRD-TECH-02,Cybersecurity AI Shield,Cybersecurity,Defense,CUST-ENT-022,Enterprise Corp 18,Nordic Europe,Strategic Enterprise,3,45000.0,0.04,129600.0
+TECH-TXN-1239,2025-03-24,PRD-TECH-03,High-Performance GPU Cluster,Cloud Infrastructure,Hardware,CUST-ENT-016,Enterprise Corp 15,North America,Strategic Enterprise,3,120000.0,0.03,349200.0
+TECH-TXN-1240,2025-05-16,PRD-TECH-01,Enterprise Quantum Cloud,Cloud Infrastructure,Quantum,CUST-ENT-011,Enterprise Corp 24,North America,Strategic Enterprise,1,75000.0,0.0,75000.0
+TECH-TXN-1241,2025-03-09,PRD-TECH-03,High-Performance GPU Cluster,Cloud Infrastructure,Hardware,CUST-ENT-011,Enterprise Corp 26,Nordic Europe,Strategic Enterprise,2,120000.0,0.01,237600.0
+TECH-TXN-1242,2025-06-12,PRD-TECH-04,Zero-Trust Identity Gateway,Cybersecurity,Access,CUST-ENT-008,Enterprise Corp 21,Nordic Europe,Strategic Enterprise,3,28000.0,0.0,84000.0
+TECH-TXN-1243,2025-03-18,PRD-TECH-03,High-Performance GPU Cluster,Cloud Infrastructure,Hardware,CUST-ENT-010,Enterprise Corp 3,North America,Strategic Enterprise,1,120000.0,0.05,114000.0
+TECH-TXN-1244,2025-05-08,PRD-TECH-04,Zero-Trust Identity Gateway,Cybersecurity,Access,CUST-ENT-013,Enterprise Corp 17,Nordic Europe,Strategic Enterprise,3,28000.0,0.06,78960.0
+TECH-TXN-1245,2025-04-05,PRD-TECH-02,Cybersecurity AI Shield,Cybersecurity,Defense,CUST-ENT-002,Enterprise Corp 21,North America,Strategic Enterprise,3,45000.0,0.05,128250.0
+TECH-TXN-1246,2025-04-30,PRD-TECH-03,High-Performance GPU Cluster,Cloud Infrastructure,Hardware,CUST-ENT-001,Enterprise Corp 23,Nordic Europe,Strategic Enterprise,3,120000.0,0.01,356400.0
+TECH-TXN-1247,2025-01-21,PRD-TECH-03,High-Performance GPU Cluster,Cloud Infrastructure,Hardware,CUST-ENT-003,Enterprise Corp 16,North America,Strategic Enterprise,3,120000.0,0.07,334800.0
+TECH-TXN-1248,2025-03-15,PRD-TECH-03,High-Performance GPU Cluster,Cloud Infrastructure,Hardware,CUST-ENT-029,Enterprise Corp 14,Nordic Europe,Strategic Enterprise,2,120000.0,0.04,230400.0
+TECH-TXN-1249,2025-03-01,PRD-TECH-01,Enterprise Quantum Cloud,Cloud Infrastructure,Quantum,CUST-ENT-016,Enterprise Corp 1,Nordic Europe,Strategic Enterprise,3,75000.0,0.05,213750.0
+TECH-TXN-1250,2025-02-04,PRD-TECH-04,Zero-Trust Identity Gateway,Cybersecurity,Access,CUST-ENT-021,Enterprise Corp 9,Nordic Europe,Strategic Enterprise,2,28000.0,0.02,54880.0
+TECH-TXN-1251,2025-05-04,PRD-TECH-04,Zero-Trust Identity Gateway,Cybersecurity,Access,CUST-ENT-023,Enterprise Corp 19,North America,Strategic Enterprise,3,28000.0,0.05,79800.0
+TECH-TXN-1252,2025-05-01,PRD-TECH-01,Enterprise Quantum Cloud,Cloud Infrastructure,Quantum,CUST-ENT-022,Enterprise Corp 16,North America,Strategic Enterprise,3,75000.0,0.06,211500.0
+TECH-TXN-1253,2025-01-26,PRD-TECH-02,Cybersecurity AI Shield,Cybersecurity,Defense,CUST-ENT-029,Enterprise Corp 28,Nordic Europe,Strategic Enterprise,2,45000.0,0.02,88200.0
+TECH-TXN-1254,2025-03-16,PRD-TECH-01,Enterprise Quantum Cloud,Cloud Infrastructure,Quantum,CUST-ENT-002,Enterprise Corp 3,Nordic Europe,Strategic Enterprise,3,75000.0,0.08,207000.0
+TECH-TXN-1255,2025-03-17,PRD-TECH-02,Cybersecurity AI Shield,Cybersecurity,Defense,CUST-ENT-010,Enterprise Corp 10,North America,Strategic Enterprise,3,45000.0,0.03,130950.0
+TECH-TXN-1256,2025-02-03,PRD-TECH-03,High-Performance GPU Cluster,Cloud Infrastructure,Hardware,CUST-ENT-012,Enterprise Corp 4,Nordic Europe,Strategic Enterprise,2,120000.0,0.02,235200.0
+TECH-TXN-1257,2025-05-18,PRD-TECH-04,Zero-Trust Identity Gateway,Cybersecurity,Access,CUST-ENT-019,Enterprise Corp 21,North America,Strategic Enterprise,3,28000.0,0.07,78120.0
+TECH-TXN-1258,2025-06-21,PRD-TECH-02,Cybersecurity AI Shield,Cybersecurity,Defense,CUST-ENT-002,Enterprise Corp 9,North America,Strategic Enterprise,1,45000.0,0.01,44550.0
+TECH-TXN-1259,2025-01-21,PRD-TECH-01,Enterprise Quantum Cloud,Cloud Infrastructure,Quantum,CUST-ENT-010,Enterprise Corp 16,Nordic Europe,Strategic Enterprise,3,75000.0,0.02,220500.0
+TECH-TXN-1260,2025-06-08,PRD-TECH-01,Enterprise Quantum Cloud,Cloud Infrastructure,Quantum,CUST-ENT-020,Enterprise Corp 17,Nordic Europe,Strategic Enterprise,3,75000.0,0.04,216000.0
+TECH-TXN-1261,2025-01-04,PRD-TECH-01,Enterprise Quantum Cloud,Cloud Infrastructure,Quantum,CUST-ENT-004,Enterprise Corp 13,North America,Strategic Enterprise,2,75000.0,0.02,147000.0
+TECH-TXN-1262,2025-06-24,PRD-TECH-03,High-Performance GPU Cluster,Cloud Infrastructure,Hardware,CUST-ENT-015,Enterprise Corp 28,Nordic Europe,Strategic Enterprise,3,120000.0,0.05,342000.0
+TECH-TXN-1263,2025-01-30,PRD-TECH-04,Zero-Trust Identity Gateway,Cybersecurity,Access,CUST-ENT-015,Enterprise Corp 7,North America,Strategic Enterprise,3,28000.0,0.02,82320.0
+TECH-TXN-1264,2025-02-17,PRD-TECH-02,Cybersecurity AI Shield,Cybersecurity,Defense,CUST-ENT-015,Enterprise Corp 14,North America,Strategic Enterprise,2,45000.0,0.08,82800.0
+TECH-TXN-1265,2025-01-28,PRD-TECH-03,High-Performance GPU Cluster,Cloud Infrastructure,Hardware,CUST-ENT-007,Enterprise Corp 20,North America,Strategic Enterprise,1,120000.0,0.06,112800.0
+TECH-TXN-1266,2025-01-26,PRD-TECH-03,High-Performance GPU Cluster,Cloud Infrastructure,Hardware,CUST-ENT-021,Enterprise Corp 15,Nordic Europe,Strategic Enterprise,1,120000.0,0.03,116400.0
+TECH-TXN-1267,2025-04-05,PRD-TECH-03,High-Performance GPU Cluster,Cloud Infrastructure,Hardware,CUST-ENT-026,Enterprise Corp 23,North America,Strategic Enterprise,1,120000.0,0.06,112800.0
+TECH-TXN-1268,2025-04-13,PRD-TECH-02,Cybersecurity AI Shield,Cybersecurity,Defense,CUST-ENT-025,Enterprise Corp 27,North America,Strategic Enterprise,2,45000.0,0.01,89100.0
+TECH-TXN-1269,2025-05-30,PRD-TECH-01,Enterprise Quantum Cloud,Cloud Infrastructure,Quantum,CUST-ENT-024,Enterprise Corp 19,Nordic Europe,Strategic Enterprise,1,75000.0,0.03,72750.0
+TECH-TXN-1270,2025-01-30,PRD-TECH-01,Enterprise Quantum Cloud,Cloud Infrastructure,Quantum,CUST-ENT-016,Enterprise Corp 10,North America,Strategic Enterprise,3,75000.0,0.07,209250.0
+TECH-TXN-1271,2025-05-15,PRD-TECH-02,Cybersecurity AI Shield,Cybersecurity,Defense,CUST-ENT-011,Enterprise Corp 3,Nordic Europe,Strategic Enterprise,1,45000.0,0.05,42750.0
+TECH-TXN-1272,2025-02-24,PRD-TECH-03,High-Performance GPU Cluster,Cloud Infrastructure,Hardware,CUST-ENT-001,Enterprise Corp 6,Nordic Europe,Strategic Enterprise,3,120000.0,0.05,342000.0
+TECH-TXN-1273,2025-02-17,PRD-TECH-04,Zero-Trust Identity Gateway,Cybersecurity,Access,CUST-ENT-018,Enterprise Corp 26,North America,Strategic Enterprise,1,28000.0,0.03,27160.0
+TECH-TXN-1274,2025-02-17,PRD-TECH-03,High-Performance GPU Cluster,Cloud Infrastructure,Hardware,CUST-ENT-002,Enterprise Corp 18,North America,Strategic Enterprise,2,120000.0,0.05,228000.0
+TECH-TXN-1275,2025-03-02,PRD-TECH-02,Cybersecurity AI Shield,Cybersecurity,Defense,CUST-ENT-018,Enterprise Corp 26,North America,Strategic Enterprise,3,45000.0,0.05,128250.0
+TECH-TXN-1276,2025-05-15,PRD-TECH-01,Enterprise Quantum Cloud,Cloud Infrastructure,Quantum,CUST-ENT-028,Enterprise Corp 28,Nordic Europe,Strategic Enterprise,1,75000.0,0.06,70500.0
+TECH-TXN-1277,2025-04-08,PRD-TECH-03,High-Performance GPU Cluster,Cloud Infrastructure,Hardware,CUST-ENT-012,Enterprise Corp 8,North America,Strategic Enterprise,3,120000.0,0.05,342000.0
+TECH-TXN-1278,2025-06-22,PRD-TECH-03,High-Performance GPU Cluster,Cloud Infrastructure,Hardware,CUST-ENT-013,Enterprise Corp 18,Nordic Europe,Strategic Enterprise,2,120000.0,0.02,235200.0
+TECH-TXN-1279,2025-06-17,PRD-TECH-04,Zero-Trust Identity Gateway,Cybersecurity,Access,CUST-ENT-014,Enterprise Corp 18,Nordic Europe,Strategic Enterprise,2,28000.0,0.01,55440.0
+TECH-TXN-1280,2025-05-05,PRD-TECH-03,High-Performance GPU Cluster,Cloud Infrastructure,Hardware,CUST-ENT-013,Enterprise Corp 10,North America,Strategic Enterprise,3,120000.0,0.03,349200.0
+TECH-TXN-1281,2025-06-10,PRD-TECH-03,High-Performance GPU Cluster,Cloud Infrastructure,Hardware,CUST-ENT-013,Enterprise Corp 2,North America,Strategic Enterprise,2,120000.0,0.04,230400.0
+TECH-TXN-1282,2025-03-20,PRD-TECH-03,High-Performance GPU Cluster,Cloud Infrastructure,Hardware,CUST-ENT-026,Enterprise Corp 12,Nordic Europe,Strategic Enterprise,3,120000.0,0.06,338400.0
+TECH-TXN-1283,2025-05-07,PRD-TECH-01,Enterprise Quantum Cloud,Cloud Infrastructure,Quantum,CUST-ENT-024,Enterprise Corp 27,Nordic Europe,Strategic Enterprise,1,75000.0,0.01,74250.0
+TECH-TXN-1284,2025-01-22,PRD-TECH-01,Enterprise Quantum Cloud,Cloud Infrastructure,Quantum,CUST-ENT-018,Enterprise Corp 21,North America,Strategic Enterprise,3,75000.0,0.03,218250.0
+TECH-TXN-1285,2025-04-01,PRD-TECH-03,High-Performance GPU Cluster,Cloud Infrastructure,Hardware,CUST-ENT-004,Enterprise Corp 2,Nordic Europe,Strategic Enterprise,3,120000.0,0.07,334800.0
+TECH-TXN-1286,2025-05-23,PRD-TECH-02,Cybersecurity AI Shield,Cybersecurity,Defense,CUST-ENT-010,Enterprise Corp 25,Nordic Europe,Strategic Enterprise,2,45000.0,0.01,89100.0
+TECH-TXN-1287,2025-04-23,PRD-TECH-03,High-Performance GPU Cluster,Cloud Infrastructure,Hardware,CUST-ENT-024,Enterprise Corp 17,North America,Strategic Enterprise,1,120000.0,0.02,117600.0
+TECH-TXN-1288,2025-05-29,PRD-TECH-04,Zero-Trust Identity Gateway,Cybersecurity,Access,CUST-ENT-015,Enterprise Corp 7,Nordic Europe,Strategic Enterprise,2,28000.0,0.05,53200.0
+TECH-TXN-1289,2025-01-02,PRD-TECH-03,High-Performance GPU Cluster,Cloud Infrastructure,Hardware,CUST-ENT-019,Enterprise Corp 13,North America,Strategic Enterprise,2,120000.0,0.04,230400.0
+TECH-TXN-1290,2025-03-12,PRD-TECH-01,Enterprise Quantum Cloud,Cloud Infrastructure,Quantum,CUST-ENT-011,Enterprise Corp 2,Nordic Europe,Strategic Enterprise,1,75000.0,0.03,72750.0
+TECH-TXN-1291,2025-06-03,PRD-TECH-03,High-Performance GPU Cluster,Cloud Infrastructure,Hardware,CUST-ENT-014,Enterprise Corp 18,North America,Strategic Enterprise,3,120000.0,0.01,356400.0
+TECH-TXN-1292,2025-02-15,PRD-TECH-01,Enterprise Quantum Cloud,Cloud Infrastructure,Quantum,CUST-ENT-004,Enterprise Corp 18,North America,Strategic Enterprise,2,75000.0,0.05,142500.0
+TECH-TXN-1293,2025-04-07,PRD-TECH-03,High-Performance GPU Cluster,Cloud Infrastructure,Hardware,CUST-ENT-026,Enterprise Corp 13,Nordic Europe,Strategic Enterprise,3,120000.0,0.01,356400.0
+TECH-TXN-1294,2025-06-10,PRD-TECH-03,High-Performance GPU Cluster,Cloud Infrastructure,Hardware,CUST-ENT-009,Enterprise Corp 18,North America,Strategic Enterprise,3,120000.0,0.0,360000.0
+TECH-TXN-1295,2025-06-09,PRD-TECH-04,Zero-Trust Identity Gateway,Cybersecurity,Access,CUST-ENT-016,Enterprise Corp 19,North America,Strategic Enterprise,2,28000.0,0.0,56000.0
+TECH-TXN-1296,2025-06-19,PRD-TECH-04,Zero-Trust Identity Gateway,Cybersecurity,Access,CUST-ENT-005,Enterprise Corp 26,North America,Strategic Enterprise,1,28000.0,0.06,26320.0
+TECH-TXN-1297,2025-03-21,PRD-TECH-04,Zero-Trust Identity Gateway,Cybersecurity,Access,CUST-ENT-029,Enterprise Corp 20,North America,Strategic Enterprise,2,28000.0,0.07,52080.0
+TECH-TXN-1298,2025-03-29,PRD-TECH-02,Cybersecurity AI Shield,Cybersecurity,Defense,CUST-ENT-028,Enterprise Corp 27,Nordic Europe,Strategic Enterprise,2,45000.0,0.01,89100.0
+TECH-TXN-1299,2025-01-23,PRD-TECH-02,Cybersecurity AI Shield,Cybersecurity,Defense,CUST-ENT-003,Enterprise Corp 22,North America,Strategic Enterprise,1,45000.0,0.02,44100.0
+TECH-TXN-1300,2025-04-05,PRD-TECH-01,Enterprise Quantum Cloud,Cloud Infrastructure,Quantum,CUST-ENT-003,Enterprise Corp 26,North America,Strategic Enterprise,1,75000.0,0.07,69750.0
+TECH-TXN-1301,2025-02-16,PRD-TECH-01,Enterprise Quantum Cloud,Cloud Infrastructure,Quantum,CUST-ENT-027,Enterprise Corp 17,North America,Strategic Enterprise,2,75000.0,0.04,144000.0
+TECH-TXN-1302,2025-03-13,PRD-TECH-03,High-Performance GPU Cluster,Cloud Infrastructure,Hardware,CUST-ENT-028,Enterprise Corp 12,Nordic Europe,Strategic Enterprise,2,120000.0,0.04,230400.0
+TECH-TXN-1303,2025-06-02,PRD-TECH-02,Cybersecurity AI Shield,Cybersecurity,Defense,CUST-ENT-028,Enterprise Corp 11,Nordic Europe,Strategic Enterprise,3,45000.0,0.06,126900.0
+TECH-TXN-1304,2025-02-11,PRD-TECH-04,Zero-Trust Identity Gateway,Cybersecurity,Access,CUST-ENT-028,Enterprise Corp 5,North America,Strategic Enterprise,1,28000.0,0.02,27440.0
+TECH-TXN-1305,2025-06-14,PRD-TECH-02,Cybersecurity AI Shield,Cybersecurity,Defense,CUST-ENT-026,Enterprise Corp 2,North America,Strategic Enterprise,3,45000.0,0.04,129600.0
+TECH-TXN-1306,2025-06-09,PRD-TECH-01,Enterprise Quantum Cloud,Cloud Infrastructure,Quantum,CUST-ENT-001,Enterprise Corp 16,Nordic Europe,Strategic Enterprise,2,75000.0,0.05,142500.0
+TECH-TXN-1307,2025-01-17,PRD-TECH-02,Cybersecurity AI Shield,Cybersecurity,Defense,CUST-ENT-023,Enterprise Corp 27,Nordic Europe,Strategic Enterprise,1,45000.0,0.02,44100.0
+TECH-TXN-1308,2025-03-29,PRD-TECH-04,Zero-Trust Identity Gateway,Cybersecurity,Access,CUST-ENT-024,Enterprise Corp 17,Nordic Europe,Strategic Enterprise,3,28000.0,0.04,80640.0
+TECH-TXN-1309,2025-05-31,PRD-TECH-03,High-Performance GPU Cluster,Cloud Infrastructure,Hardware,CUST-ENT-017,Enterprise Corp 15,Nordic Europe,Strategic Enterprise,2,120000.0,0.07,223200.0
+TECH-TXN-1310,2025-05-12,PRD-TECH-04,Zero-Trust Identity Gateway,Cybersecurity,Access,CUST-ENT-003,Enterprise Corp 16,North America,Strategic Enterprise,1,28000.0,0.04,26880.0
+TECH-TXN-1311,2025-05-21,PRD-TECH-01,Enterprise Quantum Cloud,Cloud Infrastructure,Quantum,CUST-ENT-014,Enterprise Corp 14,Nordic Europe,Strategic Enterprise,3,75000.0,0.06,211500.0
+TECH-TXN-1312,2025-05-07,PRD-TECH-04,Zero-Trust Identity Gateway,Cybersecurity,Access,CUST-ENT-001,Enterprise Corp 8,North America,Strategic Enterprise,1,28000.0,0.08,25760.0
+TECH-TXN-1313,2025-03-13,PRD-TECH-02,Cybersecurity AI Shield,Cybersecurity,Defense,CUST-ENT-001,Enterprise Corp 20,North America,Strategic Enterprise,2,45000.0,0.02,88200.0
+TECH-TXN-1314,2025-01-10,PRD-TECH-03,High-Performance GPU Cluster,Cloud Infrastructure,Hardware,CUST-ENT-019,Enterprise Corp 28,North America,Strategic Enterprise,3,120000.0,0.0,360000.0
+TECH-TXN-1315,2025-06-17,PRD-TECH-03,High-Performance GPU Cluster,Cloud Infrastructure,Hardware,CUST-ENT-016,Enterprise Corp 26,Nordic Europe,Strategic Enterprise,1,120000.0,0.0,120000.0
+TECH-TXN-1316,2025-05-02,PRD-TECH-03,High-Performance GPU Cluster,Cloud Infrastructure,Hardware,CUST-ENT-016,Enterprise Corp 9,North America,Strategic Enterprise,3,120000.0,0.02,352800.0
+TECH-TXN-1317,2025-04-14,PRD-TECH-03,High-Performance GPU Cluster,Cloud Infrastructure,Hardware,CUST-ENT-012,Enterprise Corp 16,North America,Strategic Enterprise,1,120000.0,0.05,114000.0
+TECH-TXN-1318,2025-03-30,PRD-TECH-01,Enterprise Quantum Cloud,Cloud Infrastructure,Quantum,CUST-ENT-011,Enterprise Corp 1,North America,Strategic Enterprise,3,75000.0,0.03,218250.0
+TECH-TXN-1319,2025-03-18,PRD-TECH-02,Cybersecurity AI Shield,Cybersecurity,Defense,CUST-ENT-006,Enterprise Corp 12,Nordic Europe,Strategic Enterprise,3,45000.0,0.02,132300.0
+TECH-TXN-1320,2025-04-04,PRD-TECH-01,Enterprise Quantum Cloud,Cloud Infrastructure,Quantum,CUST-ENT-004,Enterprise Corp 6,North America,Strategic Enterprise,1,75000.0,0.08,69000.0
+TECH-TXN-1321,2025-04-20,PRD-TECH-04,Zero-Trust Identity Gateway,Cybersecurity,Access,CUST-ENT-017,Enterprise Corp 8,North America,Strategic Enterprise,2,28000.0,0.01,55440.0
+TECH-TXN-1322,2025-02-22,PRD-TECH-03,High-Performance GPU Cluster,Cloud Infrastructure,Hardware,CUST-ENT-007,Enterprise Corp 18,Nordic Europe,Strategic Enterprise,3,120000.0,0.08,331200.0
+TECH-TXN-1323,2025-01-08,PRD-TECH-04,Zero-Trust Identity Gateway,Cybersecurity,Access,CUST-ENT-020,Enterprise Corp 13,North America,Strategic Enterprise,1,28000.0,0.08,25760.0
+TECH-TXN-1324,2025-06-18,PRD-TECH-04,Zero-Trust Identity Gateway,Cybersecurity,Access,CUST-ENT-013,Enterprise Corp 27,Nordic Europe,Strategic Enterprise,1,28000.0,0.01,27720.0
+TECH-TXN-1325,2025-04-24,PRD-TECH-02,Cybersecurity AI Shield,Cybersecurity,Defense,CUST-ENT-026,Enterprise Corp 7,North America,Strategic Enterprise,2,45000.0,0.02,88200.0
+TECH-TXN-1326,2025-03-15,PRD-TECH-03,High-Performance GPU Cluster,Cloud Infrastructure,Hardware,CUST-ENT-003,Enterprise Corp 15,North America,Strategic Enterprise,1,120000.0,0.06,112800.0
+TECH-TXN-1327,2025-03-28,PRD-TECH-02,Cybersecurity AI Shield,Cybersecurity,Defense,CUST-ENT-017,Enterprise Corp 21,Nordic Europe,Strategic Enterprise,2,45000.0,0.0,90000.0
+TECH-TXN-1328,2025-01-15,PRD-TECH-02,Cybersecurity AI Shield,Cybersecurity,Defense,CUST-ENT-024,Enterprise Corp 8,North America,Strategic Enterprise,2,45000.0,0.06,84600.0
+TECH-TXN-1329,2025-02-19,PRD-TECH-01,Enterprise Quantum Cloud,Cloud Infrastructure,Quantum,CUST-ENT-029,Enterprise Corp 17,North America,Strategic Enterprise,2,75000.0,0.06,141000.0
+TECH-TXN-1330,2025-04-08,PRD-TECH-03,High-Performance GPU Cluster,Cloud Infrastructure,Hardware,CUST-ENT-029,Enterprise Corp 22,North America,Strategic Enterprise,1,120000.0,0.08,110400.0
+TECH-TXN-1331,2025-06-03,PRD-TECH-04,Zero-Trust Identity Gateway,Cybersecurity,Access,CUST-ENT-012,Enterprise Corp 2,Nordic Europe,Strategic Enterprise,3,28000.0,0.08,77280.0
+TECH-TXN-1332,2025-02-10,PRD-TECH-02,Cybersecurity AI Shield,Cybersecurity,Defense,CUST-ENT-024,Enterprise Corp 29,Nordic Europe,Strategic Enterprise,3,45000.0,0.08,124200.0
+TECH-TXN-1333,2025-01-18,PRD-TECH-02,Cybersecurity AI Shield,Cybersecurity,Defense,CUST-ENT-011,Enterprise Corp 16,Nordic Europe,Strategic Enterprise,1,45000.0,0.05,42750.0
+TECH-TXN-1334,2025-06-10,PRD-TECH-04,Zero-Trust Identity Gateway,Cybersecurity,Access,CUST-ENT-015,Enterprise Corp 5,Nordic Europe,Strategic Enterprise,2,28000.0,0.0,56000.0
+TECH-TXN-1335,2025-05-03,PRD-TECH-01,Enterprise Quantum Cloud,Cloud Infrastructure,Quantum,CUST-ENT-010,Enterprise Corp 22,Nordic Europe,Strategic Enterprise,3,75000.0,0.05,213750.0
+TECH-TXN-1336,2025-04-08,PRD-TECH-03,High-Performance GPU Cluster,Cloud Infrastructure,Hardware,CUST-ENT-010,Enterprise Corp 9,North America,Strategic Enterprise,3,120000.0,0.02,352800.0
+TECH-TXN-1337,2025-05-03,PRD-TECH-04,Zero-Trust Identity Gateway,Cybersecurity,Access,CUST-ENT-019,Enterprise Corp 24,Nordic Europe,Strategic Enterprise,3,28000.0,0.06,78960.0
+TECH-TXN-1338,2025-06-05,PRD-TECH-03,High-Performance GPU Cluster,Cloud Infrastructure,Hardware,CUST-ENT-008,Enterprise Corp 19,Nordic Europe,Strategic Enterprise,3,120000.0,0.05,342000.0
+TECH-TXN-1339,2025-06-25,PRD-TECH-04,Zero-Trust Identity Gateway,Cybersecurity,Access,CUST-ENT-026,Enterprise Corp 21,Nordic Europe,Strategic Enterprise,2,28000.0,0.07,52080.0
+TECH-TXN-1340,2025-01-14,PRD-TECH-04,Zero-Trust Identity Gateway,Cybersecurity,Access,CUST-ENT-021,Enterprise Corp 13,Nordic Europe,Strategic Enterprise,1,28000.0,0.04,26880.0
+TECH-TXN-1341,2025-01-16,PRD-TECH-03,High-Performance GPU Cluster,Cloud Infrastructure,Hardware,CUST-ENT-011,Enterprise Corp 10,North America,Strategic Enterprise,2,120000.0,0.08,220800.0
+TECH-TXN-1342,2025-05-27,PRD-TECH-01,Enterprise Quantum Cloud,Cloud Infrastructure,Quantum,CUST-ENT-013,Enterprise Corp 3,Nordic Europe,Strategic Enterprise,3,75000.0,0.07,209250.0
+TECH-TXN-1343,2025-06-26,PRD-TECH-01,Enterprise Quantum Cloud,Cloud Infrastructure,Quantum,CUST-ENT-011,Enterprise Corp 3,North America,Strategic Enterprise,1,75000.0,0.08,69000.0
+TECH-TXN-1344,2025-03-24,PRD-TECH-01,Enterprise Quantum Cloud,Cloud Infrastructure,Quantum,CUST-ENT-002,Enterprise Corp 1,Nordic Europe,Strategic Enterprise,2,75000.0,0.06,141000.0
+TECH-TXN-1345,2025-06-12,PRD-TECH-04,Zero-Trust Identity Gateway,Cybersecurity,Access,CUST-ENT-021,Enterprise Corp 16,North America,Strategic Enterprise,3,28000.0,0.04,80640.0
+TECH-TXN-1346,2025-05-14,PRD-TECH-02,Cybersecurity AI Shield,Cybersecurity,Defense,CUST-ENT-015,Enterprise Corp 7,Nordic Europe,Strategic Enterprise,3,45000.0,0.07,125550.0
+TECH-TXN-1347,2025-02-16,PRD-TECH-03,High-Performance GPU Cluster,Cloud Infrastructure,Hardware,CUST-ENT-013,Enterprise Corp 2,Nordic Europe,Strategic Enterprise,2,120000.0,0.03,232800.0
+TECH-TXN-1348,2025-06-05,PRD-TECH-01,Enterprise Quantum Cloud,Cloud Infrastructure,Quantum,CUST-ENT-003,Enterprise Corp 2,North America,Strategic Enterprise,1,75000.0,0.06,70500.0
+TECH-TXN-1349,2025-06-04,PRD-TECH-01,Enterprise Quantum Cloud,Cloud Infrastructure,Quantum,CUST-ENT-028,Enterprise Corp 20,North America,Strategic Enterprise,3,75000.0,0.06,211500.0
+TECH-TXN-1350,2025-05-29,PRD-TECH-02,Cybersecurity AI Shield,Cybersecurity,Defense,CUST-ENT-019,Enterprise Corp 19,Nordic Europe,Strategic Enterprise,2,45000.0,0.05,85500.0
+TECH-TXN-1351,2025-03-29,PRD-TECH-03,High-Performance GPU Cluster,Cloud Infrastructure,Hardware,CUST-ENT-005,Enterprise Corp 10,North America,Strategic Enterprise,3,120000.0,0.07,334800.0
+TECH-TXN-1352,2025-04-26,PRD-TECH-01,Enterprise Quantum Cloud,Cloud Infrastructure,Quantum,CUST-ENT-011,Enterprise Corp 26,Nordic Europe,Strategic Enterprise,2,75000.0,0.01,148500.0
+TECH-TXN-1353,2025-03-26,PRD-TECH-04,Zero-Trust Identity Gateway,Cybersecurity,Access,CUST-ENT-004,Enterprise Corp 2,Nordic Europe,Strategic Enterprise,2,28000.0,0.03,54320.0
+TECH-TXN-1354,2025-01-18,PRD-TECH-03,High-Performance GPU Cluster,Cloud Infrastructure,Hardware,CUST-ENT-002,Enterprise Corp 6,North America,Strategic Enterprise,3,120000.0,0.08,331200.0
+TECH-TXN-1355,2025-03-01,PRD-TECH-03,High-Performance GPU Cluster,Cloud Infrastructure,Hardware,CUST-ENT-019,Enterprise Corp 24,North America,Strategic Enterprise,3,120000.0,0.07,334800.0
+TECH-TXN-1356,2025-05-01,PRD-TECH-04,Zero-Trust Identity Gateway,Cybersecurity,Access,CUST-ENT-025,Enterprise Corp 29,North America,Strategic Enterprise,1,28000.0,0.01,27720.0
+TECH-TXN-1357,2025-05-02,PRD-TECH-04,Zero-Trust Identity Gateway,Cybersecurity,Access,CUST-ENT-002,Enterprise Corp 23,North America,Strategic Enterprise,2,28000.0,0.03,54320.0
+TECH-TXN-1358,2025-02-14,PRD-TECH-01,Enterprise Quantum Cloud,Cloud Infrastructure,Quantum,CUST-ENT-027,Enterprise Corp 29,Nordic Europe,Strategic Enterprise,2,75000.0,0.04,144000.0
+TECH-TXN-1359,2025-05-13,PRD-TECH-04,Zero-Trust Identity Gateway,Cybersecurity,Access,CUST-ENT-028,Enterprise Corp 16,North America,Strategic Enterprise,1,28000.0,0.07,26040.0
+TECH-TXN-1360,2025-02-21,PRD-TECH-01,Enterprise Quantum Cloud,Cloud Infrastructure,Quantum,CUST-ENT-025,Enterprise Corp 27,North America,Strategic Enterprise,3,75000.0,0.01,222750.0
+TECH-TXN-1361,2025-02-19,PRD-TECH-01,Enterprise Quantum Cloud,Cloud Infrastructure,Quantum,CUST-ENT-010,Enterprise Corp 9,North America,Strategic Enterprise,1,75000.0,0.06,70500.0
+TECH-TXN-1362,2025-03-16,PRD-TECH-02,Cybersecurity AI Shield,Cybersecurity,Defense,CUST-ENT-001,Enterprise Corp 5,North America,Strategic Enterprise,1,45000.0,0.08,41400.0
+TECH-TXN-1363,2025-06-15,PRD-TECH-01,Enterprise Quantum Cloud,Cloud Infrastructure,Quantum,CUST-ENT-007,Enterprise Corp 22,Nordic Europe,Strategic Enterprise,1,75000.0,0.04,72000.0
+TECH-TXN-1364,2025-02-23,PRD-TECH-02,Cybersecurity AI Shield,Cybersecurity,Defense,CUST-ENT-007,Enterprise Corp 6,Nordic Europe,Strategic Enterprise,3,45000.0,0.02,132300.0
+TECH-TXN-1365,2025-03-15,PRD-TECH-04,Zero-Trust Identity Gateway,Cybersecurity,Access,CUST-ENT-011,Enterprise Corp 24,North America,Strategic Enterprise,3,28000.0,0.03,81480.0
+TECH-TXN-1366,2025-05-14,PRD-TECH-03,High-Performance GPU Cluster,Cloud Infrastructure,Hardware,CUST-ENT-023,Enterprise Corp 26,Nordic Europe,Strategic Enterprise,3,120000.0,0.08,331200.0
+TECH-TXN-1367,2025-06-15,PRD-TECH-02,Cybersecurity AI Shield,Cybersecurity,Defense,CUST-ENT-006,Enterprise Corp 1,Nordic Europe,Strategic Enterprise,1,45000.0,0.04,43200.0
+TECH-TXN-1368,2025-06-13,PRD-TECH-02,Cybersecurity AI Shield,Cybersecurity,Defense,CUST-ENT-002,Enterprise Corp 23,Nordic Europe,Strategic Enterprise,3,45000.0,0.04,129600.0
+TECH-TXN-1369,2025-05-24,PRD-TECH-02,Cybersecurity AI Shield,Cybersecurity,Defense,CUST-ENT-008,Enterprise Corp 1,Nordic Europe,Strategic Enterprise,1,45000.0,0.03,43650.0
+TECH-TXN-1370,2025-02-10,PRD-TECH-01,Enterprise Quantum Cloud,Cloud Infrastructure,Quantum,CUST-ENT-018,Enterprise Corp 3,Nordic Europe,Strategic Enterprise,3,75000.0,0.06,211500.0
+TECH-TXN-1371,2025-06-20,PRD-TECH-01,Enterprise Quantum Cloud,Cloud Infrastructure,Quantum,CUST-ENT-001,Enterprise Corp 2,North America,Strategic Enterprise,3,75000.0,0.08,207000.0
+TECH-TXN-1372,2025-03-13,PRD-TECH-02,Cybersecurity AI Shield,Cybersecurity,Defense,CUST-ENT-019,Enterprise Corp 1,Nordic Europe,Strategic Enterprise,2,45000.0,0.05,85500.0
+TECH-TXN-1373,2025-02-07,PRD-TECH-01,Enterprise Quantum Cloud,Cloud Infrastructure,Quantum,CUST-ENT-026,Enterprise Corp 7,Nordic Europe,Strategic Enterprise,3,75000.0,0.07,209250.0
+TECH-TXN-1374,2025-02-16,PRD-TECH-02,Cybersecurity AI Shield,Cybersecurity,Defense,CUST-ENT-006,Enterprise Corp 19,Nordic Europe,Strategic Enterprise,1,45000.0,0.06,42300.0
+TECH-TXN-1375,2025-05-02,PRD-TECH-02,Cybersecurity AI Shield,Cybersecurity,Defense,CUST-ENT-028,Enterprise Corp 20,Nordic Europe,Strategic Enterprise,1,45000.0,0.01,44550.0
+TECH-TXN-1376,2025-02-06,PRD-TECH-02,Cybersecurity AI Shield,Cybersecurity,Defense,CUST-ENT-006,Enterprise Corp 10,Nordic Europe,Strategic Enterprise,3,45000.0,0.07,125550.0
+TECH-TXN-1377,2025-02-13,PRD-TECH-02,Cybersecurity AI Shield,Cybersecurity,Defense,CUST-ENT-009,Enterprise Corp 3,North America,Strategic Enterprise,2,45000.0,0.04,86400.0
+TECH-TXN-1378,2025-06-05,PRD-TECH-01,Enterprise Quantum Cloud,Cloud Infrastructure,Quantum,CUST-ENT-015,Enterprise Corp 10,North America,Strategic Enterprise,2,75000.0,0.03,145500.0
+TECH-TXN-1379,2025-03-08,PRD-TECH-01,Enterprise Quantum Cloud,Cloud Infrastructure,Quantum,CUST-ENT-026,Enterprise Corp 16,Nordic Europe,Strategic Enterprise,3,75000.0,0.02,220500.0
+TECH-TXN-1380,2025-01-04,PRD-TECH-03,High-Performance GPU Cluster,Cloud Infrastructure,Hardware,CUST-ENT-029,Enterprise Corp 22,North America,Strategic Enterprise,2,120000.0,0.02,235200.0
+TECH-TXN-1381,2025-03-12,PRD-TECH-02,Cybersecurity AI Shield,Cybersecurity,Defense,CUST-ENT-009,Enterprise Corp 25,North America,Strategic Enterprise,2,45000.0,0.03,87300.0
+TECH-TXN-1382,2025-02-11,PRD-TECH-01,Enterprise Quantum Cloud,Cloud Infrastructure,Quantum,CUST-ENT-021,Enterprise Corp 29,Nordic Europe,Strategic Enterprise,2,75000.0,0.08,138000.0
+TECH-TXN-1383,2025-03-30,PRD-TECH-02,Cybersecurity AI Shield,Cybersecurity,Defense,CUST-ENT-012,Enterprise Corp 22,North America,Strategic Enterprise,2,45000.0,0.03,87300.0
+TECH-TXN-1384,2025-03-17,PRD-TECH-01,Enterprise Quantum Cloud,Cloud Infrastructure,Quantum,CUST-ENT-012,Enterprise Corp 16,North America,Strategic Enterprise,2,75000.0,0.0,150000.0
+TECH-TXN-1385,2025-03-11,PRD-TECH-04,Zero-Trust Identity Gateway,Cybersecurity,Access,CUST-ENT-015,Enterprise Corp 22,Nordic Europe,Strategic Enterprise,1,28000.0,0.0,28000.0
+TECH-TXN-1386,2025-04-03,PRD-TECH-02,Cybersecurity AI Shield,Cybersecurity,Defense,CUST-ENT-009,Enterprise Corp 3,Nordic Europe,Strategic Enterprise,3,45000.0,0.04,129600.0
+TECH-TXN-1387,2025-01-21,PRD-TECH-03,High-Performance GPU Cluster,Cloud Infrastructure,Hardware,CUST-ENT-020,Enterprise Corp 26,Nordic Europe,Strategic Enterprise,1,120000.0,0.01,118800.0
+TECH-TXN-1388,2025-04-16,PRD-TECH-01,Enterprise Quantum Cloud,Cloud Infrastructure,Quantum,CUST-ENT-005,Enterprise Corp 3,Nordic Europe,Strategic Enterprise,2,75000.0,0.05,142500.0
+TECH-TXN-1389,2025-05-24,PRD-TECH-01,Enterprise Quantum Cloud,Cloud Infrastructure,Quantum,CUST-ENT-003,Enterprise Corp 9,North America,Strategic Enterprise,1,75000.0,0.03,72750.0
+TECH-TXN-1390,2025-02-27,PRD-TECH-02,Cybersecurity AI Shield,Cybersecurity,Defense,CUST-ENT-013,Enterprise Corp 6,Nordic Europe,Strategic Enterprise,3,45000.0,0.02,132300.0
+TECH-TXN-1391,2025-05-18,PRD-TECH-02,Cybersecurity AI Shield,Cybersecurity,Defense,CUST-ENT-012,Enterprise Corp 3,Nordic Europe,Strategic Enterprise,2,45000.0,0.06,84600.0
+TECH-TXN-1392,2025-03-11,PRD-TECH-01,Enterprise Quantum Cloud,Cloud Infrastructure,Quantum,CUST-ENT-026,Enterprise Corp 23,North America,Strategic Enterprise,1,75000.0,0.02,73500.0
+TECH-TXN-1393,2025-04-08,PRD-TECH-03,High-Performance GPU Cluster,Cloud Infrastructure,Hardware,CUST-ENT-011,Enterprise Corp 5,Nordic Europe,Strategic Enterprise,1,120000.0,0.02,117600.0
+TECH-TXN-1394,2025-04-02,PRD-TECH-02,Cybersecurity AI Shield,Cybersecurity,Defense,CUST-ENT-020,Enterprise Corp 14,Nordic Europe,Strategic Enterprise,3,45000.0,0.04,129600.0
+TECH-TXN-1395,2025-06-29,PRD-TECH-03,High-Performance GPU Cluster,Cloud Infrastructure,Hardware,CUST-ENT-021,Enterprise Corp 4,Nordic Europe,Strategic Enterprise,3,120000.0,0.02,352800.0
+TECH-TXN-1396,2025-02-24,PRD-TECH-04,Zero-Trust Identity Gateway,Cybersecurity,Access,CUST-ENT-019,Enterprise Corp 23,North America,Strategic Enterprise,3,28000.0,0.07,78120.0
+TECH-TXN-1397,2025-02-15,PRD-TECH-01,Enterprise Quantum Cloud,Cloud Infrastructure,Quantum,CUST-ENT-025,Enterprise Corp 17,North America,Strategic Enterprise,2,75000.0,0.08,138000.0
+TECH-TXN-1398,2025-05-06,PRD-TECH-03,High-Performance GPU Cluster,Cloud Infrastructure,Hardware,CUST-ENT-004,Enterprise Corp 26,North America,Strategic Enterprise,3,120000.0,0.0,360000.0
+TECH-TXN-1399,2025-02-08,PRD-TECH-01,Enterprise Quantum Cloud,Cloud Infrastructure,Quantum,CUST-ENT-011,Enterprise Corp 4,North America,Strategic Enterprise,3,75000.0,0.02,220500.0
