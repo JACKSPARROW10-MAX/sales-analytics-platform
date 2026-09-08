@@ -73,7 +73,7 @@ def generate_recommendations(
                 lowest_region = reg_rev.index[-1]
 
     # Try Groq AI Generation with real calculated facts
-    groq_api_key = os.getenv("groq_api_key")
+    groq_api_key = os.getenv("GROQ_API_KEY") or os.getenv("groq_api_key")
     if groq_api_key and total_rev > 0:
         ai_recs = _generate_with_groq(
             groq_api_key, total_rev, total_orders, top_product, top_prod_rev,

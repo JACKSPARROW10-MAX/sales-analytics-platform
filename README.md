@@ -44,9 +44,11 @@ The **Sales Analytics Platform** is a production-grade, full-stack intelligence 
 26. [Project Folder Structure](#26-project-folder-structure)
 27. [How to Run (Installation & Setup Guide)](#27-how-to-run)
 28. [Verification & Dynamic Dual-Dataset Testing](#28-verification--testing)
-29. [Known Limitations](#29-known-limitations)
-30. [Future Scope](#30-future-scope)
-31. [Presentation Cheat Sheet (Viva & Pitch Guide)](#31-presentation-cheat-sheet)
+30. [Cloud Deployment](#cloud-deployment)
+31. [Weekly Automated Email Reporting](#weekly-automated-email-reporting)
+32. [Known Limitations](#29-known-limitations)
+33. [Future Scope](#30-future-scope)
+34. [Presentation Cheat Sheet (Viva & Pitch Guide)](#31-presentation-cheat-sheet)
 
 ---
 
@@ -1489,3 +1491,236 @@ The platform currently uses Ridge regression rather than deep sequence models, p
 
 ### What is the future scope?
 Future enhancements include transitioning to gradient-boosted forecasting (XGBoost/LightGBM), integrating real-time streaming via Apache Kafka, implementing game-theoretic TreeSHAP explainability, adding role-based access control, and deploying on Kubernetes via Helm charts.
+
+---
+
+# Cloud Deployment
+
+The Sales Analytics Platform is fully cloud-compatible and ready for production deployment across modern cloud providers while preserving Docker Compose support for local development.
+
+### Architecture Comparison
+
+#### Local Development Architecture
+- **Frontend**: Vite React Dev Server (`http://localhost:5173`)
+- **Backend**: FastAPI via Uvicorn (`http://localhost:8000`)
+- **Database**: Local PostgreSQL container running inside Docker (`localhost:5432`)
+- **Orchestration**: `docker-compose.yml` runs PostgreSQL and PgAdmin locally
+
+#### Production Cloud Architecture
+- **Frontend**: Cloud-hosted React Single Page Application (Vercel, Netlify, or Render Static Sites)
+- **Backend**: Cloud-hosted FastAPI Container or Web Service (Render, Railway, AWS ECS, or Fly.io)
+- **Database**: Fully managed Cloud PostgreSQL (Supabase, Neon Serverless Postgres, Render PostgreSQL, Railway, or AWS RDS)
+- **Data Flow**:
+```
+User
+ ↓
+Cloud React Frontend (e.g., https://sales-analytics.vercel.app)
+ ↓
+Cloud FastAPI Backend (e.g., https://api-sales-analytics.onrender.com)
+ ↓
+Cloud PostgreSQL (e.g., Neon / Supabase via DATABASE_URL)
+ ↓
+Analytics / ML Models (Ridge Time-Series, Isolation Forest) / GenAI (Groq LLaMA 3.3)
+```
+
+---
+
+### Step-by-Step Cloud Deployment Guide
+
+#### Step 1: Create a Cloud PostgreSQL Database
+1. Sign up for a free cloud PostgreSQL provider such as **[Neon](https://neon.tech/)**, **[Supabase](https://supabase.com/)**, or **[Render PostgreSQL](https://render.com/)**.
+2. Create a new PostgreSQL database instance (e.g., named `sales_platform` or `neondb`).
+3. Under Connection Details, copy the complete connection URI with SSL enabled:
+   ```
+   postgresql://username:password@ep-sample-12345.region.aws.neon.tech/neondb?sslmode=require
+   ```
+
+#### Step 2: Obtain and Configure `DATABASE_URL`
+Set the `DATABASE_URL` environment variable on your backend host. The application automatically normalizes `postgres://` to `postgresql://` and applies connection pre-pinging (`pool_pre_ping=True`) to handle serverless connection drops.
+
+#### Step 3: Deploy FastAPI Backend (e.g., on Render or Railway)
+1. Link your GitHub repository to **Render** or **Railway**.
+2. Select **Web Service** with runtime `Python 3`.
+3. Set Build Command:
+   ```bash
+   pip install -r requirements.txt
+   ```
+4. Set Start Command:
+   ```bash
+   python -m uvicorn api.main:app --host 0.0.0.0 --port $PORT
+   ```
+
+#### Step 4: Configure Backend Environment Variables
+In your cloud dashboard, configure the following secrets and environment variables:
+```env
+DATABASE_URL=postgresql://user:password@ep-host.region.aws.neon.tech/neondb?sslmode=require
+CORS_ORIGINS=https://your-frontend-domain.vercel.app,http://localhost:5173
+PORT=8000
+HOST=0.0.0.0
+GROQ_API_KEY=your-groq-api-key
+EMAIL_USERNAME=your-email@gmail.com
+EMAIL_PASSWORD=your-google-app-password
+REPORT_RECIPIENT=stakeholder@company.com
+SMTP_SERVER=smtp.gmail.com
+SMTP_PORT=465
+```
+
+#### Step 5: Initialize the Cloud Database Schema
+Run the non-destructive, deployment-safe schema initializer once against your cloud database:
+```bash
+python init_db.py
+```
+This executes `CREATE TABLE IF NOT EXISTS` for `staging_sales`, `staging_products`, `staging_customers`, `staging_erp`, `dim_date`, `dim_product`, `dim_customer`, and `fact_sales` without dropping any existing records.
+
+#### Step 6: Deploy React Frontend (e.g., on Vercel or Netlify)
+1. Link the repository to **Vercel** or **Netlify**.
+2. Set Root Directory to `dashboard`.
+3. Set Build Command: `npm run build`
+4. Set Output Directory: `dist`
+5. Configure Environment Variable:
+   ```env
+   VITE_API_URL=https://your-backend-domain.onrender.com
+   ```
+
+#### Step 7: Configure CORS
+Ensure your backend's `CORS_ORIGINS` variable includes your production frontend domain (e.g. `https://your-sales-app.vercel.app`).
+
+#### Step 8: Verify Health Endpoint
+Test backend and cloud database liveness by requesting:
+```bash
+curl https://your-backend-domain.onrender.com/health
+```
+Expected response:
+```json
+{
+  "status": "healthy",
+  "database": "connected",
+  "service": "Sales Analytics Platform API",
+  "version": "1.0.0",
+  "database_status": "Database connection successful"
+}
+```
+
+#### Step 9: Upload a CSV via Frontend
+1. Navigate to the cloud React dashboard.
+2. Select **Upload CSV** from the sidebar.
+3. Choose a transactional CSV file (e.g. `data/sample/sales_data.csv`).
+4. Click submit to execute the cloud ETL pipeline.
+
+#### Step 10: Verify Data Appears in Cloud PostgreSQL
+The backend ingests rows into `staging_sales`, validates types, and loads curated rows into `fact_sales`. You can inspect the updated row count via the UI upload summary card or cloud SQL console:
+```sql
+SELECT COUNT(*) FROM fact_sales;
+```
+
+#### Step 11: Verify Dashboard Updates
+Observe that the React dashboard metrics, Ridge forecasting line, Isolation Forest anomalies, and Groq GenAI prescriptive strategies automatically refresh in real time.
+
+---
+
+# Weekly Automated Email Reporting
+
+The platform features an automated weekly reporting system powered by **GitHub Actions** and **SMTP**. Every week, an executive sales analytics report is generated dynamically from the live cloud PostgreSQL database and emailed directly to stakeholders as an executive-styled PDF attachment.
+
+### System Architecture Diagram
+
+```
+                    ┌──────────────────┐
+                    │   React Frontend │
+                    │   Cloud Hosted   │
+                    └────────┬─────────┘
+                             │
+                             ↓
+                    ┌──────────────────┐
+                    │ FastAPI Backend  │
+                    │   Cloud Hosted   │
+                    └────────┬─────────┘
+                             │
+                             ↓
+                    ┌──────────────────┐
+                    │ Cloud PostgreSQL │
+                    └────────┬─────────┘
+                             │
+                 ┌───────────┴───────────┐
+                 ↓                       ↓
+          Analytics / ML          GenAI Recommendations
+                 │
+                 ↓
+          Weekly PDF Report
+                 ↑
+                 │
+          GitHub Actions
+                 │
+                 ↓
+          Email to Recipient
+```
+
+---
+
+### Workflow Specifications (`.github/workflows/weekly-report.yml`)
+
+#### 1. Weekly Schedule & Timezone
+GitHub Actions schedules use UTC cron expressions.
+- **Target Schedule**: Every Monday at 9:00 AM IST (Indian Standard Time, UTC+5:30)
+- **UTC Calculation**: 9:00 AM - 5 hours 30 minutes = **3:30 AM UTC**
+- **Cron Expression**: `cron: "30 3 * * 1"`
+
+#### 2. Manual Trigger (`workflow_dispatch`)
+The workflow includes `workflow_dispatch:`, allowing project reviewers and administrators to trigger an immediate report generation and email dispatch directly from the GitHub repository's **Actions** tab.
+
+#### 3. Cloud Database Connection (No Localhost)
+Because GitHub Actions runs on a remote cloud Ubuntu runner, it **must never attempt to connect to `localhost:5432`**. The workflow securely pulls `DATABASE_URL` from GitHub Secrets, connects to the cloud PostgreSQL database (Neon, Supabase, or AWS RDS), and verifies connectivity with a dedicated health-check step prior to generating reports.
+
+#### 4. Report Contents (Based on Live Fact Tables)
+The generated PDF report (`reports/weekly_sales_report.pdf`) queries live PostgreSQL facts and ML models to include:
+- **Executive KPIs**: Total revenue, total transactions, total volume, average discount, average order value (AOV)
+- **Top Products Performance**: Top products ranked by total revenue and quantity sold
+- **Category & Regional Performance**: Dimensional distribution across categories and geographic regions
+- **Statistical Variance**: Deviation between actual revenue and moving-average baseline
+- **Detected Anomalies**: Top transactions flagged by Isolation Forest with root-cause indicators
+- **Prescriptive AI Strategy**: Actionable business recommendations generated by Groq LLaMA 3.3 / rules engine
+
+#### 5. Email Delivery Mechanism
+- Delivered using `dawidd6/action-send-mail@v3` via secure SMTP (SSL port 465).
+- Includes an executive-styled HTML body notifying stakeholders of report generation.
+- Attaches the newly generated `reports/weekly_sales_report.pdf`.
+- Also uploads the PDF report as a GitHub Actions workflow artifact (retained for 30 days) for direct download.
+
+---
+
+### Required GitHub Repository Secrets
+
+Configure the following secrets under **Settings > Secrets and variables > Actions > New repository secret**:
+
+| Secret Name | Description | Example / Note |
+|---|---|---|
+| `DATABASE_URL` | Cloud PostgreSQL URI | `postgresql://user:pass@ep-host.neon.tech/neondb?sslmode=require` |
+| `EMAIL_USERNAME` | SMTP Sender Email Address | `your-email@gmail.com` |
+| `EMAIL_PASSWORD` | SMTP Password / App Password | 16-character **Google App Password** (see instructions below) |
+| `REPORT_RECIPIENT` | Stakeholder / Executive Email | `stakeholder@company.com` |
+| `GROQ_API_KEY` | Groq AI Cloud API Key | `gsk_...` (optional; falls back to analytical rules engine if omitted) |
+
+> [!IMPORTANT]
+> **Generating a Google App Password for Gmail:**
+> 1. Go to your **Google Account** > **Security**.
+> 2. Ensure **2-Step Verification** is turned ON.
+> 3. Under *2-Step Verification*, scroll down to **App passwords**.
+> 4. Enter an app name (e.g., `Sales Analytics Platform`) and click **Create**.
+> 5. Copy the generated 16-character password into the `EMAIL_PASSWORD` GitHub Secret. Do NOT use your standard Gmail login password.
+
+---
+
+### How to Manually Test Weekly Reporting
+
+1. Push your latest code with GitHub Actions workflow to the repository.
+2. Ensure repository secrets (`DATABASE_URL`, `EMAIL_USERNAME`, `EMAIL_PASSWORD`, `REPORT_RECIPIENT`) are configured.
+3. Open your GitHub repository in your browser and click on the **Actions** tab.
+4. In the left sidebar, click on **Weekly Executive Sales Report**.
+5. Click **Run workflow** > Select `main` branch > Click **Run workflow**.
+6. Monitor the workflow execution steps:
+   - `Connect to Cloud PostgreSQL`
+   - `Generate Weekly PDF Report`
+   - `Verify PDF Report Exists`
+   - `Upload PDF Report as Workflow Artifact`
+   - `Send Report PDF via Email`
+7. Check your email inbox for the executive email with `weekly_sales_report.pdf` attached.

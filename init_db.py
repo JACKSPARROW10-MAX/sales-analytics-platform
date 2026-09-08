@@ -1,84 +1,121 @@
 """
 Initialize the database schema.
-Run this after starting Docker with: docker-compose up -d
+Deployment-safe and idempotent for both Cloud PostgreSQL (via DATABASE_URL)
+and Local Docker PostgreSQL.
 """
 import logging
 import os
-from sqlalchemy import create_engine, text
+import sys
+from pathlib import Path
+from sqlalchemy import create_engine, inspect, text
 from dotenv import load_dotenv
 
-logging.basicConfig(level=logging.INFO)
+# Ensure project root is in sys.path
+PROJECT_ROOT = Path(__file__).resolve().parent
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
+
+from db.connection import get_db_connection, get_database_url
+
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
 
 load_dotenv()
 
 
-def get_db_connection():
-    """Create SQLAlchemy engine using environment variables."""
+def ensure_local_database_exists():
+    """
+    For local Docker development only:
+    If DATABASE_URL is not set, connect to default 'postgres' database
+    to ensure the target database exists before connecting to it.
+    """
+    if os.getenv("DATABASE_URL"):
+        return  # Cloud PostgreSQL databases are pre-provisioned; do not run CREATE DATABASE
+
     db_user = os.getenv('POSTGRES_USER', 'postgres')
     db_password = os.getenv('POSTGRES_PASSWORD', 'postgres')
     db_host = os.getenv('POSTGRES_HOST', 'localhost')
     db_port = os.getenv('POSTGRES_PORT', '5432')
     db_name = os.getenv('POSTGRES_DB', 'sales_platform')
-    
-    # Connect to default 'postgres' database first to create the target database
-    connection_string = f"postgresql://{db_user}:{db_password}@{db_host}:{db_port}/postgres"
-    engine = create_engine(connection_string)
-    
-    return engine, db_name
+
+    try:
+        admin_url = f"postgresql://{db_user}:{db_password}@{db_host}:{db_port}/postgres"
+        admin_engine = create_engine(admin_url, isolation_level="AUTOCOMMIT")
+        with admin_engine.connect() as conn:
+            result = conn.execute(
+                text("SELECT 1 FROM pg_database WHERE datname = :db_name"),
+                {'db_name': db_name}
+            )
+            if not result.fetchone():
+                conn.execute(text(f'CREATE DATABASE "{db_name}"'))
+                logger.info(f"Created local database: {db_name}")
+            else:
+                logger.info(f"Local database '{db_name}' already exists")
+    except Exception as e:
+        logger.warning(f"Could not check/create local database '{db_name}' via admin connection: {e}")
 
 
 def init_database():
-    """Initialize the database by creating the database and schema."""
-    engine, db_name = get_db_connection()
-    
+    """
+    Initialize database schema safely.
+    Creates tables if they do not already exist, preserving all existing production data.
+    """
+    # 1. For local docker, ensure database exists
+    ensure_local_database_exists()
+
+    # 2. Connect to the target database (Cloud or Local)
+    engine = get_db_connection()
+
+    schema_file = PROJECT_ROOT / "db" / "schema.sql"
+    if not schema_file.exists():
+        raise FileNotFoundError(f"Schema file not found at {schema_file}")
+
+    with open(schema_file, "r", encoding="utf-8") as f:
+        schema_sql = f.read()
+
+    logger.info("Applying deployment-safe schema DDL statements...")
+
     try:
-        with engine.connect() as conn:
-            # Check if database exists
-            result = conn.execute(text(
-                "SELECT 1 FROM pg_database WHERE datname = :db_name"
-            ), {'db_name': db_name})
-            
-            if not result.fetchone():
-                # Create database
-                conn.execute(text(f"COMMIT"))
-                conn.execute(text(f"CREATE DATABASE {db_name}"))
-                logger.info(f"Created database: {db_name}")
-            else:
-                logger.info(f"Database {db_name} already exists")
-        
-        # Now connect to the target database and create schema
-        connection_string = f"postgresql://{os.getenv('POSTGRES_USER', 'postgres')}:{os.getenv('POSTGRES_PASSWORD', 'postgres')}@{os.getenv('POSTGRES_HOST', 'localhost')}:{os.getenv('POSTGRES_PORT', '5432')}/{db_name}"
-        engine = create_engine(connection_string)
-        
-        # Read and execute schema
-        schema_path = "db/schema.sql"
-        with open(schema_path, 'r') as f:
-            schema_sql = f.read()
-        
-        with engine.connect() as conn:
-            conn.execute(text(schema_sql))
-            conn.commit()
-        
-        logger.info("Database schema created successfully")
-        
-        # Verify tables
-        with engine.connect() as conn:
-            result = conn.execute(text("""
-                SELECT tablename FROM pg_tables 
-                WHERE schemaname = 'public'
-                ORDER BY tablename
-            """))
-            tables = [row[0] for row in result]
-            logger.info(f"Tables created: {tables}")
-        
+        # Some cloud databases restrict CREATE EXTENSION to superusers.
+        # Run statements and handle extension gracefully if restricted.
+        with engine.begin() as conn:
+            for statement in schema_sql.split(";"):
+                stmt = statement.strip()
+                if not stmt:
+                    continue
+                try:
+                    conn.execute(text(stmt))
+                except Exception as stmt_err:
+                    if "pgcrypto" in stmt.lower():
+                        logger.warning(f"Note: pgcrypto extension creation skipped ({stmt_err}). Continuing...")
+                    else:
+                        raise stmt_err
+
+        logger.info("Database schema initialized successfully (no data overwritten).")
+
+        # Verify created/existing tables
+        inspector = inspect(engine)
+        tables = inspector.get_table_names()
+        logger.info(f"Verified {len(tables)} tables in database: {tables}")
+
+        required_tables = {"staging_sales", "dim_date", "dim_product", "dim_customer", "fact_sales"}
+        missing = required_tables - set(tables)
+        if missing:
+            logger.error(f"Missing required tables after initialization: {missing}")
+            return False
+
         return True
-    
+
     except Exception as e:
-        logger.error(f"Error initializing database: {e}")
+        logger.error(f"Database initialization failed: {e}")
         raise
 
 
 if __name__ == "__main__":
-    init_database()
-    print("Database initialization complete!")
+    success = init_database()
+    if success:
+        print("Database initialization complete and verified!")
+        sys.exit(0)
+    else:
+        print("Database initialization completed with warnings/missing tables.")
+        sys.exit(1)

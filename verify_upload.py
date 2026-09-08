@@ -1,20 +1,13 @@
 """
 Verify that the upload landed in fact_sales without duplicating existing rows
 """
-from sqlalchemy import create_engine, text
+from db.connection import get_db_connection
+from sqlalchemy import text
 from dotenv import load_dotenv
-import os
 
 load_dotenv()
 
-db_user = os.getenv('POSTGRES_USER', 'postgres')
-db_password = os.getenv('POSTGRES_PASSWORD', 'postgres')
-db_host = os.getenv('POSTGRES_HOST', 'localhost')
-db_port = os.getenv('POSTGRES_PORT', '5432')
-db_name = os.getenv('POSTGRES_DB', 'sales_platform')
-
-connection_string = f"postgresql://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}"
-engine = create_engine(connection_string)
+engine = get_db_connection()
 
 with engine.connect() as conn:
     # Check fact_sales row count

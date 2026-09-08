@@ -10,25 +10,7 @@ logger = logging.getLogger(__name__)
 
 load_dotenv()
 
-
-def get_db_connection():
-    """
-    Create SQLAlchemy engine using environment variables.
-    
-    Returns:
-        SQLAlchemy engine
-    """
-    db_user = os.getenv('POSTGRES_USER', 'postgres')
-    db_password = os.getenv('POSTGRES_PASSWORD', 'postgres')
-    db_host = os.getenv('POSTGRES_HOST', 'localhost')
-    db_port = os.getenv('POSTGRES_PORT', '5432')
-    db_name = os.getenv('POSTGRES_DB', 'sales_platform')
-    
-    connection_string = f"postgresql://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}"
-    engine = create_engine(connection_string)
-    
-    return engine
-
+from db.connection import get_db_connection, get_database_url
 
 def load_to_staging_sales(df: pd.DataFrame, engine) -> int:
     """

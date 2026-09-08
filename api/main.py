@@ -14,11 +14,17 @@ PROJECT_ROOT = Path(__file__).resolve().parent.parent
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
-from fastapi import FastAPI, UploadFile, File, HTTPException, Query
+import re
+from fastapi import FastAPI, UploadFile, File, HTTPException, Query, Request, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 from pydantic import BaseModel
 from sqlalchemy import text
+# pyrefly: ignore [missing-import]
+from slowapi import Limiter, _rate_limit_exceeded_handler
+# pyrefly: ignore [missing-import]
+from slowapi.util import get_remote_address
+from slowapi.errors import RateLimitExceeded
 
 from api.routers import (
     variance, trend, anomaly_explain,
@@ -30,6 +36,7 @@ from api.routers import (
 from api.utils.sql_helpers import get_kpi_metrics, get_trend_data
 from ingestion.extract_csv import parse_sales_csv
 from ingestion.validate import validate_sales_data
+from db.connection import check_database_connection
 from etl.load_staging import load_all_staging, get_db_connection
 from etl.transform import run_transform
 from ml.train import run_ml_pipeline
@@ -41,17 +48,41 @@ logger = logging.getLogger(__name__)
 app = FastAPI(
     title="Sales Analytics Platform API",
     description="Enterprise FastAPI Backend for Sales Analytics, Forecasting, Anomaly Detection & Reports",
-    version="1.0.0"
+    version="1.0.0",
+    dependencies=[Depends(limiter.limit("100/minute"))]
 )
 
-# Enable CORS for React frontend
+# Security Headers Middleware
+@app.middleware("http")
+async def add_security_headers(request: Request, call_next):
+    response = await call_next(request)
+    response.headers["X-Content-Type-Options"] = "nosniff"
+    response.headers["X-Frame-Options"] = "DENY"
+    response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
+    response.headers["X-XSS-Protection"] = "1; mode=block"
+    response.headers["Permissions-Policy"] = "geolocation=(), camera=(), microphone=()"
+    return response
+
+# Enable CORS for React frontend (configurable via CORS_ORIGINS)
+cors_origins_env = os.getenv("CORS_ORIGINS", "http://localhost:5173,http://localhost:3000")
+if cors_origins_env == "*":
+    allow_origins = ["*"]
+    allow_credentials = False  # Browser security rejects allow_credentials=True with allow_origins=["*"]
+else:
+    allow_origins = [o.strip() for o in cors_origins_env.split(",") if o.strip()]
+    allow_credentials = True
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
+    allow_origins=allow_origins,
+    allow_credentials=allow_credentials,
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allow_headers=["*"],
 )
+
+limiter = Limiter(key_func=get_remote_address)
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
 # Routers
 app.include_router(variance.router, prefix="/api/v1")
@@ -121,7 +152,15 @@ def root():
 @app.get("/health")
 @app.get("/api/v1/health")
 def health_check():
-    return {"status": "healthy", "service": "Sales Analytics API", "version": "1.0.0"}
+    """Deployment health check verifying API and Database liveness safely without leaking credentials."""
+    db_connected, _ = check_database_connection()
+    return {
+        "status": "healthy" if db_connected else "degraded",
+        "database": "connected" if db_connected else "disconnected",
+        "service": "Sales Analytics Platform API",
+        "version": "1.0.0",
+        "database_status": "Connection verified" if db_connected else "Connection unavailable (check server logs)"
+    }
 
 
 @app.get("/api/v1/kpis")
@@ -253,21 +292,41 @@ def get_analytics_pricing():
 @app.post("/api/v1/ingest/upload", response_model=UploadResponse)
 @app.post("/ingest/upload", response_model=UploadResponse)
 async def upload_sales_csv(file: UploadFile = File(...)):
-    """Upload CSV sales file, validate, load to staging, transform, and refresh ML cache."""
-    if not file.filename.endswith('.csv'):
-        raise HTTPException(status_code=400, detail="Only CSV files are allowed")
-    
+    """
+    Secure CSV sales ingestion endpoint:
+    - Sanitizes filenames against path traversal.
+    - Rejects empty files and files exceeding 20MB.
+    - Sanitizes CSV text cells against formula injection (DDE attacks).
+    - Ensures safe generic error messages without leaking internal tracebacks.
+    """
+    # 1. Filename sanitization
+    raw_filename = file.filename or ""
+    safe_filename = re.sub(r'[^a-zA-Z0-9_.\-]', '_', os.path.basename(raw_filename))
+    if not safe_filename.lower().endswith('.csv'):
+        raise HTTPException(status_code=400, detail="Only valid CSV files (.csv) are permitted")
+
+    # 2. File size & empty file check
     content = await file.read()
+    if len(content) == 0:
+        raise HTTPException(status_code=400, detail="Uploaded file is empty (0 bytes)")
     if len(content) > 20 * 1024 * 1024:
-        raise HTTPException(status_code=400, detail="File size exceeds 20MB limit")
-    
+        raise HTTPException(status_code=400, detail="File size exceeds the 20MB security limit")
+
     try:
         await file.seek(0)
         df = parse_sales_csv(file.file)
+        if df.empty:
+            raise HTTPException(status_code=400, detail="Uploaded CSV contains no readable rows")
+
+        # 3. Neutralize CSV formula injection (DDE attacks in Excel/Calc)
+        for col in df.select_dtypes(include=['object']).columns:
+            df[col] = df[col].astype(str).apply(
+                lambda x: f"'{x}" if x and x[0] in ('=', '+', '-', '@', '\t', '\r') else x
+            )
+
         rows_received = len(df)
-        
         validation_result = validate_sales_data(df, source='upload')
-        
+
         engine = get_db_connection()
         db_before = 0
         db_after = 0
@@ -303,9 +362,14 @@ async def upload_sales_csv(file: UploadFile = File(...)):
             database_total_before=db_before,
             database_total_after=db_after
         )
+    except HTTPException:
+        raise
     except Exception as e:
         logger.error(f"Error processing upload: {e}", exc_info=True)
-        raise HTTPException(status_code=500, detail=f"Error processing file: {str(e)}")
+        raise HTTPException(
+            status_code=500,
+            detail="An error occurred while validating or loading the sales data. Please check server logs."
+        )
 
 
 @app.post("/api/v1/pipeline/run")
@@ -348,4 +412,7 @@ def download_pdf_report():
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000, reload=True)
+    host = os.getenv("HOST", "0.0.0.0")
+    port = int(os.getenv("PORT", "8000"))
+    reload = os.getenv("ENVIRONMENT", "development").lower() == "development"
+    uvicorn.run("api.main:app", host=host, port=port, reload=reload)

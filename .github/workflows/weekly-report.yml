@@ -1,0 +1,148 @@
+name: Weekly Executive Sales Report
+
+on:
+  # Automated weekly schedule: Every Monday at 9:00 AM IST (3:30 AM UTC)
+  schedule:
+    - cron: "30 3 * * 1"
+
+  # On-demand manual trigger from the GitHub Actions tab
+  workflow_dispatch:
+
+jobs:
+  generate-and-email-report:
+    env:
+      EMAIL_USERNAME: ${{ secrets.EMAIL_USERNAME }}
+      EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
+      REPORT_RECIPIENT: ${{ secrets.REPORT_RECIPIENT }}
+      SMTP_SERVER: ${{ secrets.SMTP_SERVER }}
+      SMTP_PORT: ${{ secrets.SMTP_PORT }}
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+    name: Generate and Dispatch Weekly Sales Report
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - name: Install Python Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Validate Cloud Database Secrets
+        run: |
+          if [ -z "${{ secrets.DATABASE_URL }}" ]; then
+            echo "::error::DATABASE_URL secret is missing! Please configure DATABASE_URL in your repository Secrets."
+            exit 1
+          fi
+          echo "DATABASE_URL secret is configured."
+      - name: Validate Email Secrets
+        run: |
+          MISSING=0
+          if [ -z "${{ secrets.EMAIL_USERNAME }}" ]; then
+            echo "::error::EMAIL_USERNAME secret is missing!"
+            MISSING=1
+          fi
+          if [ -z "${{ secrets.EMAIL_PASSWORD }}" ]; then
+            echo "::error::EMAIL_PASSWORD secret is missing!"
+            MISSING=1
+          fi
+          if [ -z "${{ secrets.REPORT_RECIPIENT }}" ]; then
+            echo "::error::REPORT_RECIPIENT secret is missing!"
+            MISSING=1
+          fi
+          if [ $MISSING -eq 1 ]; then
+            exit 1
+          fi
+          echo "All email-related secrets are present."
+
+      - name: Test Cloud PostgreSQL Connection
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: |
+          python -c "
+          import sys
+          from db.connection import check_database_connection
+          ok, msg = check_database_connection()
+          if not ok:
+              print(f'ERROR: Cannot connect to Cloud PostgreSQL: {msg}', file=sys.stderr)
+              sys.exit(1)
+          print(f'SUCCESS: Connected to Cloud PostgreSQL: {msg}')
+          "
+
+      - name: Generate Weekly PDF Report
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+        run: |
+          python -m reports.generate_pdf_report --output reports/weekly_sales_report.pdf
+
+      - name: Verify PDF Report Exists
+        run: |
+          if [ ! -s reports/weekly_sales_report.pdf ]; then
+            echo "::error::Weekly report PDF generation failed or generated an empty file!"
+            exit 1
+          fi
+          FILESIZE=$(wc -c < reports/weekly_sales_report.pdf)
+          echo "Verified weekly_sales_report.pdf exists (${FILESIZE} bytes)."
+
+      - name: Upload PDF Report as Workflow Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: weekly-sales-report
+          path: reports/weekly_sales_report.pdf
+          retention-days: 30
+
+      - name: Validate Email Dispatch Secrets
+        run: |
+          MISSING=0
+          if [ -z "${{ secrets.EMAIL_USERNAME }}" ]; then
+            echo "::error::EMAIL_USERNAME secret is missing!"
+            MISSING=1
+          fi
+          if [ -z "${{ secrets.EMAIL_PASSWORD }}" ]; then
+            echo "::error::EMAIL_PASSWORD secret is missing (Google App Password required for Gmail)!"
+            MISSING=1
+          fi
+          if [ -z "${{ secrets.REPORT_RECIPIENT }}" ]; then
+            echo "::error::REPORT_RECIPIENT secret is missing!"
+            MISSING=1
+          fi
+          if [ $MISSING -eq 1 ]; then
+            exit 1
+          fi
+          echo "All required email secrets are present."
+
+      - name: Send Report PDF via Email
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 465
+          secure: true
+          username: ${{ secrets.EMAIL_USERNAME }}
+          password: ${{ secrets.EMAIL_PASSWORD }}
+          subject: "Sales Analytics Platform — Weekly Executive BI Report (${{ steps.date.outputs.date }})"
+          to: ${{ secrets.REPORT_RECIPIENT }}
+          from: "Sales Analytics Platform <${{ secrets.EMAIL_USERNAME }}>"
+          html_body: |
+            <h2>Weekly Sales Analytics Executive Report</h2>
+            <p>Dear Stakeholder,</p>
+            <p>Your automated weekly sales intelligence report has been freshly generated from the live PostgreSQL warehouse.</p>
+            <p>Attached: <b>weekly_sales_report.pdf</b></p>
+            <hr>
+            <small>Dispatched automatically via GitHub Actions CI/CD.</small>
+          attachments: reports/weekly_sales_report.pdf
+
+      - name: Execution Summary
+        if: always()
+        run: |
+          echo "=================================================="
+          echo "Weekly Report Workflow Execution Completed."
+          echo "=================================================="

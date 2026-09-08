@@ -1,10 +1,10 @@
 // src/services/api.js
 // Live API Service for Sales Analytics Platform
 // Connects strictly to FastAPI backend querying live PostgreSQL star schema
-
 import axios from 'axios';
 
-const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api/v1';
+const rawApiUrl = (import.meta.env.VITE_API_URL || import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000').replace(/\/+$/, '');
+const BASE_URL = rawApiUrl.endsWith('/api/v1') ? rawApiUrl : `${rawApiUrl}/api/v1`;
 
 const apiClient = axios.create({
   baseURL: BASE_URL,

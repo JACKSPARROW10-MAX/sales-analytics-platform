@@ -1,21 +1,13 @@
 -- PostgreSQL Database Schema for Sales Analytics Platform
+-- Deployment-Safe & Idempotent (Preserves Existing Production Data)
 
--- Clean up existing tables if re-initializing
-DROP TABLE IF EXISTS fact_sales CASCADE;
-DROP TABLE IF EXISTS dim_customer CASCADE;
-DROP TABLE IF EXISTS dim_product CASCADE;
-DROP TABLE IF EXISTS dim_date CASCADE;
-DROP TABLE IF EXISTS staging_sales CASCADE;
-DROP TABLE IF EXISTS staging_products CASCADE;
-DROP TABLE IF EXISTS staging_customers CASCADE;
-DROP TABLE IF EXISTS staging_erp CASCADE;
 CREATE EXTENSION IF NOT EXISTS "pgcrypto";
 
 -- ============================================================================
 -- STAGING TABLES (Raw, minimally typed)
 -- ============================================================================
 
-CREATE TABLE staging_sales (
+CREATE TABLE IF NOT EXISTS staging_sales (
     raw_id SERIAL PRIMARY KEY,
     transaction_id VARCHAR(100),
     sale_date VARCHAR(50),
@@ -29,7 +21,7 @@ CREATE TABLE staging_sales (
     ingested_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE staging_products (
+CREATE TABLE IF NOT EXISTS staging_products (
     raw_id SERIAL PRIMARY KEY,
     product_id VARCHAR(50),
     product_name VARCHAR(255),
@@ -39,7 +31,7 @@ CREATE TABLE staging_products (
     ingested_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE staging_customers (
+CREATE TABLE IF NOT EXISTS staging_customers (
     raw_id SERIAL PRIMARY KEY,
     customer_id VARCHAR(50),
     customer_name VARCHAR(255),
@@ -48,7 +40,7 @@ CREATE TABLE staging_customers (
     ingested_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE staging_erp (
+CREATE TABLE IF NOT EXISTS staging_erp (
     raw_id SERIAL PRIMARY KEY,
     erp_order_ref VARCHAR(100),
     trans_dt VARCHAR(50),
@@ -66,7 +58,7 @@ CREATE TABLE staging_erp (
 -- CURATED STAR-SCHEMA TABLES
 -- ============================================================================
 
-CREATE TABLE dim_date (
+CREATE TABLE IF NOT EXISTS dim_date (
     date_id INT PRIMARY KEY,              -- Format: YYYYMMDD
     full_date DATE UNIQUE NOT NULL,
     day INT NOT NULL,
@@ -76,7 +68,7 @@ CREATE TABLE dim_date (
     is_weekend BOOLEAN NOT NULL
 );
 
-CREATE TABLE dim_product (
+CREATE TABLE IF NOT EXISTS dim_product (
     product_id VARCHAR(50) PRIMARY KEY,
     product_name VARCHAR(255) NOT NULL,
     category VARCHAR(100) NOT NULL,
@@ -84,14 +76,14 @@ CREATE TABLE dim_product (
     unit_price NUMERIC(10, 2) NOT NULL
 );
 
-CREATE TABLE dim_customer (
+CREATE TABLE IF NOT EXISTS dim_customer (
     customer_id VARCHAR(50) PRIMARY KEY,
     customer_name VARCHAR(255) NOT NULL,
     region VARCHAR(100) NOT NULL,
     segment VARCHAR(100) NOT NULL
 );
 
-CREATE TABLE fact_sales (
+CREATE TABLE IF NOT EXISTS fact_sales (
     sale_id VARCHAR(100) PRIMARY KEY,
     date_id INT NOT NULL REFERENCES dim_date(date_id),
     product_id VARCHAR(50) NOT NULL REFERENCES dim_product(product_id),
@@ -106,7 +98,7 @@ CREATE TABLE fact_sales (
 -- INDEXES
 -- ============================================================================
 
-CREATE INDEX idx_fact_sales_date_product ON fact_sales (date_id, product_id);
-CREATE INDEX idx_fact_sales_customer ON fact_sales (customer_id);
-CREATE INDEX idx_fact_sales_date ON fact_sales (date_id);
-CREATE INDEX idx_fact_sales_product ON fact_sales (product_id);
+CREATE INDEX IF NOT EXISTS idx_fact_sales_date_product ON fact_sales (date_id, product_id);
+CREATE INDEX IF NOT EXISTS idx_fact_sales_customer ON fact_sales (customer_id);
+CREATE INDEX IF NOT EXISTS idx_fact_sales_date ON fact_sales (date_id);
+CREATE INDEX IF NOT EXISTS idx_fact_sales_product ON fact_sales (product_id);

@@ -1,0 +1,52 @@
+# .github/workflows/ci.yml
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install flake8 mypy bandit pytest
+
+      - name: Lint with flake8
+        run: flake8 .
+
+      - name: Type check with mypy
+        run: mypy .
+
+      - name: Security scan with bandit
+        run: bandit -r .
+
+      - name: Run tests
+        run: pytest
+
+      - name: Build Docker image
+        run: |
+          docker build -t sales-analytics-platform:ci .
+
+      - name: Push Docker image to GitHub Packages (optional)
+        if: github.ref == 'refs/heads/main'
+        env:
+          REGISTRY: ghcr.io
+          IMAGE_NAME: ${{ github.repository }}
+        run: |
+          echo "$GITHUB_TOKEN" | docker login $REGISTRY -u ${{ github.actor }} --password-stdin
+          docker tag sales-analytics-platform:ci $REGISTRY/$IMAGE_NAME:latest
+          docker push $REGISTRY/$IMAGE_NAME:latest

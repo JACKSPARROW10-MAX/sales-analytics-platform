@@ -4,6 +4,7 @@ Generates a comprehensive executive PDF sales report querying live PostgreSQL st
 ML forecasts, detected anomalies, sales variance, and dynamic AI recommendations.
 """
 import os
+import sys
 import json
 import logging
 from pathlib import Path
@@ -11,6 +12,10 @@ from datetime import datetime
 from typing import Dict, Any, List
 import pandas as pd
 from sqlalchemy import text
+
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
 
 from etl.load_staging import get_db_connection
 from api.utils.sql_helpers import get_variance_records
@@ -386,3 +391,32 @@ def _generate_html_fallback(output_path: str, data: Dict[str, Any]):
     html_path = output_path.replace(".pdf", ".html")
     with open(html_path, "w", encoding="utf-8") as f:
         f.write(f"<html><body><h1>Sales Report</h1><p>Revenue: {data.get('kpis', {}).get('total_revenue')}</p></body></html>")
+
+
+if __name__ == "__main__":
+    import argparse
+
+    parser = argparse.ArgumentParser(description="Generate Executive Sales Analytics PDF Report from live database.")
+    parser.add_argument(
+        "--output",
+        "-o",
+        type=str,
+        default=str(PROJECT_ROOT / "reports" / "weekly_sales_report.pdf"),
+        help="Target output path for the PDF report"
+    )
+    args = parser.parse_args()
+
+    out_file = Path(args.output).resolve()
+    out_file.parent.mkdir(parents=True, exist_ok=True)
+
+    try:
+        generated_path = generate_sales_report_pdf(str(out_file))
+        if os.path.exists(generated_path) and os.path.getsize(generated_path) > 0:
+            print(f"SUCCESS: Report successfully generated at {generated_path} ({os.path.getsize(generated_path)} bytes)")
+            sys.exit(0)
+        else:
+            print(f"ERROR: Report file was not created or is empty at {generated_path}", file=sys.stderr)
+            sys.exit(1)
+    except Exception as err:
+        print(f"ERROR generating PDF report: {err}", file=sys.stderr)
+        sys.exit(1)
