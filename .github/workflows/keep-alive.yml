@@ -1,0 +1,46 @@
+name: Keep Alive
+
+# Keeps the cloud database awake and alerts you if it (or the API) stops answering.
+#
+# Why: free-tier Supabase pauses a project after about a week with no activity.
+# A paused project makes the dashboard and the weekly report fail. This job runs
+# real queries every day; if the database cannot be reached the run turns red and
+# GitHub emails you (Settings > Notifications > Actions), so you can restore the
+# project before anything else breaks.
+
+on:
+  schedule:
+    - cron: "17 3 * * *"     # daily, 03:17 UTC (09:17 IST); off the busy top-of-hour slot
+  workflow_dispatch:         # run it by hand from the Actions tab
+
+permissions:
+  contents: read
+
+concurrency:
+  group: keep-alive
+  cancel-in-progress: false
+
+jobs:
+  ping:
+    name: Ping database (and API, if configured)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install the single dependency this job needs
+        run: pip install "psycopg2-binary>=2.9,<3"
+
+      - name: Ping the database
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          # Optional. Add a repository *variable* named API_URL (Settings > Secrets and
+          # variables > Actions > Variables), e.g. https://your-api.onrender.com
+          API_URL: ${{ vars.API_URL }}
+        run: python scripts/keep_alive.py

@@ -211,6 +211,25 @@ The workflow emails the **freshly generated** PDF via `dawidd6/action-send-mail`
 (Gmail SMTP by default). The standalone [`reports/email_report.py`](reports/email_report.py)
 does the same over SMTP for local/manual use and has a `--dry-run` mode.
 
+## 17b. Keep-alive (stops the free database from pausing)
+
+[`keep-alive.yml`](.github/workflows/keep-alive.yml) runs every day at 03:17 UTC (and on
+demand via **Run workflow**). [`scripts/keep_alive.py`](scripts/keep_alive.py) opens a real
+connection to `DATABASE_URL`, runs `SELECT 1` and `SELECT COUNT(*) FROM fact_sales`, and
+retries a few times to give a waking project time to answer. It needs only `psycopg2`, so the
+job installs in seconds, and it never prints the connection string, host or user.
+
+- **If the database can't be reached the run fails**, and GitHub emails you. That is the
+  alert to open Supabase and click **Restore project**, before the dashboard or the weekly
+  report breaks.
+- **Optional API check:** add a repository *variable* (not a secret) named `API_URL`, for
+  example `https://your-api.onrender.com`, and the job also calls `<API_URL>/health`. This
+  check only reports; it never fails the run.
+- **Limits.** Supabase doesn't publish exactly what counts as "activity", so a daily query
+  is the usual practice rather than a guarantee; the failure alert is the safety net. A
+  once-a-day call also cannot keep a free web host awake (those sleep after roughly 15
+  minutes idle); it only warms it up and tells you whether it answers.
+
 ## 18. Environment variables
 
 Copy `.env.example` → `.env` (git-ignored). The real `DATABASE_URL` lives **only** in
