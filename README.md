@@ -113,7 +113,7 @@ concurrency use the transaction pooler (`:6543`) and raise those.
 ## 7. Docker
 
 ```bash
-docker compose up -d postgres pgadmin      # local Postgres (:5432) + pgAdmin (:5050)
+docker compose up -d postgres pgadmin      # local Postgres (host port 5433) + pgAdmin (:5050)
 # ... run init_db.py + run_pipeline.py locally, or:
 docker compose --profile prod up -d --build # postgres + the API (runs init_db then gunicorn)
 ```
@@ -258,7 +258,7 @@ docker compose up -d postgres pgadmin
 # 2. Python
 python -m venv .venv && . .venv/Scripts/activate   # or . .venv/bin/activate
 pip install -r requirements.txt   # add requirements-dev.txt for tests/lint
-cp .env.example .env        # set DATABASE_URL=postgresql://postgres:postgres@localhost:5432/sales_platform
+cp .env.example .env        # set DATABASE_URL=postgresql://postgres:postgres@localhost:5433/sales_platform
 
 # 3. Schema + data
 python init_db.py           # create tables
