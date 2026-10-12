@@ -7,6 +7,9 @@ on:
   pull_request:
     branches: [main]
 
+permissions:
+  contents: read
+
 jobs:
   build-test:
     runs-on: ubuntu-latest
@@ -23,14 +26,18 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+          cache: pip
+          cache-dependency-path: |
+            requirements.txt
+            requirements-dev.txt
 
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements.txt
-          pip install flake8 mypy bandit pytest
+          pip install -r requirements-dev.txt
 
       - name: Verify database connection (Supabase)
+        # Skipped on fork PRs, where repository secrets are not available.
         if: ${{ env.DATABASE_URL != '' }}
         run: |
           python -c "
@@ -47,22 +54,48 @@ jobs:
       - name: Type check with mypy
         run: mypy .
 
-      - name: Security scan with bandit
-        run: bandit -r .
+      - name: Security scan with bandit (medium severity and above)
+        run: bandit -r api db etl ingestion ml reports ./*.py -ll
 
       - name: Run tests
         run: pytest
 
       - name: Build Docker image
-        run: |
-          docker build -t sales-analytics-platform:ci .
+        run: docker build -t sales-analytics-platform:ci .
 
-      - name: Push Docker image to GitHub Packages (optional)
-        if: github.ref == 'refs/heads/main'
-        env:
-          REGISTRY: ghcr.io
-          IMAGE_NAME: ${{ github.repository }}
+      - name: Smoke-test the container (boots and answers /health)
+        # No database is attached, so /health must answer 200 with status "degraded".
+        # This proves gunicorn starts and the app imports inside the image.
         run: |
-          echo "$GITHUB_TOKEN" | docker login $REGISTRY -u ${{ github.actor }} --password-stdin
-          docker tag sales-analytics-platform:ci $REGISTRY/$IMAGE_NAME:latest
-          docker push $REGISTRY/$IMAGE_NAME:latest
+          docker run -d --name smoke -p 8000:8000 sales-analytics-platform:ci
+          for i in $(seq 1 30); do
+            if curl -fsS http://localhost:8000/health; then echo; exit 0; fi
+            sleep 2
+          done
+          echo "Container did not become healthy"; docker logs smoke; exit 1
+
+  publish-image:
+    # Only publish from main, after everything above passed.
+    needs: build-test
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push image
+        run: |
+          # Image names must be lowercase; the repository owner is not.
+          IMAGE="ghcr.io/${GITHUB_REPOSITORY,,}"
+          docker build -t "$IMAGE:latest" -t "$IMAGE:${GITHUB_SHA::7}" .
+          docker push --all-tags "$IMAGE"

@@ -60,7 +60,7 @@ def main() -> int:
             version = conn.execute(text("SHOW server_version")).scalar()
             # libpq reports the real client<->server(or pooler) transport encryption.
             try:
-                ssl_used = conn.connection.driver_connection.info.ssl_in_use
+                ssl_used = conn.connection.driver_connection.info.ssl_in_use  # type: ignore[union-attr]
             except Exception:  # noqa: BLE001
                 ssl_used = "unknown"
     except Exception as exc:  # noqa: BLE001
@@ -94,7 +94,7 @@ def main() -> int:
     empty_core = []
     with engine.connect() as conn:
         for table in CORE_FACT_TABLES:
-            count = conn.execute(text(f"SELECT COUNT(*) FROM {table}")).scalar()
+            count = conn.execute(text(f"SELECT COUNT(*) FROM {table}")).scalar()  # nosec B608 - table is from the constant CORE_FACT_TABLES list
             print(f"  {table:<16} {count:>10,}")
             if table in CORE_FACT_TABLES and count == 0:
                 empty_core.append(table)

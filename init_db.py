@@ -7,6 +7,7 @@ import logging
 import os
 import sys
 from pathlib import Path
+from urllib.parse import quote_plus
 from sqlalchemy import create_engine, inspect, text
 from dotenv import load_dotenv
 
@@ -15,7 +16,7 @@ PROJECT_ROOT = Path(__file__).resolve().parent
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
-from db.connection import get_db_connection, get_database_url
+from db.connection import get_db_connection, with_driver
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
@@ -39,7 +40,9 @@ def ensure_local_database_exists():
     db_name = os.getenv('POSTGRES_DB', 'sales_platform')
 
     try:
-        admin_url = f"postgresql://{db_user}:{db_password}@{db_host}:{db_port}/postgres"
+        admin_url = with_driver(
+            f"postgresql://{quote_plus(db_user)}:{quote_plus(db_password)}@{db_host}:{db_port}/postgres"
+        )
         admin_engine = create_engine(admin_url, isolation_level="AUTOCOMMIT")
         with admin_engine.connect() as conn:
             result = conn.execute(

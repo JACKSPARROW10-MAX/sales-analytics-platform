@@ -99,13 +99,13 @@ def compute_feature_importance(df: pd.DataFrame = None) -> List[Dict[str, Any]]:
         if "Discount" in feat_name:
             impact_text = f"Applied discounts average {df_clean.get('discount', pd.Series([0.1])).mean()*100:.1f}%, directly impacting gross margins"
         elif "Unit Price" in feat_name:
-            impact_text = f"Premium catalog pricing is a primary driver of aggregate transaction value"
+            impact_text = "Premium catalog pricing is a primary driver of aggregate transaction value"
         elif "Quantity" in feat_name:
-            impact_text = f"Order volume scaling strongly determines overall transaction revenue"
+            impact_text = "Order volume scaling strongly determines overall transaction revenue"
         elif "Seasonal" in feat_name:
-            impact_text = f"Weekly cyclical demand patterns introduce periodic revenue fluctuations"
+            impact_text = "Weekly cyclical demand patterns introduce periodic revenue fluctuations"
         else:
-            impact_text = f"Territory distribution patterns influence average order size"
+            impact_text = "Territory distribution patterns influence average order size"
 
         features.append({
             "feature": feat_name,
@@ -116,7 +116,7 @@ def compute_feature_importance(df: pd.DataFrame = None) -> List[Dict[str, Any]]:
         })
 
     # Sort by absolute shap_value descending
-    features = sorted(features, key=lambda x: abs(x['shap_value']), reverse=True)
+    features = sorted(features, key=lambda x: abs(float(x['shap_value'])), reverse=True)  # type: ignore[arg-type]
     return features
 
 

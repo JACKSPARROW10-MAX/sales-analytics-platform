@@ -30,4 +30,5 @@ ENV PYTHONUNBUFFERED=1 \
 # Entry point – use gunicorn with uvicorn workers for production
 # 2 workers keeps the total DB connection count within Supabase's session-pooler
 # limit (see DB_POOL_SIZE / DB_MAX_OVERFLOW). Scale up with a larger pooler.
-CMD ["gunicorn", "api.main:app", "-w", "2", "-k", "uvicorn.workers.UvicornWorker", "--bind", "0.0.0.0:8000", "--log-level", "info", "--access-logfile", "-", "--timeout", "120"]
+# `python -m gunicorn` because only site-packages (not /usr/local/bin) is copied from the builder stage.
+CMD ["python", "-m", "gunicorn", "api.main:app", "-w", "2", "-k", "uvicorn.workers.UvicornWorker", "--bind", "0.0.0.0:8000", "--log-level", "info", "--access-logfile", "-", "--timeout", "120"]

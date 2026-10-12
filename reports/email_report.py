@@ -151,14 +151,14 @@ def send_executive_email_report(
         }
 
     # 5. Build MIME Message
-    msg = MIMEMultipart("mixed")
-    msg["Subject"] = subject
-    msg["From"] = f"Sales Analytics Platform <{email_user}>"
-    msg["To"] = recipient
+    mime_msg = MIMEMultipart("mixed")
+    mime_msg["Subject"] = subject
+    mime_msg["From"] = f"Sales Analytics Platform <{email_user}>"
+    mime_msg["To"] = recipient
 
     # HTML Body
     html_body = build_email_body_html(report_date)
-    msg.attach(MIMEText(html_body, "html", "utf-8"))
+    mime_msg.attach(MIMEText(html_body, "html", "utf-8"))
 
     # Attachment
     with open(pdf_file, "rb") as f:
@@ -168,19 +168,19 @@ def send_executive_email_report(
             "attachment",
             filename=pdf_file.name
         )
-        msg.attach(pdf_attachment)
+        mime_msg.attach(pdf_attachment)
 
     # 6. Send via SMTP
     logger.info(f"Connecting to SMTP server {smtp_server}:{smtp_port}...")
     if smtp_port == 465:
         with smtplib.SMTP_SSL(smtp_server, smtp_port, timeout=30) as server:
             server.login(email_user, email_pass)
-            server.send_message(msg)
+            server.send_message(mime_msg)
     else:
         with smtplib.SMTP(smtp_server, smtp_port, timeout=30) as server:
             server.starttls()
             server.login(email_user, email_pass)
-            server.send_message(msg)
+            server.send_message(mime_msg)
 
     logger.info(f"Successfully dispatched weekly sales report email to {recipient}")
     return {

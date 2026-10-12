@@ -8,7 +8,8 @@ for local runs, or via a secret / injected env var in CI and production.
 """
 import os
 import logging
-from urllib.parse import urlparse, parse_qs
+from typing import Any, Dict, Optional
+from urllib.parse import urlparse, parse_qs, quote_plus
 from sqlalchemy import create_engine, text
 from sqlalchemy.engine import Engine
 from dotenv import load_dotenv
@@ -22,33 +23,49 @@ logger = logging.getLogger(__name__)
 _LOCAL_HOSTS = {"localhost", "127.0.0.1", "::1", "postgres", "db", ""}
 
 
+_DRIVER = "postgresql+psycopg2"
+
+
+def with_driver(url: str) -> str:
+    """
+    Pin the DBAPI driver to psycopg2 (the one listed in requirements.txt).
+
+    SQLAlchemy 2.1 changed the default driver for a bare ``postgresql://`` URL
+    from psycopg2 to psycopg (v3), so a fresh install failed with
+    "No module named 'psycopg'". Making the driver explicit works on every
+    SQLAlchemy 2.x release. URLs that already name a driver are left alone.
+    """
+    for bare in ("postgres://", "postgresql://"):
+        if url.startswith(bare):
+            return f"{_DRIVER}://" + url[len(bare):]
+    return url
+
+
 def get_database_url() -> str:
     """
     Retrieve and normalize the PostgreSQL connection URL.
     Prioritizes DATABASE_URL environment variable (for Cloud deployments).
     Falls back to individual POSTGRES_* environment variables (for Local development).
-    
-    Ensures compatibility with SQLAlchemy 2.0+ by converting postgres:// to postgresql://.
+
+    The scheme is normalized to ``postgresql+psycopg2://`` (see with_driver).
     """
     db_url = os.getenv("DATABASE_URL")
     if db_url and db_url.strip():
-        db_url = db_url.strip()
-        # SQLAlchemy 2.0+ deprecated postgres:// in favor of postgresql://
-        if db_url.startswith("postgres://"):
-            db_url = db_url.replace("postgres://", "postgresql://", 1)
-        return db_url
+        return with_driver(db_url.strip())
 
-    # Fallback to local Docker Compose environment variables
-    user = os.getenv("POSTGRES_USER", "postgres")
-    password = os.getenv("POSTGRES_PASSWORD", "postgres")
-    host = os.getenv("POSTGRES_HOST", "localhost")
-    port = os.getenv("POSTGRES_PORT", "5432")
-    db_name = os.getenv("POSTGRES_DB", "sales_platform")
+    # Fallback to local Docker Compose environment variables. `or` (not a
+    # getenv default) so a blank value copied from .env.example still falls back.
+    user = os.getenv("POSTGRES_USER") or "postgres"
+    password = os.getenv("POSTGRES_PASSWORD") or "postgres"
+    host = os.getenv("POSTGRES_HOST") or "localhost"
+    port = os.getenv("POSTGRES_PORT") or "5432"
+    db_name = os.getenv("POSTGRES_DB") or "sales_platform"
 
-    return f"postgresql://{user}:{password}@{host}:{port}/{db_name}"
+    # Percent-encode credentials so characters like @ : / in a password are safe.
+    return f"{_DRIVER}://{quote_plus(user)}:{quote_plus(password)}@{host}:{port}/{db_name}"
 
 
-def _is_local_host(host: str) -> bool:
+def _is_local_host(host: Optional[str]) -> bool:
     """Return True when the target host is a local development database."""
     return (host or "").lower() in _LOCAL_HOSTS
 
@@ -66,7 +83,7 @@ def _build_engine(url: str) -> Engine:
     safe_db = (parsed.path or "").lstrip("/") or "default"
     logger.info(f"Initialising database engine for '{safe_db}' on host '{safe_host}'")
 
-    connect_args = {"connect_timeout": 10}
+    connect_args: Dict[str, Any] = {"connect_timeout": 10}
     is_local = _is_local_host(parsed.hostname)
     existing_qs = parse_qs(parsed.query or "")
     if not is_local and "sslmode" not in existing_qs:

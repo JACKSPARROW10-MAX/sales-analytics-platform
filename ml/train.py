@@ -5,7 +5,6 @@ explainability, and dynamic recommendations, then caches the results for FastAPI
 """
 import json
 import logging
-import os
 import sys
 from pathlib import Path
 import pandas as pd

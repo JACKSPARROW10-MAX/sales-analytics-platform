@@ -1,7 +1,7 @@
 import pandas as pd
 import logging
 from pathlib import Path
-from typing import Dict, Tuple
+from typing import Dict
 from datetime import datetime
 
 logging.basicConfig(level=logging.INFO)

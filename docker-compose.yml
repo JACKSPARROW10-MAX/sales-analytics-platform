@@ -47,7 +47,7 @@ services:
     # Apply the schema (idempotent) before starting the API server.
     command: >
       sh -c "python init_db.py &&
-             gunicorn api.main:app -w 2 -k uvicorn.workers.UvicornWorker
+             python -m gunicorn api.main:app -w 2 -k uvicorn.workers.UvicornWorker
              --bind 0.0.0.0:8000 --access-logfile - --timeout 120"
     depends_on:
       postgres:

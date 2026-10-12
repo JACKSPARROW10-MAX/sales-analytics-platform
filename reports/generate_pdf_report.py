@@ -9,8 +9,7 @@ import json
 import logging
 from pathlib import Path
 from datetime import datetime
-from typing import Dict, Any, List
-import pandas as pd
+from typing import Dict, Any, Optional
 from sqlalchemy import text
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
@@ -25,7 +24,7 @@ try:
     from reportlab.lib.pagesizes import letter
     from reportlab.lib import colors
     from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
-    from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, HRFlowable, KeepTogether
+    from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, HRFlowable
     REPORTLAB_AVAILABLE = True
 except ImportError:
     REPORTLAB_AVAILABLE = False
@@ -40,7 +39,7 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
-def generate_sales_report_pdf(output_path: str = None) -> str:
+def generate_sales_report_pdf(output_path: Optional[str] = None) -> str:
     """
     Generate an executive PDF report querying the LIVE PostgreSQL database and latest ML results.
     """
@@ -81,7 +80,7 @@ def generate_sales_report_pdf(output_path: str = None) -> str:
 
 def _fetch_live_database_data(engine) -> Dict[str, Any]:
     """Execute live SQL queries on fact_sales and dimension tables."""
-    data = {
+    data: Dict[str, Any] = {
         "kpis": {},
         "date_range": "N/A",
         "top_products": [],

@@ -1,0 +1,24 @@
+[flake8]
+# Pyflakes errors (unused imports/variables, undefined names, F-codes) and real
+# syntax/logic errors stay ON and are enforced in CI.
+# Pure-style rules are relaxed for the existing code base instead of reformatting
+# hundreds of legacy lines in an unrelated change.
+extend-ignore =
+    E501,
+    E128,
+    E402,
+    E231,
+    E251,
+    E261,
+    E302,
+    E305,
+    W291,
+    W293
+exclude =
+    .git,
+    __pycache__,
+    node_modules,
+    dashboard,
+    scratch,
+    venv,
+    .venv

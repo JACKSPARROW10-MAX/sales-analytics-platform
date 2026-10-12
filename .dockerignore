@@ -1,0 +1,28 @@
+# Never bake secrets or local state into an image layer
+.env
+.env.*
+!.env.example
+
+# VCS / CI
+.git
+.github
+
+# Frontend is built and deployed separately
+dashboard
+**/node_modules
+
+# Dev-only files
+scratch
+tests
+.venv
+venv
+__pycache__
+**/__pycache__
+*.pyc
+.pytest_cache
+.mypy_cache
+
+# Generated at runtime
+data/rejected
+data/ml_results.json
+reports/*.pdf

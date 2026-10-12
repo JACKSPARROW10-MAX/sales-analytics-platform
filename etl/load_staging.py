@@ -1,16 +1,15 @@
 import pandas as pd
 import logging
-from sqlalchemy import create_engine, text
+from sqlalchemy import text
 from sqlalchemy.exc import SQLAlchemyError
 from dotenv import load_dotenv
-import os
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 load_dotenv()
 
-from db.connection import get_db_connection, get_database_url
+from db.connection import get_db_connection
 
 def load_to_staging_sales(df: pd.DataFrame, engine) -> int:
     """
@@ -71,7 +70,7 @@ def load_to_staging_products(df: pd.DataFrame, engine) -> int:
         logger.warning("Empty DataFrame provided to load_to_staging_products")
         return 0
     
-    logger.info(f"Loading unique products to staging_products")
+    logger.info("Loading unique products to staging_products")
     
     df_copy = df.copy()
     if 'product_id' not in df_copy.columns:
@@ -142,7 +141,7 @@ def load_to_staging_customers(df: pd.DataFrame, engine) -> int:
         logger.warning("Empty DataFrame provided to load_to_staging_customers")
         return 0
     
-    logger.info(f"Loading unique customers to staging_customers")
+    logger.info("Loading unique customers to staging_customers")
     
     df_copy = df.copy()
     if 'customer_id' not in df_copy.columns:

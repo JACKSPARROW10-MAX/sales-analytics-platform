@@ -57,7 +57,7 @@ def fetch_external_features(output_path="data/sample/external_feature.csv"):
 
             # Seasonal temperature simulation in Celsius
             day_of_year = dt.timetuple().tm_yday
-            temp = round(15.0 + 12.0 * np.sin((day_of_year - 105) * 2 * np.pi / 365) + np.random.normal(0, 2), 1)
+            temp = round(15.0 + 12.0 * np.sin((day_of_year - 105) * 2 * np.pi / 365) + np.random.normal(0, 2), 1)  # noqa: F841 (draw kept so seeded output is unchanged)
 
             records.append({
                 "date": dt.strftime("%Y-%m-%d"),

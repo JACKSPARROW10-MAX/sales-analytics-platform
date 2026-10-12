@@ -1,7 +1,7 @@
 import json
 import logging
 from pathlib import Path
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter
 from typing import Dict, Any, List
 from ml.explainability import compute_feature_importance
 

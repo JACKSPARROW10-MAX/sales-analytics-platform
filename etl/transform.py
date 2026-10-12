@@ -1,19 +1,19 @@
 import pandas as pd
 import logging
-from sqlalchemy import create_engine, text
+from sqlalchemy import text
 from sqlalchemy.exc import SQLAlchemyError
 from dotenv import load_dotenv
-import os
-from datetime import datetime, timedelta
+from datetime import timedelta
+from typing import Optional
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 load_dotenv()
 
-from db.connection import get_db_connection, get_database_url
+from db.connection import get_db_connection
 
-def build_dim_date(engine, min_date: str = None, max_date: str = None) -> int:
+def build_dim_date(engine, min_date: Optional[str] = None, max_date: Optional[str] = None) -> int:
     """
     Build dim_date table with full calendar range covering the data.
     
