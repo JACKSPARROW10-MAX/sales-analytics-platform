@@ -1,0 +1,29 @@
+# Render Blueprint for the API (New > Blueprint), or copy these values into
+# New > Web Service by hand. The frontend is deployed separately on Vercel.
+services:
+  - type: web
+    name: sales-analytics-api
+    runtime: python
+    plan: free
+    region: singapore            # same region as the Supabase pooler (ap-southeast-1)
+    buildCommand: pip install -r requirements.txt
+    # ONE worker: the free plan has 512 MB RAM and one worker already uses ~200 MB.
+    startCommand: python -m gunicorn api.main:app -w 1 -k uvicorn.workers.UvicornWorker --bind 0.0.0.0:$PORT --timeout 120 --access-logfile -
+    healthCheckPath: /health
+    autoDeploy: true
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.10
+      - key: ENVIRONMENT
+        value: production
+      - key: DB_POOL_SIZE
+        value: "3"
+      - key: DB_MAX_OVERFLOW
+        value: "2"
+      # Secrets: Render asks you for these in the dashboard; they are never stored in git.
+      - key: DATABASE_URL
+        sync: false
+      - key: CORS_ORIGINS        # your Vercel URL, e.g. https://sales-analytics.vercel.app (no trailing slash)
+        sync: false
+      - key: GROQ_API_KEY
+        sync: false
