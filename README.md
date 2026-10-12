@@ -274,16 +274,33 @@ Verify: `python verify_db_connection.py` (safe — prints host/schema/TLS/row co
 
 ## 20. Cloud deployment
 
-1. Create a Supabase project; copy the **session pooler** connection string.
-2. Backend (Render / Railway / Fly / a VM): deploy this repo, set `DATABASE_URL`,
-   `CORS_ORIGINS=https://<your-dashboard-domain>`, `GROQ_API_KEY`, email vars. Start
-   command `gunicorn api.main:app -w 2 -k uvicorn.workers.UvicornWorker --bind 0.0.0.0:$PORT`
-   (or `docker compose --profile prod up`). `init_db.py` is safe to run on deploy.
-3. Frontend (Vercel / Netlify / static host): build `dashboard/` with
-   `VITE_API_URL=https://<your-api-domain>`.
-4. Add the GitHub secrets above so the weekly report runs against the same database.
+Recommended: **Render** (API) + **Vercel** (dashboard) + **Supabase** (database).
+
+1. **Database.** Create a Supabase project; copy the **session pooler** connection string.
+   For a new project run `python init_db.py` and `python run_pipeline.py` once locally.
+2. **API on Render.** New > Web Service > this repo (or New > Blueprint, which reads
+   [`render.yaml`](render.yaml)). Python runtime, region Singapore, build
+   `pip install -r requirements.txt`, start
+   `python -m gunicorn api.main:app -w 1 -k uvicorn.workers.UvicornWorker --bind 0.0.0.0:$PORT --timeout 120`,
+   health check `/health`. Environment: `DATABASE_URL`, `GROQ_API_KEY` (optional),
+   `CORS_ORIGINS` (set after step 3), `ENVIRONMENT=production`, `PYTHON_VERSION=3.12.10`.
+   Use **one** worker on the free plan (512 MB RAM; one worker is about 200 MB).
+3. **Dashboard on Vercel.** Add New > Project > this repo, **Root Directory `dashboard`**,
+   Framework Vite (build `npm run build`, output `dist`), and the environment variable
+   `VITE_API_URL=https://<your-service>.onrender.com`. It is baked in at build time, so
+   redeploy after changing it.
+4. **Connect them.** Set `CORS_ORIGINS` on Render to your exact Vercel URL
+   (`https://<project>.vercel.app`, no trailing slash) and let Render redeploy.
+   Vercel *preview* URLs are different origins and stay blocked unless you add them too.
+5. Add the GitHub secrets above so the weekly report and keep-alive jobs use the same database.
 
 Nothing in production depends on `localhost`.
+
+**Render free-tier behaviour.** The service sleeps after about 15 minutes without traffic and
+takes up to a minute to wake, so the first dashboard load after a quiet period is slow and
+the status pill may briefly read "Offline". Its disk is also wiped on each sleep or deploy,
+so `data/ml_results.json` is rebuilt (once, under a lock) on the first request. The daily
+keep-alive job cannot prevent sleeping; for always-on use a paid instance.
 
 ## 21. Security
 

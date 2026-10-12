@@ -6,8 +6,9 @@ import json
 import logging
 import os
 import sys
+import threading
 from pathlib import Path
-from typing import Dict, List, Optional, Any
+from typing import Dict, List, Optional, Any, Tuple
 
 # Add project root to path for imports
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
@@ -78,13 +79,24 @@ _DEV_ORIGINS = (
     "http://localhost:3000,http://127.0.0.1:3000,"
     "http://localhost:4173,http://127.0.0.1:4173"
 )
-cors_origins_env = os.getenv("CORS_ORIGINS", _DEV_ORIGINS)
-if cors_origins_env == "*":
-    allow_origins = ["*"]
-    allow_credentials = False  # Browser security rejects allow_credentials=True with allow_origins=["*"]
-else:
-    allow_origins = [o.strip() for o in cors_origins_env.split(",") if o.strip()]
-    allow_credentials = True
+
+
+def parse_cors_origins(raw: Optional[str]) -> Tuple[List[str], bool]:
+    """Return (allowed origins, allow_credentials) from the CORS_ORIGINS value.
+
+    - Unset *or blank* (a blank value is what .env.example ships) -> local dev origins.
+    - Trailing slashes are dropped: browsers send ``https://x.vercel.app`` with no slash,
+      so a pasted ``https://x.vercel.app/`` would otherwise reject every request.
+    """
+    value = (raw or "").strip() or _DEV_ORIGINS
+    if value == "*":
+        # Browsers reject allow_credentials=True together with a wildcard origin.
+        return ["*"], False
+    origins = [o.strip().rstrip("/") for o in value.split(",") if o.strip()]
+    return origins, True
+
+
+allow_origins, allow_credentials = parse_cors_origins(os.getenv("CORS_ORIGINS"))
 
 app.add_middleware(
     CORSMiddleware,
@@ -124,18 +136,39 @@ class UploadResponse(BaseModel):
     database_total_after: Optional[int] = 0
 
 
-def get_cached_ml_data() -> Dict[str, Any]:
-    """Helper to read from ml_results.json or run pipeline on-demand."""
-    json_path = PROJECT_ROOT / "data" / "ml_results.json"
-    if json_path.exists():
-        try:
-            with open(json_path, "r", encoding="utf-8") as f:
-                return json.load(f)
-        except Exception as e:
-            logger.error(f"Error reading ml_results.json: {e}")
+_ml_cache_lock = threading.Lock()
 
-    logger.info("Executing ML pipeline to populate cache...")
-    return run_ml_pipeline()
+
+def _read_ml_cache(json_path: Path) -> Optional[Dict[str, Any]]:
+    if not json_path.exists():
+        return None
+    try:
+        with open(json_path, "r", encoding="utf-8") as f:
+            return json.load(f)
+    except Exception as e:  # missing, or half-written by a concurrent run
+        logger.warning(f"Could not read ml_results.json yet: {e}")
+        return None
+
+
+def get_cached_ml_data() -> Dict[str, Any]:
+    """Read ml_results.json, or run the ML pipeline once if it does not exist yet.
+
+    On a cold start (a fresh container, or a free host that slept) the cache file is
+    missing and the dashboard fires several requests at once. Without the lock each of
+    them ran the whole pipeline in parallel (5 runs for one page load). Now exactly one
+    request computes it and the others wait, then read the file it wrote.
+    """
+    json_path = PROJECT_ROOT / "data" / "ml_results.json"
+    data = _read_ml_cache(json_path)
+    if data is not None:
+        return data
+
+    with _ml_cache_lock:
+        data = _read_ml_cache(json_path)  # another request may have finished while we waited
+        if data is not None:
+            return data
+        logger.info("Executing ML pipeline to populate cache...")
+        return run_ml_pipeline()
 
 
 @app.get("/")
