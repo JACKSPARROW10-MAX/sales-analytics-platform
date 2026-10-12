@@ -16,6 +16,9 @@ def get_variance_records(limit: int = 20, window_days: int = 7) -> List[Dict[str
         variance amount and percentage.
     """
     engine = get_db_connection()
+    # Only ever an int: the frame size is formatted into SQL (a bind parameter is not
+    # allowed here), so coerce and bound it rather than trusting the caller.
+    preceding = max(1, int(window_days)) - 1
     query = f"""
     WITH rev AS (
         SELECT
@@ -33,7 +36,7 @@ def get_variance_records(limit: int = 20, window_days: int = 7) -> List[Dict[str
             AVG(revenue) OVER (
                 PARTITION BY product_id
                 ORDER BY date
-                ROWS BETWEEN {window_days - 1} PRECEDING AND CURRENT ROW
+                ROWS BETWEEN {preceding} PRECEDING AND CURRENT ROW
             ) AS expected_rev
         FROM rev
     ), calc AS (
@@ -52,7 +55,7 @@ def get_variance_records(limit: int = 20, window_days: int = 7) -> List[Dict[str
     FROM calc
     ORDER BY ABS(variance_pct) DESC
     LIMIT :limit;
-    """
+    """  # nosec B608 - `preceding` is a bounded int (see above); all other values are bind params
     try:
         with engine.begin() as conn:
             result = conn.execute(text(query), {"limit": limit})
@@ -96,6 +99,8 @@ def get_kpi_metrics() -> Dict[str, Any]:
             rev = conn.execute(text(revenue_query)).first()
             growth_row = conn.execute(text(growth_query)).first()
 
+        if rev is None:  # aggregate queries always return a row; guard for type-safety
+            raise RuntimeError("KPI aggregate query returned no row")
         total_revenue = float(rev.total_revenue or 0)
         total_orders = int(rev.total_orders or 0)
         total_quantity = int(rev.total_quantity or 0)
@@ -192,7 +197,7 @@ def get_trend_data(metric: str = "revenue", period: str = "daily", moving_averag
         JOIN dim_date d ON f.date_id = d.date_id
         GROUP BY period_start
         ORDER BY period_start;
-    """
+    """  # nosec B608 - metric_expr/date_trunc come from fixed whitelists above, never raw input
     try:
         with engine.begin() as conn:
             rows = [dict(r._mapping) for r in conn.execute(text(base_query))]

@@ -12,7 +12,7 @@ engine = get_db_connection()
 with engine.connect() as conn:
     # Check fact_sales row count
     result = conn.execute(text("SELECT COUNT(*) FROM fact_sales"))
-    fact_count = result.fetchone()[0]
+    fact_count = result.scalar()
     print(f"fact_sales total rows: {fact_count}")
     
     # Check for test transactions
@@ -31,7 +31,7 @@ with engine.connect() as conn:
         SELECT COUNT(*) FROM staging_sales 
         WHERE transaction_id LIKE 'TXN-TEST-%'
     """))
-    staging_test_count = result.fetchone()[0]
+    staging_test_count = result.scalar()
     print(f"\nTest transactions in staging_sales: {staging_test_count}")
     
     # Check for duplicates

@@ -5,7 +5,7 @@ Detects revenue, volume, and pricing anomalies using Isolation Forest, Z-score, 
 import logging
 import numpy as np
 import pandas as pd
-from typing import Dict, List, Any, Tuple
+from typing import Dict, List, Any, Optional, Tuple
 
 try:
     from sklearn.ensemble import IsolationForest
@@ -71,8 +71,8 @@ def detect_anomalies(df: pd.DataFrame = None, contamination: float = 0.02) -> Li
     # Remove rows with NaN in features
     X_data = df_clean[features].fillna(0).values
 
-    anomaly_indices = []
-    anomaly_scores = []
+    anomaly_indices: Any = []
+    anomaly_scores: Any = []
 
     if ISOLATION_FOREST_AVAILABLE and len(df_clean) >= 15:
         try:
@@ -88,7 +88,7 @@ def detect_anomalies(df: pd.DataFrame = None, contamination: float = 0.02) -> Li
     else:
         anomaly_indices, anomaly_scores = _zscore_anomaly_detection(X_data[:, 0])
 
-    results = []
+    results: List[Dict[str, Any]] = []
     
     # Calculate baseline metrics for variance comparison
     mean_amount = float(df_clean[amount_col].mean()) if len(df_clean) > 0 else 500.0
@@ -160,7 +160,7 @@ def _zscore_anomaly_detection(values: np.ndarray, threshold: float = 2.5) -> Tup
     return anomalies, z_scores
 
 
-def _identify_root_cause(row: pd.Series, actual: float, mean: float, disc_col: str, qty_col: str) -> Dict[str, str]:
+def _identify_root_cause(row: pd.Series, actual: float, mean: float, disc_col: Optional[str], qty_col: Optional[str]) -> Dict[str, str]:
     """Determine top driver behind anomaly."""
     disc_val = float(row[disc_col]) if disc_col and disc_col in row and pd.notnull(row[disc_col]) else 0.0
     qty_val = float(row[qty_col]) if qty_col and qty_col in row and pd.notnull(row[qty_col]) else 1.0

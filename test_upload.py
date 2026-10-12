@@ -8,7 +8,7 @@ file_path = "data/sample/test_upload.csv"
 
 with open(file_path, 'rb') as f:
     files = {'file': ('test_upload.csv', f, 'text/csv')}
-    response = requests.post(url, files=files)
+    response = requests.post(url, files=files, timeout=30)
 
 print(f"Status Code: {response.status_code}")
 print(f"Response: {response.json()}")

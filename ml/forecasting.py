@@ -10,13 +10,11 @@ linear trend when scikit-learn is unavailable or history is very short.
 import logging
 import numpy as np
 import pandas as pd
-from datetime import datetime, timedelta
-from typing import Dict, List, Tuple, Any
+from datetime import timedelta
+from typing import Dict, Any
 
 try:
     from sklearn.linear_model import Ridge
-    from sklearn.preprocessing import PolynomialFeatures
-    from sklearn.pipeline import make_pipeline
     SKLEARN_AVAILABLE = True
 except ImportError:
     SKLEARN_AVAILABLE = False

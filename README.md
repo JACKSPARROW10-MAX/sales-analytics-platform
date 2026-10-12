@@ -238,7 +238,7 @@ docker compose up -d postgres pgadmin
 
 # 2. Python
 python -m venv .venv && . .venv/Scripts/activate   # or . .venv/bin/activate
-pip install -r requirements.txt
+pip install -r requirements.txt   # add requirements-dev.txt for tests/lint
 cp .env.example .env        # set DATABASE_URL=postgresql://postgres:postgres@localhost:5432/sales_platform
 
 # 3. Schema + data
@@ -281,15 +281,28 @@ Nothing in production depends on `localhost`.
 ## 22. Testing
 
 ```bash
-python verify_db_connection.py          # connection + tables + row counts
+pip install -r requirements-dev.txt     # app deps + flake8, mypy, bandit, pytest
+flake8 . && mypy . && pytest            # same checks CI runs
+bandit -r api db etl ingestion ml reports ./*.py -ll
+
+python verify_db_connection.py          # connection + tables + row counts (needs DATABASE_URL)
 python run_pipeline.py && python -m ml.train
 curl localhost:8000/health
 curl localhost:8000/api/v1/kpis
 cd dashboard && npm run build && npm run lint
 ```
 
-`ci.yml` runs flake8 / mypy / bandit / pytest / Docker build on every push and PR.
-`test_upload.py` and `verify_upload.py` exercise the upload path against a running API.
+`pytest` runs the offline unit tests in `tests/` (URL/driver normalisation, TLS and pool
+settings, validation, forecast + anomaly logic, `/health`, upload rejection paths); no
+database is required. `ci.yml` runs flake8 / mypy / bandit / pytest, builds the Docker
+image and **boots it to check `/health`**; on `main` it then publishes the image to GHCR.
+`test_upload.py` and `verify_upload.py` are manual scripts that exercise the upload path
+against a running API and are intentionally not collected by pytest.
+
+**Dependency note.** `requirements.txt` caps major versions on purpose. An unpinned
+`sqlalchemy>=2.0` once moved to 2.1, which changed the default driver for `postgresql://`
+URLs to `psycopg` (v3) and broke fresh installs. The code now always uses an explicit
+`postgresql+psycopg2://` URL, so both 2.0 and 2.1 work.
 
 ## 23. Known limitations
 

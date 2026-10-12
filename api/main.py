@@ -35,7 +35,7 @@ from api.routers import (
     categories, regions, pricing
 )
 
-from api.utils.sql_helpers import get_kpi_metrics, get_trend_data
+from api.utils.sql_helpers import get_kpi_metrics
 from ingestion.extract_csv import parse_sales_csv
 from ingestion.validate import validate_sales_data
 from db.connection import check_database_connection
@@ -95,7 +95,7 @@ app.add_middleware(
 )
 
 app.state.limiter = limiter
-app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)  # type: ignore[arg-type]
 app.add_middleware(SlowAPIMiddleware)
 
 # Routers
@@ -501,7 +501,7 @@ def download_pdf_report():
 
 if __name__ == "__main__":
     import uvicorn
-    host = os.getenv("HOST", "0.0.0.0")
+    host = os.getenv("HOST", "0.0.0.0")  # nosec B104 - dev entrypoint; containers must bind all interfaces
     port = int(os.getenv("PORT", "8000"))
     reload = os.getenv("ENVIRONMENT", "development").lower() == "development"
     uvicorn.run("api.main:app", host=host, port=port, reload=reload)

@@ -6,7 +6,7 @@ based on CURRENT database analytics, ML forecasts, anomalies, and pricing varian
 import os
 import json
 import logging
-from typing import Dict, List, Any
+from typing import Dict, List, Any, Optional
 import requests
 import pandas as pd
 from dotenv import load_dotenv
@@ -18,8 +18,8 @@ logger = logging.getLogger(__name__)
 
 def generate_recommendations(
     df: pd.DataFrame = None, 
-    forecast_summary: Dict[str, Any] = None, 
-    anomalies: List[Dict[str, Any]] = None
+    forecast_summary: Optional[Dict[str, Any]] = None, 
+    anomalies: Optional[List[Dict[str, Any]]] = None
 ) -> List[Dict[str, Any]]:
     """
     Generate dynamic prescriptive business recommendations directly from current data facts.
