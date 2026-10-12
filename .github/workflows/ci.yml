@@ -55,7 +55,7 @@ jobs:
         run: mypy .
 
       - name: Security scan with bandit (medium severity and above)
-        run: bandit -r api db etl ingestion ml reports ./*.py -ll
+        run: bandit -r api db etl ingestion ml reports scripts ./*.py -ll
 
       - name: Run tests
         run: pytest
